@@ -35,7 +35,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.jme3.app.SimpleApplication;
-import com.jme3.audio.AudioNode;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.PhysicsSpace.BroadphaseType;
 import com.jme3.bullet.control.RigidBodyControl;
@@ -56,10 +55,8 @@ import com.jme3.post.filters.LightScatteringFilter;
 import com.jme3.renderer.Camera;
 import com.jme3.renderer.queue.RenderQueue.ShadowMode;
 import com.jme3.scene.CameraNode;
-import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.control.CameraControl.ControlDirection;
-import com.jme3.terrain.geomipmap.TerrainLodControl;
 import com.jme3.terrain.geomipmap.TerrainQuad;
 import com.jme3.terrain.heightmap.AbstractHeightMap;
 import com.jme3.terrain.heightmap.ImageBasedHeightMap;
@@ -78,31 +75,20 @@ import de.lessvoid.nifty.Nifty;
  */
 public class CarrierCommander extends SimpleApplication {
 
-	private BulletAppState phsyicsState; // for collision detection
+	private BulletAppState phsyicsState;
 	private Vector3f lightDir = new Vector3f(-4.9236743f, -1.27054665f, 5.896916f);
 	private WaterFilter water = null;
 	TerrainQuad terrain = null;
 	Material matRock = null;
 	CameraNode camNode = null;
-	AudioNode waves = null;
-	Carrier carrier = null;
-	Spatial walrus = null;
-	RigidBodyControl walrusControl = null;
-	Node manta = null;
 
-	Node camHookWalrus1 = null;
-	Node camHookWalrus2 = null;
-	Node camHookWalrus3 = null;
-	Node camHookWalrus4 = null;
-	Node camHookManta1 = null;
-	Node camHookManta2 = null;
-	Node camHookManta3 = null;
-	Node camHookManta4 = null;
+	Carrier carrier = null;
+	Walrus walrus = null;
+	Manta manta = null;
 
 	private float time = 0.0f;
 	private float waterHeight = 0.0f;
 	private float initialWaterHeight = 90f;// 0.8f;
-	private boolean uw = false;
 
 	public static void main(String[] args) {
 		CarrierCommander app = new CarrierCommander();
@@ -124,10 +110,12 @@ public class CarrierCommander extends SimpleApplication {
 		createWater();
 		createPostProcessFilter();
 
-		carrier = new Carrier(assetManager, phsyicsState, initialWaterHeight);
+		carrier = new Carrier(assetManager, phsyicsState, initialWaterHeight, water);
 		rootNode.attachChild(carrier);
-		createWalrus();
-		// createManta();
+		walrus = new Walrus(assetManager, phsyicsState, initialWaterHeight, water);
+		rootNode.attachChild(walrus);
+		// manta = new Manta(assetManager, phsyicsState, water);
+		// rootNode.attachChild(manta);
 
 		// carrier.setCameraToBridge(camNode);
 		// camNode.lookAt(target.getLocalTranslation(), Vector3f.UNIT_Y);
@@ -148,7 +136,7 @@ public class CarrierCommander extends SimpleApplication {
 		phsyicsState.setBroadphaseType(BroadphaseType.SIMPLE);
 		stateManager.attach(phsyicsState);
 
-		// phsyicsState.setDebugEnabled(true);
+//		phsyicsState.setDebugEnabled(true);
 	}
 
 	private void createKeyMappings() {
@@ -164,7 +152,7 @@ public class CarrierCommander extends SimpleApplication {
 						System.out.println("Reflection map size : " + water.getReflectionMapSize());
 					}
 					if (name.equals("throttle")) {
-						walrusControl.setLinearVelocity(walrus.getLocalRotation().getRotationColumn(0).mult(-50));
+						// walrusControl.setLinearVelocity(walrus.getLocalRotation().getRotationColumn(0).mult(-50));
 					}
 				}
 			}
@@ -216,7 +204,6 @@ public class CarrierCommander extends SimpleApplication {
 
 	private void createSky() {
 		Spatial sky = SkyFactory.createSky(assetManager, "Scenes/Beach/FullskiesSunset0068.dds", false);
-
 		sky.setLocalScale(350);
 		rootNode.attachChild(sky);
 	}
@@ -229,9 +216,6 @@ public class CarrierCommander extends SimpleApplication {
 		camNode.setControlDir(ControlDirection.SpatialToCamera);
 
 		cam.setLocation(new Vector3f(-550, 130, 200));
-		// cam.setRotation(new Quaternion().fromAngleAxis(0.5f, Vector3f.UNIT_Z));
-		// cam.setLocation(new Vector3f(-327.21957f, 61.6459f, 126.884346f));
-		// cam.setRotation(new Quaternion(0.052168474f, 0.9443102f, -0.18395276f, 0.2678024f));
 		cam.setRotation(new Quaternion().fromAngles(new float[] { FastMath.DEG_TO_RAD * 15.0f, FastMath.DEG_TO_RAD * -20f, 0 }));
 
 		cam.setFrustumFar(4000);
@@ -243,41 +227,6 @@ public class CarrierCommander extends SimpleApplication {
 		sun.setDirection(lightDir);
 		sun.setColor(ColorRGBA.White.clone().multLocal(1.7f));
 		rootNode.addLight(sun);
-	}
-
-	private void createWalrus() {
-		walrus = assetManager.loadModel("Models/BTR80/BTR.obj");
-		System.out.println("walrus vertices: " + walrus.getVertexCount() + " triangles: " + walrus.getTriangleCount());
-		walrus.setLocalTranslation(-500, initialWaterHeight + 2, 300);
-		walrus.scale(0.1f);
-		walrus.rotate((float) Math.toRadians(-90), 0, 0);
-
-		walrusControl = new RigidBodyControl(5000);
-		walrus.addControl(walrusControl);
-		phsyicsState.getPhysicsSpace().add(walrusControl);
-
-		walrusControl.setGravity(new Vector3f());
-		walrusControl.setLinearVelocity(walrus.getLocalRotation().getRotationColumn(0).mult(-10));
-
-		rootNode.attachChild(walrus);
-	}
-
-	private void createManta() {
-		manta = new Node();
-		Spatial model = assetManager.loadModel("Models/HoverTank/tankFinalExport.blend");
-		manta.attachChild(model);
-		System.out.println("manta vertices: " + model.getVertexCount() + " triangles: " + model.getTriangleCount());
-		manta.setLocalTranslation(-400, initialWaterHeight, 300);
-		manta.scale(5);
-
-		RigidBodyControl control = new RigidBodyControl(5000);
-		manta.addControl(control);
-		phsyicsState.getPhysicsSpace().add(control);
-
-		control.setGravity(new Vector3f());
-		control.setLinearVelocity(manta.getLocalRotation().getRotationColumn(2).mult(10));
-
-		rootNode.attachChild(manta);
 	}
 
 	private void createTerrain() {
@@ -330,7 +279,7 @@ public class CarrierCommander extends SimpleApplication {
 		terrain.setShadowMode(ShadowMode.Receive);
 		rootNode.attachChild(terrain);
 
-		TerrainLodControl control = new TerrainLodControl(terrain, getCamera());
+		// TerrainLodControl control = new TerrainLodControl(terrain, getCamera());
 		// terrain.addControl(control);
 	}
 
@@ -345,29 +294,5 @@ public class CarrierCommander extends SimpleApplication {
 
 		if (water != null)
 			water.setWaterHeight(waterHeight);
-
-		if (carrier != null) {
-			RigidBodyControl control = carrier.getControl(RigidBodyControl.class);
-
-			float meterBelowWater = waterHeight - control.getPhysicsLocation().getY() + 4;
-			if (meterBelowWater > maxDeltaWaterHeight)
-				meterBelowWater = maxDeltaWaterHeight;
-			if (meterBelowWater < -maxDeltaWaterHeight)
-				meterBelowWater = -maxDeltaWaterHeight;
-			float percentageDisplacement = meterBelowWater / maxDeltaWaterHeight;
-			float force = (carrier.weigth + percentageDisplacement * carrier.weigth) * 9.81f;
-
-			control.getPhysicsRotation(carrierCurrentRotation);
-			Vector3f rotationOffset = carrierCurrentRotation.mult(Vector3f.UNIT_Y);
-
-			System.out.printf("vector: x=%f\ty=%f\tz=%f\tbelow water=%.3fm\tdelta " + "displacement=%.2f%%\tforce=%.0fkN\n", rotationOffset.x,
-					rotationOffset.y, rotationOffset.z, meterBelowWater, percentageDisplacement * 100, force / 1000);
-
-			control.applyForce(new Vector3f(0f, force, 0f), new Vector3f(50f * rotationOffset.x, rotationOffset.y, 100f * rotationOffset.z)); // pitch,
-																																				// yaw,
-																																				// roll
-		}
-		// if (walrus != null)
-		// walrus.getLocalTranslation().setY(initialWaterHeight + waterHeight);
 	}
 }

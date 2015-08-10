@@ -42,6 +42,7 @@ import com.jme3.math.Vector3f;
 import com.jme3.scene.CameraNode;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
+import com.jme3.water.WaterFilter;
 
 public class Carrier extends Node {
 
@@ -51,14 +52,44 @@ public class Carrier extends Node {
 	private Node camHookCarrierLaser = null;
 	private Node camHookCarrierFlareLauncher = null;
 	private Node camHookCarrierSurfaceMissile = null;
-	public final float weigth = 100000000; // a carrier weighs 100'000 tons
+	private final float weight = 100000000; // a carrier weighs 100'000 tons
 
-	public Carrier(AssetManager assetManager, BulletAppState phsyicsState, float initialWaterHeight) {
+	public Carrier(AssetManager assetManager, BulletAppState phsyicsState, float initialWaterHeight, WaterFilter water) {
 		super();
 		Spatial model = assetManager.loadModel("Models/AdmiralKuznetsovClasscarrier/carrier.obj");
 		attachChild(model);
 		System.out.println("carrier vertices: " + model.getVertexCount() + " triangles: " + model.getTriangleCount());
 
+		createCameraHooks();
+
+		setLocalTranslation(-600, initialWaterHeight + 50, 400);
+
+		CompoundCollisionShape comp = new CompoundCollisionShape(); // use a simple compound shape to improve performance drastically!
+		comp.addChildShape(new BoxCollisionShape(new Vector3f(20, 13, 149)), new Vector3f(0f, -1f, -25f));
+		comp.addChildShape(new BoxCollisionShape(new Vector3f(7, 19, 30)), new Vector3f(30f, 30f, 5f));
+		RigidBodyControl control = new RigidBodyControl(comp, weight);
+		control.setFriction(0.5f);
+		control.setDamping(0.5f, 0.3f);
+		addControl(control);
+		phsyicsState.getPhysicsSpace().add(control);
+		
+		FloatingControl floatingControl = new FloatingControl();
+		floatingControl.setWater(water);
+		floatingControl.setVerticalOffset(4);
+		floatingControl.setWidth(50);
+		floatingControl.setLength(100);
+		floatingControl.setHeight(20);
+		addControl(floatingControl);
+
+//		control.setAngularVelocity(new Vector3f(0f, 0f, 0.1f));
+//		control.setLinearVelocity(getLocalRotation().getRotationColumn(2).mult(-10));
+
+		float angles[] = { FastMath.DEG_TO_RAD * 10, FastMath.DEG_TO_RAD * 0, FastMath.DEG_TO_RAD * 45 }; // pitch, yaw, roll
+		control.setPhysicsRotation(new Quaternion(angles));
+
+	}
+
+	private void createCameraHooks() {
 		camHookCarrierBridge = new Node();
 		attachChild(camHookCarrierBridge);
 		camHookCarrierBridge.setLocalTranslation(0, 20, 0);
@@ -88,25 +119,6 @@ public class Carrier extends Node {
 		attachChild(camHookCarrierSurfaceMissile);
 		camHookCarrierSurfaceMissile.setLocalTranslation(0, 15, 10);
 		camHookCarrierSurfaceMissile.rotate(0, FastMath.DEG_TO_RAD * 0, 0);
-
-		setLocalTranslation(-600, initialWaterHeight + 50, 400);
-
-		CompoundCollisionShape comp = new CompoundCollisionShape(); // use a simple compound shape to improve performance drastically!
-		comp.addChildShape(new BoxCollisionShape(new Vector3f(20, 13, 149)), new Vector3f(0f, -1f, -25f));
-		comp.addChildShape(new BoxCollisionShape(new Vector3f(7, 19, 30)), new Vector3f(30f, 30f, 5f));
-		RigidBodyControl control = new RigidBodyControl(comp, weigth);
-		control.setFriction(0.5f);
-		control.setDamping(0.5f, 0.3f);
-		addControl(control);
-		phsyicsState.getPhysicsSpace().add(control);
-
-//		control.setGravity(new Vector3f());
-//		control.setAngularVelocity(new Vector3f(0f, 0f, 0.1f));
-//		control.setLinearVelocity(getLocalRotation().getRotationColumn(2).mult(-10));
-
-		float angles[] = { FastMath.DEG_TO_RAD * 10, FastMath.DEG_TO_RAD * 0, FastMath.DEG_TO_RAD * 45 }; // pitch, yaw, roll
-		control.setPhysicsRotation(new Quaternion(angles));
-
 	}
 
 	public void setCameraToBridge(CameraNode camNode) {
