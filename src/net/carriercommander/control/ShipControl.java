@@ -29,7 +29,7 @@
  * 
  */
 
-package net.carriercommander;
+package net.carriercommander.control;
 
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.math.FastMath;

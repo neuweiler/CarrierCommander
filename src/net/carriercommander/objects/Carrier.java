@@ -29,7 +29,7 @@
  * 
  */
 
-package net.carriercommander;
+package net.carriercommander.objects;
 
 import com.jme3.asset.AssetManager;
 import com.jme3.bullet.BulletAppState;
@@ -43,6 +43,9 @@ import com.jme3.scene.CameraNode;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.water.WaterFilter;
+
+import net.carriercommander.control.FloatControl;
+import net.carriercommander.control.ShipControl;
 
 public class Carrier extends Node {
 
@@ -74,13 +77,13 @@ public class Carrier extends Node {
 		addControl(control);
 		phsyicsState.getPhysicsSpace().add(control);
 		
-		FloatingControl floatingControl = new FloatingControl();
-		floatingControl.setWater(water);
-		floatingControl.setVerticalOffset(4);
-		floatingControl.setWidth(50);
-		floatingControl.setLength(100);
-		floatingControl.setHeight(20);
-		addControl(floatingControl);
+		FloatControl floatControl = new FloatControl();
+		floatControl.setWater(water);
+		floatControl.setVerticalOffset(4);
+		floatControl.setWidth(50);
+		floatControl.setLength(100);
+		floatControl.setHeight(20);
+		addControl(floatControl);
 
 		shipControl = new ShipControl();
 		shipControl.setRudderPositionZ(100);

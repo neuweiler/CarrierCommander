@@ -67,6 +67,9 @@ import com.jme3.util.SkyFactory;
 import com.jme3.water.WaterFilter;
 
 import de.lessvoid.nifty.Nifty;
+import net.carriercommander.objects.Carrier;
+import net.carriercommander.objects.Manta;
+import net.carriercommander.objects.Walrus;
 
 /**
  * Carrier Commander Main Class
@@ -85,10 +88,10 @@ public class CarrierCommander extends SimpleApplication {
 	Carrier carrier = null;
 	Walrus walrus = null;
 	Manta manta = null;
-	
+
 	private float time = 0.0f;
 	private float waterHeight = 0.0f;
-	private float initialWaterHeight = 90f;// 0.8f;
+	private float initialWaterHeight = 90f;
 
 	public static void main(String[] args) {
 		CarrierCommander app = new CarrierCommander();
@@ -100,7 +103,7 @@ public class CarrierCommander extends SimpleApplication {
 		// setDisplayFps(false);
 		// setDisplayStatView(false);
 
-		// createNitfyGui();
+//		createNitfyGui();
 		activatePhysics();
 		configureCamera();
 
@@ -117,7 +120,7 @@ public class CarrierCommander extends SimpleApplication {
 		manta = new Manta(assetManager, phsyicsState, water);
 		rootNode.attachChild(manta);
 
-		carrier.setCameraToBridge(camNode);
+		// carrier.setCameraToBridge(camNode);
 		// camNode.lookAt(target.getLocalTranslation(), Vector3f.UNIT_Y);
 
 		createKeyMappings();
@@ -126,7 +129,7 @@ public class CarrierCommander extends SimpleApplication {
 	private void createNitfyGui() {
 		NiftyJmeDisplay niftyDisplay = new NiftyJmeDisplay(assetManager, inputManager, audioRenderer, guiViewPort);
 		Nifty nifty = niftyDisplay.getNifty();
-		nifty.fromXml("Interface/screen.xml", "start");
+		nifty.fromXml("Interface/screen.xml", "hud");
 		guiViewPort.addProcessor(niftyDisplay);
 	}
 
@@ -141,7 +144,7 @@ public class CarrierCommander extends SimpleApplication {
 
 	private void createKeyMappings() {
 		inputManager.addListener(new AnalogListener() {
-			
+
 			@Override
 			public void onAnalog(String name, float value, float tpf) {
 				if (name.equals("left")) {
@@ -161,7 +164,7 @@ public class CarrierCommander extends SimpleApplication {
 					carrier.decreaseSpeed(tpf);
 				}
 			}
-		}, "left", "right", "up", "down", "accelerate", "decelerate" );
+		}, "left", "right", "up", "down", "accelerate", "decelerate");
 		inputManager.addMapping("left", new KeyTrigger(KeyInput.KEY_LEFT));
 		inputManager.addMapping("right", new KeyTrigger(KeyInput.KEY_RIGHT));
 		inputManager.addMapping("up", new KeyTrigger(KeyInput.KEY_UP));
@@ -179,11 +182,11 @@ public class CarrierCommander extends SimpleApplication {
 		BloomFilter bloom = new BloomFilter();
 		bloom.setExposurePower(55);
 		bloom.setBloomIntensity(1.0f);
-//		fpp.addFilter(bloom);
+		// fpp.addFilter(bloom);
 
 		LightScatteringFilter lsf = new LightScatteringFilter(lightDir.mult(-300));
 		lsf.setLightDensity(1.0f);
-//		 fpp.addFilter(lsf);
+		// fpp.addFilter(lsf);
 
 		DepthOfFieldFilter dof = new DepthOfFieldFilter();
 		dof.setFocusDistance(0);
@@ -218,7 +221,7 @@ public class CarrierCommander extends SimpleApplication {
 
 	private void configureCamera() {
 		flyCam.setMoveSpeed(200);
-		 flyCam.setEnabled(false); // Disable the default flyby cam
+//		 flyCam.setEnabled(false); // Disable the default flyby cam
 
 		camNode = new CameraNode("Camera Node", cam);
 		camNode.setControlDir(ControlDirection.SpatialToCamera);

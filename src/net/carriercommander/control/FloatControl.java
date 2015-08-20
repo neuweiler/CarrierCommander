@@ -29,7 +29,7 @@
  * 
  */
 
-package net.carriercommander;
+package net.carriercommander.control;
 
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.math.Quaternion;
@@ -44,7 +44,7 @@ import com.jme3.water.WaterFilter;
  * 
  * @author Michael Neuweiler
  */
-public class FloatingControl extends AbstractControl {
+public class FloatControl extends AbstractControl {
 	private Quaternion currentRotation = new Quaternion();
 	Vector3f rotationOffset = new Vector3f();
 	Vector3f waterForce = new Vector3f();
