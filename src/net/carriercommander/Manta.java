@@ -33,6 +33,7 @@ package net.carriercommander;
 
 import com.jme3.asset.AssetManager;
 import com.jme3.bullet.BulletAppState;
+import com.jme3.bullet.collision.shapes.BoxCollisionShape;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
@@ -48,17 +49,20 @@ public class Manta extends Node {
 		setLocalTranslation(-400, 100, 300);
 		scale(5);
 
-		RigidBodyControl control = new RigidBodyControl(5000);
+		BoxCollisionShape collisionShape = new BoxCollisionShape(new Vector3f(24, 10f, 27f));
+		RigidBodyControl control = new RigidBodyControl(collisionShape, 5000);
 		addControl(control);
-		control.setDamping(0.2f, 0.1f);
+		control.setDamping(0.05f, 0.2f);
 		phsyicsState.getPhysicsSpace().add(control);
 
-		control.setGravity(new Vector3f());
-		control.setLinearVelocity(getLocalRotation().getRotationColumn(2).mult(10));
-		
 		FloatingControl floatingControl = new FloatingControl();
 		floatingControl.setWater(water);
-		floatingControl.setVerticalOffset(40);
+		floatingControl.setVerticalOffset(15);
+		floatingControl.setWidth(24);
+		floatingControl.setLength(10);
+		floatingControl.setHeight(27f);
 		addControl(floatingControl);
+
+		control.setLinearVelocity(getLocalRotation().getRotationColumn(2).mult(70));
 	}
 }

@@ -39,7 +39,7 @@ import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.PhysicsSpace.BroadphaseType;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.input.KeyInput;
-import com.jme3.input.controls.ActionListener;
+import com.jme3.input.controls.AnalogListener;
 import com.jme3.input.controls.KeyTrigger;
 import com.jme3.light.DirectionalLight;
 import com.jme3.material.Material;
@@ -85,7 +85,7 @@ public class CarrierCommander extends SimpleApplication {
 	Carrier carrier = null;
 	Walrus walrus = null;
 	Manta manta = null;
-
+	
 	private float time = 0.0f;
 	private float waterHeight = 0.0f;
 	private float initialWaterHeight = 90f;// 0.8f;
@@ -114,10 +114,10 @@ public class CarrierCommander extends SimpleApplication {
 		rootNode.attachChild(carrier);
 		walrus = new Walrus(assetManager, phsyicsState, initialWaterHeight, water);
 		rootNode.attachChild(walrus);
-		// manta = new Manta(assetManager, phsyicsState, water);
-		// rootNode.attachChild(manta);
+		manta = new Manta(assetManager, phsyicsState, water);
+		rootNode.attachChild(manta);
 
-		// carrier.setCameraToBridge(camNode);
+		carrier.setCameraToBridge(camNode);
 		// camNode.lookAt(target.getLocalTranslation(), Vector3f.UNIT_Y);
 
 		createKeyMappings();
@@ -136,30 +136,38 @@ public class CarrierCommander extends SimpleApplication {
 		phsyicsState.setBroadphaseType(BroadphaseType.SIMPLE);
 		stateManager.attach(phsyicsState);
 
-//		phsyicsState.setDebugEnabled(true);
+		// phsyicsState.setDebugEnabled(true);
 	}
 
 	private void createKeyMappings() {
-		inputManager.addListener(new ActionListener() {
-			public void onAction(String name, boolean isPressed, float tpf) {
-				if (isPressed) {
-					if (name.equals("upRM")) {
-						water.setReflectionMapSize(Math.min(water.getReflectionMapSize() * 2, 4096));
-						System.out.println("Reflection map size : " + water.getReflectionMapSize());
-					}
-					if (name.equals("downRM")) {
-						water.setReflectionMapSize(Math.max(water.getReflectionMapSize() / 2, 32));
-						System.out.println("Reflection map size : " + water.getReflectionMapSize());
-					}
-					if (name.equals("throttle")) {
-						// walrusControl.setLinearVelocity(walrus.getLocalRotation().getRotationColumn(0).mult(-50));
-					}
+		inputManager.addListener(new AnalogListener() {
+			
+			@Override
+			public void onAnalog(String name, float value, float tpf) {
+				if (name.equals("left")) {
+					carrier.steerLeft(tpf);
+				}
+				if (name.equals("right")) {
+					carrier.steerRight(tpf);
+				}
+				if (name.equals("up")) {
+				}
+				if (name.equals("down")) {
+				}
+				if (name.equals("accelerate")) {
+					carrier.increaseSpeed(tpf);
+				}
+				if (name.equals("decelerate")) {
+					carrier.decreaseSpeed(tpf);
 				}
 			}
-		}, "upRM", "downRM", "throttle");
-		inputManager.addMapping("throttle", new KeyTrigger(KeyInput.KEY_SPACE));
-		inputManager.addMapping("upRM", new KeyTrigger(KeyInput.KEY_PGUP));
-		inputManager.addMapping("downRM", new KeyTrigger(KeyInput.KEY_PGDN));
+		}, "left", "right", "up", "down", "accelerate", "decelerate" );
+		inputManager.addMapping("left", new KeyTrigger(KeyInput.KEY_LEFT));
+		inputManager.addMapping("right", new KeyTrigger(KeyInput.KEY_RIGHT));
+		inputManager.addMapping("up", new KeyTrigger(KeyInput.KEY_UP));
+		inputManager.addMapping("down", new KeyTrigger(KeyInput.KEY_DOWN));
+		inputManager.addMapping("accelerate", new KeyTrigger(KeyInput.KEY_PGUP));
+		inputManager.addMapping("decelerate", new KeyTrigger(KeyInput.KEY_PGDN));
 	}
 
 	private void createPostProcessFilter() {
@@ -171,11 +179,11 @@ public class CarrierCommander extends SimpleApplication {
 		BloomFilter bloom = new BloomFilter();
 		bloom.setExposurePower(55);
 		bloom.setBloomIntensity(1.0f);
-		// fpp.addFilter(bloom);
+//		fpp.addFilter(bloom);
 
 		LightScatteringFilter lsf = new LightScatteringFilter(lightDir.mult(-300));
 		lsf.setLightDensity(1.0f);
-		// fpp.addFilter(lsf);
+//		 fpp.addFilter(lsf);
 
 		DepthOfFieldFilter dof = new DepthOfFieldFilter();
 		dof.setFocusDistance(0);
@@ -210,13 +218,13 @@ public class CarrierCommander extends SimpleApplication {
 
 	private void configureCamera() {
 		flyCam.setMoveSpeed(200);
-		// flyCam.setEnabled(false); // Disable the default flyby cam
+		 flyCam.setEnabled(false); // Disable the default flyby cam
 
 		camNode = new CameraNode("Camera Node", cam);
 		camNode.setControlDir(ControlDirection.SpatialToCamera);
 
-		cam.setLocation(new Vector3f(-550, 130, 200));
-		cam.setRotation(new Quaternion().fromAngles(new float[] { FastMath.DEG_TO_RAD * 15.0f, FastMath.DEG_TO_RAD * -20f, 0 }));
+		cam.setLocation(new Vector3f(-600, 130, 200));
+		cam.setRotation(new Quaternion().fromAngles(new float[] { FastMath.DEG_TO_RAD * 0f, FastMath.DEG_TO_RAD * 0f, 0 }));
 
 		cam.setFrustumFar(4000);
 		// cam.setFrustumNear(100);

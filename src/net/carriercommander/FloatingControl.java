@@ -47,6 +47,8 @@ import com.jme3.water.WaterFilter;
 public class FloatingControl extends AbstractControl {
 	private Quaternion currentRotation = new Quaternion();
 	Vector3f rotationOffset = new Vector3f();
+	Vector3f waterForce = new Vector3f();
+	Vector3f waterOffset = new Vector3f();
 	private float meterBelowWater, percentageDisplacement, force;
 	private RigidBodyControl rbc = null;
 
@@ -69,10 +71,12 @@ public class FloatingControl extends AbstractControl {
 				meterBelowWater = -height;
 			percentageDisplacement = meterBelowWater / height;
 			force = (rbc.getMass() + percentageDisplacement * rbc.getMass()) * 9.81f;
+			waterForce.setY(force);
 
 			rbc.getPhysicsRotation(currentRotation);
 			currentRotation.mult(Vector3f.UNIT_Y, rotationOffset);
-			rbc.applyForce(new Vector3f(0f, force, 0f), new Vector3f(width * rotationOffset.x, rotationOffset.y, length * rotationOffset.z));
+			waterOffset.set(width * rotationOffset.x, rotationOffset.y, length * rotationOffset.z);
+			rbc.applyForce(waterForce, waterOffset);
 
 			// System.out.printf("vector: x=%f\ty=%f\tz=%f\tbelow water=%.3fm\tdelta " + "displacement=%.2f%%\tforce=%.0fkN\n", rotationOffset.x,
 			// rotationOffset.y, rotationOffset.z, meterBelowWater, percentageDisplacement * 100, force / 1000);
