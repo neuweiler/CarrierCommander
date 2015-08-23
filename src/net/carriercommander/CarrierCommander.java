@@ -70,6 +70,8 @@ import de.lessvoid.nifty.Nifty;
 import net.carriercommander.objects.Carrier;
 import net.carriercommander.objects.Manta;
 import net.carriercommander.objects.Walrus;
+import net.carriercommander.screen.HudScreenControl;
+import net.carriercommander.screen.StartScreenControl;
 
 /**
  * Carrier Commander Main Class
@@ -102,8 +104,12 @@ public class CarrierCommander extends SimpleApplication {
 	public void simpleInitApp() {
 		// setDisplayFps(false);
 		// setDisplayStatView(false);
+		flyCam.setEnabled(false); // Disable the default flyby cam
 
-//		createNitfyGui();
+		createNitfyGui();
+	}
+	
+	public void startGame(String type) {
 		activatePhysics();
 		configureCamera();
 
@@ -127,9 +133,18 @@ public class CarrierCommander extends SimpleApplication {
 	}
 
 	private void createNitfyGui() {
-		NiftyJmeDisplay niftyDisplay = new NiftyJmeDisplay(assetManager, inputManager, audioRenderer, guiViewPort);
+		NiftyJmeDisplay niftyDisplay = new NiftyJmeDisplay(assetManager, inputManager, audioRenderer, viewPort);
 		Nifty nifty = niftyDisplay.getNifty();
-		nifty.fromXml("Interface/screen.xml", "hud");
+
+		nifty.addXml("Interface/Screens/start.xml");
+		nifty.addXml("Interface/Screens/hud.xml");
+		nifty.gotoScreen("start");
+
+		StartScreenControl startScreenControl = (StartScreenControl) nifty.getScreen("start").getScreenController();
+		HudScreenControl hudScreenControl = (HudScreenControl) nifty.getScreen("hud").getScreenController();
+
+		stateManager.attach(startScreenControl);
+		stateManager.attach(hudScreenControl);
 		guiViewPort.addProcessor(niftyDisplay);
 	}
 
@@ -221,7 +236,6 @@ public class CarrierCommander extends SimpleApplication {
 
 	private void configureCamera() {
 		flyCam.setMoveSpeed(200);
-//		 flyCam.setEnabled(false); // Disable the default flyby cam
 
 		camNode = new CameraNode("Camera Node", cam);
 		camNode.setControlDir(ControlDirection.SpatialToCamera);
