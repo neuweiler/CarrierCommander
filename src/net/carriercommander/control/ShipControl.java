@@ -39,6 +39,11 @@ import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
 import com.jme3.scene.control.AbstractControl;
 
+/**
+ * Controller for ships and aircrafts - applies forces to an object
+ * 
+ * @author Michael Neuweiler
+ */
 public class ShipControl extends AbstractControl {
 
 	private Matrix3f currentRotation = new Matrix3f();
@@ -46,7 +51,7 @@ public class ShipControl extends AbstractControl {
 	private Vector3f engineForce = new Vector3f();
 	private Vector3f rudderOffset = new Vector3f();
 	
-	private float rudder = 0, throttle = 0, enginePower = 0, rudderPositionZ = 75, heading = 0;
+	private float rudder = 0, throttle = 0, aileron = 0, enginePower = 0, rudderPositionZ = 75, heading = 0;
 
 	@Override
 	protected void controlUpdate(float tpf) {
@@ -87,6 +92,19 @@ public class ShipControl extends AbstractControl {
 		System.out.printf("ship rudder: %f\n", this.rudder);
 	}
 
+	public float getAileron() {
+		return aileron;
+	}
+
+	public void setAileron(float aileron) {
+		if (aileron > 1.0f)
+			aileron = 1.0f;
+		if (aileron < -1.0f)
+			aileron = -1.0f;
+		this.aileron = aileron;
+		System.out.printf("ship aileron: %f\n", this.aileron);
+	}
+
 	public float getThrottle() {
 		return throttle;
 	}
@@ -94,8 +112,8 @@ public class ShipControl extends AbstractControl {
 	public void setThrottle(float throttle) {
 		if (throttle > 1.0f)
 			throttle = 1.0f;
-		if (throttle < -1.0f)
-			throttle = -1.0f;
+		if (throttle < -0.2f)
+			throttle = -0.2f;
 		this.throttle = throttle;
 		System.out.printf("ship throttle: %f\n", this.throttle);
 	}

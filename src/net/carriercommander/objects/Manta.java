@@ -35,36 +35,80 @@ import com.jme3.asset.AssetManager;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.collision.shapes.BoxCollisionShape;
 import com.jme3.bullet.control.RigidBodyControl;
+import com.jme3.math.FastMath;
+import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
+import com.jme3.scene.CameraNode;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.water.WaterFilter;
 
 import net.carriercommander.control.FloatControl;
+import net.carriercommander.control.ShipControl;
 
-public class Manta extends Node {
+/**
+ * Manta
+ * 
+ * @author Michael Neuweiler
+ */
+public class Manta extends PlayerUnit  {
+	private static final float width = 4.8f, length = 5.4f, height = 2f, mass = 5000f;
 
-	public Manta(AssetManager assetManager, BulletAppState phsyicsState, WaterFilter water) {
+	private Node camHookFront = null;
+	private Node camHookRear = null;
+
+	public Manta(String name, AssetManager assetManager, BulletAppState phsyicsState, WaterFilter water, CameraNode camNode) {
+		super(name, assetManager, phsyicsState, water, camNode);
+
 		Spatial model = assetManager.loadModel("Models/HoverTank/tankFinalExport.blend");
+		model.rotate(0, (float) FastMath.DEG_TO_RAD * 180, 0);
 		attachChild(model);
 		System.out.println("manta vertices: " + model.getVertexCount() + " triangles: " + model.getTriangleCount());
 		setLocalTranslation(-400, 100, 300);
-		scale(5);
+//		scale(2);
 
-		BoxCollisionShape collisionShape = new BoxCollisionShape(new Vector3f(24, 10f, 27f));
-		RigidBodyControl control = new RigidBodyControl(collisionShape, 5000);
+		createCameraHooks();
+
+		BoxCollisionShape collisionShape = new BoxCollisionShape(new Vector3f(width, height, length));
+		RigidBodyControl control = new RigidBodyControl(collisionShape, mass);
 		addControl(control);
-		control.setDamping(0.05f, 0.2f);
+		control.setDamping(0.1f, 0.2f);
 		phsyicsState.getPhysicsSpace().add(control);
+
+		setControl(new ShipControl());
+		getControl().setRudderPositionZ(7);
 
 		FloatControl floatControl = new FloatControl();
 		floatControl.setWater(water);
-		floatControl.setVerticalOffset(15);
-		floatControl.setWidth(24);
-		floatControl.setLength(10);
-		floatControl.setHeight(27f);
+		floatControl.setVerticalOffset(20);
+		floatControl.setWidth(width);
+		floatControl.setHeight(height);
+		floatControl.setLength(length);
 		addControl(floatControl);
+	}
 
-		control.setLinearVelocity(getLocalRotation().getRotationColumn(2).mult(70));
+	private void createCameraHooks() {
+		camHookFront = new Node();
+		attachChild(camHookFront);
+		camHookFront.setLocalTranslation(0, 3, -5);
+		camHookFront.rotate(0, FastMath.DEG_TO_RAD * 180, 0);
+
+		camHookRear = new Node();
+		attachChild(camHookRear);
+		camHookRear.setLocalTranslation(0, 3, 5);
+//		camHookRear.rotate(0, FastMath.DEG_TO_RAD * 90, 0);
+	}
+
+	public void setCameraToFront() {
+		System.out.println("walrus camera front");
+		if (camNode.getParent() != null)
+			camNode.getParent().detachChild(camNode);
+		camHookFront.attachChild(camNode);
+	}
+
+	public void setCameraToRear() {
+		if (camNode.getParent() != null)
+			camNode.getParent().detachChild(camNode);
+		camHookRear.attachChild(camNode);
 	}
 }

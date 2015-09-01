@@ -43,35 +43,47 @@ import com.jme3.scene.Spatial;
 import com.jme3.water.WaterFilter;
 
 import net.carriercommander.control.FloatControl;
+import net.carriercommander.control.ShipControl;
 
-public class Walrus extends Node {
+/**
+ * Walrus
+ * 
+ * @author Michael Neuweiler
+ */
+public class Walrus extends PlayerUnit {
+	private static final float width = 3.8f, length = 10f, height = 3f, mass = 5000;
 
 	private Node camHookFront = null;
 	private Node camHookRear = null;
 
-	public Walrus(AssetManager assetManager, BulletAppState phsyicsState, float initialWaterHeight, WaterFilter water) {
+	public Walrus(String name, AssetManager assetManager, BulletAppState phsyicsState, WaterFilter water, CameraNode camNode) {
+		super(name, assetManager, phsyicsState, water, camNode);
+
 		Spatial model = assetManager.loadModel("Models/BTR80/BTR.obj");
-		model.scale(0.1f);
-		model.rotate((float) FastMath.DEG_TO_RAD * -90, 0, 0);
+		model.scale(0.05f);
+		model.rotate((float) FastMath.DEG_TO_RAD * -90, (float) FastMath.DEG_TO_RAD * -90, 0);
 		attachChild(model);
 
 		createCameraHooks();
 
 		System.out.println("walrus vertices: " + getVertexCount() + " triangles: " + getTriangleCount());
-		setLocalTranslation(-500, initialWaterHeight + 2, 300);
+		setLocalTranslation(-500, water.getWaterHeight() + 2, 300);
 
-		BoxCollisionShape collisionShape = new BoxCollisionShape(new Vector3f(20, 5.5f, 8.5f));
-		RigidBodyControl control = new RigidBodyControl(collisionShape, 5000);
+		BoxCollisionShape collisionShape = new BoxCollisionShape(new Vector3f(width, height, length));
+		RigidBodyControl control = new RigidBodyControl(collisionShape, mass);
 		addControl(control);
-		control.setDamping(0.2f, 0.1f);
+		control.setDamping(0.2f, 0.3f);
 		phsyicsState.getPhysicsSpace().add(control);
+
+		setControl(new ShipControl());
+		getControl().setRudderPositionZ(length / 2);
 
 		FloatControl floatControl = new FloatControl();
 		floatControl.setWater(water);
 		floatControl.setVerticalOffset(2);
-		floatControl.setWidth(20);
-		floatControl.setLength(8.5f);
-		floatControl.setHeight(5.5f);
+		floatControl.setWidth(width);
+		floatControl.setHeight(height);
+		floatControl.setLength(length);
 		addControl(floatControl);
 
 		control.setLinearVelocity(getLocalRotation().getRotationColumn(0).mult(-25));
@@ -81,21 +93,22 @@ public class Walrus extends Node {
 		camHookFront = new Node();
 		attachChild(camHookFront);
 		camHookFront.setLocalTranslation(0, 3, -5);
-		camHookFront.rotate(0, FastMath.DEG_TO_RAD * -90, 0);
+		camHookFront.rotate(0, FastMath.DEG_TO_RAD * 180, 0);
 
 		camHookRear = new Node();
 		attachChild(camHookRear);
 		camHookRear.setLocalTranslation(0, 3, 5);
-		camHookRear.rotate(0, FastMath.DEG_TO_RAD * 90, 0);
+//		camHookRear.rotate(0, FastMath.DEG_TO_RAD * 90, 0);
 	}
 
-	public void setCameraToFront(CameraNode camNode) {
+	public void setCameraToFront() {
+		System.out.println("walrus camera front");
 		if (camNode.getParent() != null)
 			camNode.getParent().detachChild(camNode);
 		camHookFront.attachChild(camNode);
 	}
 
-	public void setCameraToRear(CameraNode camNode) {
+	public void setCameraToRear() {
 		if (camNode.getParent() != null)
 			camNode.getParent().detachChild(camNode);
 		camHookRear.attachChild(camNode);

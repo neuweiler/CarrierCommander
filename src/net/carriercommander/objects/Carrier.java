@@ -47,7 +47,12 @@ import com.jme3.water.WaterFilter;
 import net.carriercommander.control.FloatControl;
 import net.carriercommander.control.ShipControl;
 
-public class Carrier extends Node {
+/**
+ * Carrier
+ * 
+ * @author Michael Neuweiler
+ */
+public class Carrier extends PlayerUnit {
 
 	private Node camHookBridge = null;
 	private Node camHookRear = null;
@@ -56,17 +61,17 @@ public class Carrier extends Node {
 	private Node camHookFlareLauncher = null;
 	private Node camHookSurfaceMissile = null;
 	private final float weight = 100000000; // a carrier weighs 100'000 tons
-	ShipControl shipControl = null;
 
-	public Carrier(AssetManager assetManager, BulletAppState phsyicsState, float initialWaterHeight, WaterFilter water) {
-		super();
+	public Carrier(String name, AssetManager assetManager, BulletAppState phsyicsState, WaterFilter water, CameraNode camNode) {
+		super(name, assetManager, phsyicsState, water, camNode);
+		
 		Spatial model = assetManager.loadModel("Models/AdmiralKuznetsovClasscarrier/carrier.obj");
 		attachChild(model);
 		System.out.println("carrier vertices: " + model.getVertexCount() + " triangles: " + model.getTriangleCount());
 
 		createCameraHooks();
 
-		setLocalTranslation(-600, initialWaterHeight + 5, 400);
+		setLocalTranslation(-600, water.getWaterHeight() + 5, 400);
 
 		CompoundCollisionShape comp = new CompoundCollisionShape(); // use a simple compound shape to improve performance drastically!
 		comp.addChildShape(new BoxCollisionShape(new Vector3f(20, 13, 149)), new Vector3f(0f, -1f, -25f));
@@ -79,15 +84,14 @@ public class Carrier extends Node {
 		
 		FloatControl floatControl = new FloatControl();
 		floatControl.setWater(water);
-		floatControl.setVerticalOffset(4);
+		floatControl.setVerticalOffset(3.7f);
 		floatControl.setWidth(50);
 		floatControl.setLength(100);
 		floatControl.setHeight(20);
 		addControl(floatControl);
 
-		shipControl = new ShipControl();
-		shipControl.setRudderPositionZ(100);
-		addControl(shipControl);
+		setControl(new ShipControl());
+		getControl().setRudderPositionZ(100);
 
 //		control.setAngularVelocity(new Vector3f(0f, 0f, 0.1f));
 //		control.setLinearVelocity(getLocalRotation().getRotationColumn(2).mult(-10));
@@ -99,7 +103,7 @@ public class Carrier extends Node {
 	private void createCameraHooks() {
 		camHookBridge = new Node();
 		attachChild(camHookBridge);
-		camHookBridge.setLocalTranslation(0, 20, 0);
+		camHookBridge.setLocalTranslation(0, 40, 0);
 		camHookBridge.rotate(0, FastMath.DEG_TO_RAD * 180, 0);
 
 		camHookRear = new Node();
@@ -128,55 +132,40 @@ public class Carrier extends Node {
 		camHookSurfaceMissile.rotate(0, FastMath.DEG_TO_RAD * 0, 0);
 	}
 
-	public void setCameraToBridge(CameraNode camNode) {
+	public void setCameraToBridge() {
+		System.out.println("carrier camera bridge");
 		if (camNode.getParent() != null)
 			camNode.getParent().detachChild(camNode);
 		camHookBridge.attachChild(camNode);
 	}
 
-	public void setCameraToRear(CameraNode camNode) {
+	public void setCameraToRear() {
 		if (camNode.getParent() != null)
 			camNode.getParent().detachChild(camNode);
 		camHookRear.attachChild(camNode);
 	}
 
-	public void setCameraToFlightDeck(CameraNode camNode) {
+	public void setCameraToFlightDeck() {
 		if (camNode.getParent() != null)
 			camNode.getParent().detachChild(camNode);
 		camHookFlightDeck.attachChild(camNode);
 	}
 
-	public void setCameraToLaser(CameraNode camNode) {
+	public void setCameraToLaser() {
 		if (camNode.getParent() != null)
 			camNode.getParent().detachChild(camNode);
 		camHookLaser.attachChild(camNode);
 	}
 
-	public void setCameraToFlareLauncher(CameraNode camNode) {
+	public void setCameraToFlareLauncher() {
 		if (camNode.getParent() != null)
 			camNode.getParent().detachChild(camNode);
 		camHookFlareLauncher.attachChild(camNode);
 	}
 
-	public void setCameraToSurfaceMissile(CameraNode camNode) {
+	public void setCameraToSurfaceMissile() {
 		if (camNode.getParent() != null)
 			camNode.getParent().detachChild(camNode);
 		camHookSurfaceMissile.attachChild(camNode);
-	}
-	
-	public void steerLeft(float tpf) {
-		shipControl.setRudder(shipControl.getRudder() + 0.2f * tpf);
-	}
-
-	public void steerRight(float tpf) {
-		shipControl.setRudder(shipControl.getRudder() - 0.2f * tpf);
-	}
-
-	public void increaseSpeed(float tpf) {
-		shipControl.setThrottle(shipControl.getThrottle() + 0.2f * tpf);
-	}
-
-	public void decreaseSpeed(float tpf) {
-		shipControl.setThrottle(shipControl.getThrottle() - 0.2f * tpf);
 	}
 }
