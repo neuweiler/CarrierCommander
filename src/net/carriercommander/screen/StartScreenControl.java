@@ -10,6 +10,11 @@ import de.lessvoid.nifty.screen.Screen;
 import de.lessvoid.nifty.screen.ScreenController;
 import net.carriercommander.CarrierCommander;
 
+/**
+ * Start Screen Control
+ * 
+ * @author Michael Neuweiler
+ */
 public class StartScreenControl extends AbstractAppState implements ScreenController {
 
 	private Nifty nifty;
@@ -30,7 +35,6 @@ public class StartScreenControl extends AbstractAppState implements ScreenContro
 		nifty.gotoScreen(nextScreen); // switch to another screen
 		System.out.println("game type: " + type);
 		((CarrierCommander)app).startGame(type);
-		// start the game and do some more stuff...
 	}
 
 	public void quitGame() {
@@ -39,7 +43,6 @@ public class StartScreenControl extends AbstractAppState implements ScreenContro
 
 	@Override
 	public void update(float tpf) {
-		/** jME update loop! */
 	}
 
 	@Override

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<nifty xmlns="http://nifty-gui.sourceforge.net/nifty-1.3.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://nifty-gui.sourceforge.net/nifty-1.3.xsd">
+	<useStyles filename="nifty-default-styles.xml" />
+	<useControls filename="nifty-default-controls.xml" />
+
+	<controlDefinition name="loadingbar" controller="net.carriercommander.screen.StartScreenControl">
+		<image filename="Interface/Screens/load/border.png" childLayout="absolute" imageMode="resize:15,2,15,15,15,2,15,2,15,2,15,15">
+			<image id="progressbar" x="0" y="0" filename="Interface/Screens/load/inner.png" width="32px" height="100%" imageMode="resize:15,2,15,15,15,2,15,2,15,2,15,15" />
+		</image>
+	</controlDefinition>
+
+	<screen id="load" controller="net.carriercommander.screen.StartScreenControl">
+		<layer id="background" childLayout="center">
+			<image filename="Interface/Screens/start/background.png"></image>
+		</layer>
+		<layer childLayout="vertical">
+			<panel childLayout="vertical" height="20%" />
+			<panel backgroundColor="#3339" align="center" height="10%" width="70%" childLayout="vertical">
+				<panel childLayout="vertical" height="10px" />
+				<panel backgroundColor="#3575" childLayout="vertical" align="center" height="32px" width="90%">
+					<control name="loadingbar" align="center" valign="center" width="100%" height="100%" />
+					<control id="loadingtext" name="label" align="center" text="                                                  " />
+				</panel>
+			</panel>
+			<panel childLayout="vertical" height="70%" />
+		</layer>
+	</screen>
+</nifty>

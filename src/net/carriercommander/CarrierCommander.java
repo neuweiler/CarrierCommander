@@ -67,8 +67,12 @@ import com.jme3.util.SkyFactory;
 import com.jme3.water.WaterFilter;
 
 import de.lessvoid.nifty.Nifty;
+import de.lessvoid.nifty.elements.Element;
+import de.lessvoid.nifty.elements.render.TextRenderer;
+import de.lessvoid.nifty.tools.SizeValue;
 import net.carriercommander.objects.Carrier;
 import net.carriercommander.objects.Manta;
+import net.carriercommander.objects.PlayerUnit;
 import net.carriercommander.objects.Walrus;
 import net.carriercommander.screen.HudScreenControl;
 import net.carriercommander.screen.StartScreenControl;
@@ -81,19 +85,16 @@ import net.carriercommander.screen.StartScreenControl;
 public class CarrierCommander extends SimpleApplication {
 
 	private BulletAppState phsyicsState;
+	private Nifty nifty;
 	private Vector3f lightDir = new Vector3f(-4.9236743f, -1.27054665f, 5.896916f);
 	private WaterFilter water = null;
-	TerrainQuad terrain = null;
-	Material matRock = null;
-	CameraNode camNode = null;
-
-	Carrier carrier = null;
-	Walrus walrus = null;
-	Manta manta = null;
+	private CameraNode camNode = null;
+	private PlayerUnit activeUnit = null;
 
 	private float time = 0.0f;
-	private float waterHeight = 0.0f;
 	private float initialWaterHeight = 90f;
+	private boolean loading = false;
+	private int loadPart = 0;
 
 	public static void main(String[] args) {
 		CarrierCommander app = new CarrierCommander();
@@ -108,40 +109,90 @@ public class CarrierCommander extends SimpleApplication {
 
 		createNitfyGui();
 	}
-	
+
 	public void startGame(String type) {
-		activatePhysics();
-		configureCamera();
-
-		createTerrain();
-		createSky();
-		createSun();
-		createWater();
-		createPostProcessFilter();
-
-		carrier = new Carrier(assetManager, phsyicsState, initialWaterHeight, water);
-		rootNode.attachChild(carrier);
-		walrus = new Walrus(assetManager, phsyicsState, initialWaterHeight, water);
-		rootNode.attachChild(walrus);
-		manta = new Manta(assetManager, phsyicsState, water);
-		rootNode.attachChild(manta);
-
-		// carrier.setCameraToBridge(camNode);
-		// camNode.lookAt(target.getLocalTranslation(), Vector3f.UNIT_Y);
-
-		createKeyMappings();
+		loading = true;
+		loadPart = 0;
 	}
+
+	public void load() {
+		switch (loadPart) {
+		case 0:
+			setProgress(0.05f, "activate physics");
+			activatePhysics();
+			break;
+		case 1:
+			setProgress(0.1f, "configure camera");
+			configureCamera();
+			break;
+		case 2:
+			setProgress(0.2f, "creating camera");
+			createTerrain();
+			break;
+		case 3:
+			setProgress(0.3f, "creating sky");
+			createSky();
+			break;
+		case 4:
+			setProgress(0.4f, "creating sun");
+			createSun();
+			break;
+		case 5:
+			setProgress(0.5f, "creating water");
+			createWater();
+			break;
+		case 6:
+			setProgress(0.6f, "creating post process filter");
+			createPostProcessFilter();
+			break;
+		case 7:
+			setProgress(0.7f, "creating carrier");
+			rootNode.attachChild(new Carrier(Constants.CARRIER_PLAYER, assetManager, phsyicsState, water, camNode));
+			break;
+		case 8:
+			setProgress(0.8f, "creating walrus");
+			rootNode.attachChild(new Walrus(Constants.WALRUS_1, assetManager, phsyicsState, water, camNode));
+			break;
+		case 9:
+			setProgress(0.9f, "creating manta");
+			rootNode.attachChild(new Manta(Constants.MANTA_1, assetManager, phsyicsState, water, camNode));
+			break;
+		case 10:
+			setProgress(1.0f, "creating bindings");
+			activeUnit = (PlayerUnit) rootNode.getChild(Constants.CARRIER_PLAYER);
+			// carrier.setCameraToBridge(camNode);
+			// camNode.lookAt(target.getLocalTranslation(), Vector3f.UNIT_Y);
+			createKeyMappings();
+			nifty.gotoScreen("hud");
+			loading = false;
+			break;
+		}
+		loadPart++;
+	}
+
+	private void setProgress(final float progress, String loadingText) {
+	        final int MIN_WIDTH = 32;
+	        TextRenderer textRenderer = nifty.getScreen("load").findElementByName("loadingtext").getRenderer(TextRenderer.class);
+	        Element progressBarElement = nifty.getScreen("load").findElementByName("progressbar");
+	        
+	        int pixelWidth = (int) (MIN_WIDTH + (progressBarElement.getParent().getWidth() - MIN_WIDTH) * progress);
+	        progressBarElement.setConstraintWidth(new SizeValue(pixelWidth + "px"));
+	        progressBarElement.getParent().layoutElements();
+
+	        textRenderer.setText(loadingText);
+	    }
 
 	private void createNitfyGui() {
 		NiftyJmeDisplay niftyDisplay = new NiftyJmeDisplay(assetManager, inputManager, audioRenderer, viewPort);
-		Nifty nifty = niftyDisplay.getNifty();
+		nifty = niftyDisplay.getNifty();
 
 		nifty.addXml("Interface/Screens/start.xml");
+		nifty.addXml("Interface/Screens/load.xml");
 		nifty.addXml("Interface/Screens/hud.xml");
 		nifty.gotoScreen("start");
 
-		StartScreenControl startScreenControl = (StartScreenControl) nifty.getScreen("start").getScreenController();
-		HudScreenControl hudScreenControl = (HudScreenControl) nifty.getScreen("hud").getScreenController();
+		StartScreenControl startScreenControl = (StartScreenControl) nifty.getScreen(Constants.SCREEN_START).getScreenController();
+		HudScreenControl hudScreenControl = (HudScreenControl) nifty.getScreen(Constants.SCREEN_HUD).getScreenController();
 
 		stateManager.attach(startScreenControl);
 		stateManager.attach(hudScreenControl);
@@ -162,30 +213,37 @@ public class CarrierCommander extends SimpleApplication {
 
 			@Override
 			public void onAnalog(String name, float value, float tpf) {
-				if (name.equals("left")) {
-					carrier.steerLeft(tpf);
+				if (name.equals(Constants.INPUT_LEFT)) {
+					activeUnit.steerLeft(tpf);
 				}
-				if (name.equals("right")) {
-					carrier.steerRight(tpf);
+				if (name.equals(Constants.INPUT_RIGHT)) {
+					activeUnit.steerRight(tpf);
 				}
-				if (name.equals("up")) {
+				if (name.equals(Constants.INPUT_UP)) {
+					activeUnit.steerUp(tpf);
 				}
-				if (name.equals("down")) {
+				if (name.equals(Constants.INPUT_DOWN)) {
+					activeUnit.steerUp(tpf);
 				}
-				if (name.equals("accelerate")) {
-					carrier.increaseSpeed(tpf);
+				if (name.equals(Constants.INPUT_ACCELERATE)) {
+					activeUnit.increaseSpeed(tpf);
 				}
-				if (name.equals("decelerate")) {
-					carrier.decreaseSpeed(tpf);
+				if (name.equals(Constants.INPUT_DECELERATE)) {
+					activeUnit.decreaseSpeed(tpf);
 				}
 			}
-		}, "left", "right", "up", "down", "accelerate", "decelerate");
-		inputManager.addMapping("left", new KeyTrigger(KeyInput.KEY_LEFT));
-		inputManager.addMapping("right", new KeyTrigger(KeyInput.KEY_RIGHT));
-		inputManager.addMapping("up", new KeyTrigger(KeyInput.KEY_UP));
-		inputManager.addMapping("down", new KeyTrigger(KeyInput.KEY_DOWN));
-		inputManager.addMapping("accelerate", new KeyTrigger(KeyInput.KEY_PGUP));
-		inputManager.addMapping("decelerate", new KeyTrigger(KeyInput.KEY_PGDN));
+		}, Constants.INPUT_LEFT, Constants.INPUT_RIGHT, Constants.INPUT_UP, Constants.INPUT_DOWN, Constants.INPUT_ACCELERATE,
+				Constants.INPUT_DECELERATE);
+		inputManager.addMapping(Constants.INPUT_LEFT, new KeyTrigger(KeyInput.KEY_LEFT));
+		inputManager.addMapping(Constants.INPUT_RIGHT, new KeyTrigger(KeyInput.KEY_RIGHT));
+		inputManager.addMapping(Constants.INPUT_UP, new KeyTrigger(KeyInput.KEY_UP));
+		inputManager.addMapping(Constants.INPUT_DOWN, new KeyTrigger(KeyInput.KEY_DOWN));
+		inputManager.addMapping(Constants.INPUT_ACCELERATE, new KeyTrigger(KeyInput.KEY_PGUP));
+		inputManager.addMapping(Constants.INPUT_DECELERATE, new KeyTrigger(KeyInput.KEY_PGDN));
+	}
+
+	public void setActiveUnit(PlayerUnit unit) {
+		activeUnit = unit;
 	}
 
 	private void createPostProcessFilter() {
@@ -255,7 +313,7 @@ public class CarrierCommander extends SimpleApplication {
 	}
 
 	private void createTerrain() {
-		matRock = new Material(assetManager, "Common/MatDefs/Terrain/TerrainLighting.j3md");
+		Material matRock = new Material(assetManager, "Common/MatDefs/Terrain/TerrainLighting.j3md");
 		matRock.setBoolean("useTriPlanarMapping", false);
 		matRock.setBoolean("WardIso", true);
 		matRock.setTexture("AlphaMap", assetManager.loadTexture("Textures/Terrain/splat/alphamap.png"));
@@ -289,7 +347,7 @@ public class CarrierCommander extends SimpleApplication {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		terrain = new TerrainQuad("terrain", 65, 513, heightmap.getHeightMap());
+		TerrainQuad terrain = new TerrainQuad("terrain", 65, 513, heightmap.getHeightMap());
 		List<Camera> cameras = new ArrayList<Camera>();
 		cameras.add(getCamera());
 		terrain.setMaterial(matRock);
@@ -314,8 +372,13 @@ public class CarrierCommander extends SimpleApplication {
 	@Override
 	public void simpleUpdate(float tpf) {
 		super.simpleUpdate(tpf);
+
+		if (loading) {
+			load();
+		}
+
 		time += tpf;
-		waterHeight = (float) Math.cos(((time * 0.3f) % FastMath.TWO_PI)) * 1.4f + initialWaterHeight;
+		float waterHeight = (float) Math.cos(((time * 0.3f) % FastMath.TWO_PI)) * 1.4f + initialWaterHeight;
 
 		if (water != null)
 			water.setWaterHeight(waterHeight);
