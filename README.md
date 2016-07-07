@@ -15,7 +15,6 @@ References:
 - current walrus model: http://tf3dm.com/3d-model/btr80-34552.html (only during development)
 - current textures, terrains, effects and manta model: jmonkey3 demos
 
-Note: This is a JMonkeyPlatform project (based on Netbeans) and also an Eclipse project. If you would like to import it
-      into Eclipse, make sure to create another project manually named jME3, unzip the latest distribution file of jMonkey 
-      (http://updates.jmonkeyengine.org/stable/3.0/engine) add all files in lib to the build path and export them all,
-      so they're visible for other projects.
+Note: This is a maven project. You can import it into Eclipse, IntelliJ, etc. Maven will
+download the necessary jmonkey jars automatically - no need to install anything related
+to jmonkey beforehand.

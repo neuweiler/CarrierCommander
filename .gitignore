@@ -1,7 +1,19 @@
+#jMonkey libraries
+*.dylib
 *.dll
 *.so
 *.zip
-bin
-build
-nbproject/private
-resources
+
+# Eclipse project files
+.classpath
+.project
+target
+.settings
+
+# IntelliJ project files
+.idea
+*.iml
+out
+gen
+/bin/
+
