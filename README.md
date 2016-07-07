@@ -1,7 +1,7 @@
 # CarrierCommander
 A java based open source re-make of a once fantastic game
 
-The game is currently not playable !!
+All you can do currently is steer the vehicles with the arrow keys and switch between them
 
 The purpose of this re-make is to:
 1) keep up the original spirit of the game
