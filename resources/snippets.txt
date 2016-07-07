@@ -1,0 +1,9 @@
+look at object's geometries / nodes:
+
+		SceneGraphVisitor visitor = new SceneGraphVisitor() {
+			@Override
+			public void visit(Spatial spatial) {
+				System.out.println(" found " + spatial.getName() + " instance of " + spatial.getClass());
+			}
+		};
+		model.depthFirstTraversal(visitor);

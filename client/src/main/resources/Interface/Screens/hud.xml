@@ -1,0 +1,362 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<nifty xmlns="http://nifty-gui.sourceforge.net/nifty-1.3.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://nifty-gui.sourceforge.net/nifty-1.3.xsd">
+	<useStyles filename="nifty-default-styles.xml" />
+	<useControls filename="nifty-default-controls.xml" />
+
+	<style id="selected" base="diffStyle">
+		<attributes backgroundColor="#0ff5" />
+	</style>
+	<style id="unselected" base="diffStyle">
+		<attributes backgroundColor="#0000" />
+		<effect>
+			<onHover name="pulsate" startColor="#f007" endColor="#800f" />
+			<onFocus name="pulsate" startColor="#f007" endColor="#800f" />
+		</effect>
+	</style>
+
+	<screen id="hud" controller="net.carriercommander.screen.HudScreenControl">
+		<layer id="background">
+			<!-- ... -->
+		</layer>
+		<layer id="foreground" childLayout="vertical">
+			<panel id="panel_top" width="100%" height="10%" childLayout="horizontal">
+			</panel>
+			<panel id="panel_mid" width="100%" height="70%" childLayout="horizontal">
+			</panel>
+			<panel id="panel_bottom" width="100%" height="10%" childLayout="horizontal" backgroundColor="#00f5">
+			</panel>
+		</layer>
+		<layer childLayout="absolute-inside">
+			<control name="window" id="mainControls" title="Main" width="55px" height="291px" closeable="false">
+				<panel childLayout="vertical">
+					<panel id="mainCarrierButton" style="unselected" childLayout="vertical">
+						<image filename="Interface/Screens/hud/carrier.png" />
+						<interact onClick="setControl(main, Carrier)" />
+					</panel>
+					<panel id="mainWeaponsButton" style="unselected" childLayout="vertical">
+						<image filename="Interface/Screens/hud/weapons.png" />
+						<interact onClick="setControl(main, Weapons)" />
+					</panel>
+					<panel id="mainWalrusButton" style="unselected" childLayout="vertical">
+						<image filename="Interface/Screens/hud/walrus.png" />
+						<interact onClick="setControl(main, Walrus)" />
+					</panel>
+					<panel id="mainMantaButton" style="unselected" childLayout="vertical">
+						<image filename="Interface/Screens/hud/manta.png" />
+						<interact onClick="setControl(main, Manta)" />
+					</panel>
+					<panel id="mainGameButton" style="unselected" childLayout="vertical">
+						<image filename="Interface/Screens/hud/game.png" />
+						<interact onClick="setControl(main, Game)" />
+					</panel>
+				</panel>
+			</control>
+
+
+			<control name="window" id="controls" title="Controls" width="55px" height="291px" x="100%" closeable="false">
+				<panel id="mainCarrierControls" visible="false" childLayout="vertical">
+					<panel id="carrierControlButton" style="unselected" childLayout="vertical">
+						<image filename="Interface/Screens/hud/control.png" />
+						<interact onClick="setControl(carrier, Control)" />
+					</panel>
+					<panel id="carrierMapButton" style="unselected" childLayout="vertical">
+						<image filename="Interface/Screens/hud/map.png" />
+						<interact onClick="setControl(carrier, Map)" />
+					</panel>
+					<panel id="carrierRepairButton" style="unselected" childLayout="vertical">
+						<image filename="Interface/Screens/hud/repair.png" />
+						<interact onClick="setControl(carrier, Repair)" />
+					</panel>
+					<panel id="carrierResourcesButton" style="unselected" childLayout="vertical">
+						<image filename="Interface/Screens/hud/resources.png" />
+						<interact onClick="setControl(carrier, Resources)" />
+					</panel>
+					<panel id="carrierMessagesButton" style="unselected" childLayout="vertical">
+						<image filename="Interface/Screens/hud/messages.png" />
+						<interact onClick="setControl(carrier, Messages)" />
+					</panel>
+				</panel>
+				<panel id="mainWeaponsControls" visible="false" childLayout="vertical">
+					<panel id="weaponsLaserButton" style="unselected" childLayout="vertical">
+						<image filename="Interface/Screens/hud/laser.png" />
+						<interact onClick="setControl(weapons, Laser)" />
+					</panel>
+					<panel id="weaponsFlaresButton" style="unselected" childLayout="vertical">
+						<image filename="Interface/Screens/hud/flare.png" />
+						<interact onClick="setControl(weapons, Flares)" />
+					</panel>
+					<panel id="weaponsMissilesButton" style="unselected" childLayout="vertical">
+						<image filename="Interface/Screens/hud/missile.png" />
+						<interact onClick="setControl(weapons, Missiles)" />
+					</panel>
+					<panel id="weaponsDronesButton" style="unselected" childLayout="vertical">
+						<image filename="Interface/Screens/hud/drones.png" />
+						<interact onClick="setControl(weapons, Drones)" />
+					</panel>
+					<panel id="weaponsStatusButton" style="unselected" childLayout="vertical">
+						<image filename="Interface/Screens/hud/status.png" />
+						<interact onClick="setControl(weapons, Status)" />
+					</panel>
+				</panel>
+				<panel id="mainMantaControls" visible="false" childLayout="vertical">
+					<panel id="mantaControlButton" style="unselected" childLayout="vertical">
+						<image filename="Interface/Screens/hud/control.png" />
+						<interact onClick="setControl(manta, Control)" />
+					</panel>
+					<panel id="mantaMapButton" style="unselected" childLayout="vertical">
+						<image filename="Interface/Screens/hud/map.png" />
+						<interact onClick="setControl(manta, Map)" />
+					</panel>
+					<panel id="mantaEquipButton" style="unselected" childLayout="vertical">
+						<image filename="Interface/Screens/hud/mantaEquip.png" />
+						<interact onClick="setControl(manta, Equip)" />
+					</panel>
+					<panel id="mantaHangarButton" style="unselected" childLayout="vertical">
+						<image filename="Interface/Screens/hud/mantaHangar.png" />
+						<interact onClick="setControl(manta, Hangar)" />
+					</panel>
+					<panel id="mantaStatusButton" style="unselected" childLayout="vertical">
+						<image filename="Interface/Screens/hud/status.png" />
+						<interact onClick="setControl(manta, Status)" />
+					</panel>
+				</panel>
+				<panel id="mainWalrusControls" visible="false" childLayout="vertical">
+					<panel id="walrusControlButton" style="unselected" childLayout="vertical">
+						<image filename="Interface/Screens/hud/control.png" />
+						<interact onClick="setControl(walrus, Control)" />
+					</panel>
+					<panel id="walrusMapButton" style="unselected" childLayout="vertical">
+						<image filename="Interface/Screens/hud/map.png" />
+						<interact onClick="setControl(walrus, Map)" />
+					</panel>
+					<panel id="walrusEquipButton" style="unselected" childLayout="vertical">
+						<image filename="Interface/Screens/hud/walrusEquip.png" />
+						<interact onClick="setControl(walrus, Equip)" />
+					</panel>
+					<panel id="walrusHangarButton" style="unselected" childLayout="vertical">
+						<image filename="Interface/Screens/hud/walrusHangar.png" />
+						<interact onClick="setControl(walrus, Hangar)" />
+					</panel>
+					<panel id="walrusStatusButton" style="unselected" childLayout="vertical">
+						<image filename="Interface/Screens/hud/status.png" />
+						<interact onClick="setControl(walrus, Status)" />
+					</panel>
+				</panel>
+			</control>
+
+
+			<control name="window" id="subControls" title="" width="616px" height="139px" y="100%" align="center" closeable="false">
+				<panel id="carrierControlControls" visible="false" childLayout="horizontal">
+					<panel id="carrierRadar" childLayout="vertical">
+						<image filename="Interface/Screens/hud/radarScreen.gif" />
+					</panel>
+					<panel childLayout="vertical">
+						<image filename="Interface/Screens/hud/radarZoomIn.gif" style="unselected">
+							<interact onClick="carrierRadarZoom(in)" />
+						</image>
+						<image filename="Interface/Screens/hud/radarZoomOut.gif" style="unselected">
+							<interact onClick="carrierRadarZoom(out)" />
+						</image>
+					</panel>
+					<image filename="Interface/Screens/hud/stop.gif" style="unselected">
+						<interact onClick="carrierStop(all)" />
+					</image>
+					<panel childLayout="vertical">
+						<image filename="Interface/Screens/hud/centerRudder.gif" style="unselected">
+							<interact onClick="carrierStop(rudder)" />
+						</image>
+						<panel id="carrierAutoPilotButton" style="unselected" childLayout="vertical">
+							<image filename="Interface/Screens/hud/autoPilot.gif" />
+							<interact onClick="carrierAutoPilot()" />
+						</panel>
+					</panel>
+					<panel childLayout="vertical" width="30%">
+						<text text="Position:" font="Interface/Fonts/Default.fnt" />
+						<text text="-4432,-4294" id="carrierPosition" font="Interface/Fonts/Default.fnt" />
+						<text text="Bearing:" font="Interface/Fonts/Default.fnt" />
+						<text text="000" id="carrierBearing" font="Interface/Fonts/Default.fnt" />
+						<text text="Island:" font="Interface/Fonts/Default.fnt" />
+						<text text="Vulcan" id="carrierIsland" font="Interface/Fonts/Default.fnt" />
+					</panel>
+					<panel id="carrierDepth" childLayout="horizontal">
+						<image filename="Interface/Screens/hud/depth.gif" />
+					</panel>
+					<panel id="carrierFuel" childLayout="horizontal">
+						<image filename="Interface/Screens/hud/fuel.gif" />
+					</panel>
+					<panel id="carrierThrottle" childLayout="horizontal">
+						<image filename="Interface/Screens/hud/speed.gif" />
+						<interact onClick="carrierSpeed()" />
+					</panel>
+					<panel childLayout="vertical">
+						<image filename="Interface/Screens/hud/speedIncrease.gif" style="unselected">
+							<interact onClick="carrierSpeed(increase)" />
+						</image>
+						<image filename="Interface/Screens/hud/speedDecrease.gif" style="unselected">
+							<interact onClick="carrierSpeed(decrease)" />
+						</image>
+					</panel>
+				</panel>
+				<panel id="carrierMapControls" visible="false" childLayout="horizontal">
+					<text text="Carrier Map" font="Interface/Fonts/Default.fnt" />
+				</panel>
+				<panel id="carrierRepairControls" visible="false" childLayout="horizontal">
+					<text text="Carrier Repair" font="Interface/Fonts/Default.fnt" />
+				</panel>
+				<panel id="carrierResourcesControls" visible="false" childLayout="horizontal">
+					<text text="Carrier Resources" font="Interface/Fonts/Default.fnt" />
+				</panel>
+				<panel id="carrierMessagesControls" visible="false" childLayout="horizontal">
+					<text text="Carrier Messages" font="Interface/Fonts/Default.fnt" />
+				</panel>
+
+
+				<panel id="weaponsLaserControls" visible="false" childLayout="horizontal">
+					<text text="Weapons Laser" font="Interface/Fonts/Default.fnt" />
+				</panel>
+				<panel id="weaponsFlaresControls" visible="false" childLayout="horizontal">
+					<text text="Weapons Flare Launcher" font="Interface/Fonts/Default.fnt" />
+				</panel>
+				<panel id="weaponsMissilesControls" visible="false" childLayout="horizontal">
+					<text text="Weapons Missiles" font="Interface/Fonts/Default.fnt" />
+				</panel>
+				<panel id="weaponsDronesControls" visible="false" childLayout="horizontal">
+					<text text="Weapons Drones" font="Interface/Fonts/Default.fnt" />
+				</panel>
+				<panel id="weaponsStatusControls" visible="false" childLayout="horizontal">
+					<text text="Weapons Status" font="Interface/Fonts/Default.fnt" />
+				</panel>
+
+
+				<panel id="walrusControlControls" visible="false" childLayout="horizontal">
+					<panel id="walrusRadar" childLayout="vertical">
+						<image filename="Interface/Screens/hud/control.png" />
+					</panel>
+					<panel childLayout="vertical">
+						<image filename="Interface/Screens/hud/map.png" style="unselected">
+							<interact onClick="walrusRadarZoom(in)" />
+						</image>
+						<image filename="Interface/Screens/hud/map.png" style="unselected">
+							<interact onClick="walrusRadarZoom(out)" />
+						</image>
+					</panel>
+					<image filename="Interface/Screens/hud/map.png" style="unselected">
+						<interact onClick="walrusStop(all)" />
+					</image>
+					<panel childLayout="vertical">
+						<image filename="Interface/Screens/hud/map.png" style="unselected">
+							<interact onClick="walrusStop(rudder)" />
+						</image>
+						<panel id="walrusAutoPilotButton" style="unselected" childLayout="vertical">
+							<image filename="Interface/Screens/hud/walrusHangar.png" />
+							<interact onClick="setWalrusAutoPilot()" />
+						</panel>
+					</panel>
+					<panel childLayout="vertical" width="30%">
+						<text text="Position:" font="Interface/Fonts/Default.fnt" />
+						<text text="-4432,-4294" id="walrusPosition" font="Interface/Fonts/Default.fnt" />
+						<text text="Bearing:" font="Interface/Fonts/Default.fnt" />
+						<text text="000" id="walrusBearing" font="Interface/Fonts/Default.fnt" />
+						<text text="Island:" font="Interface/Fonts/Default.fnt" />
+						<text text="Vulcan" id="walrusIsland" font="Interface/Fonts/Default.fnt" />
+					</panel>
+					<panel id="walrusDepth" childLayout="horizontal">
+						<image filename="Interface/Screens/hud/status.png" />
+					</panel>
+					<panel id="walrusFuel" childLayout="horizontal">
+						<image filename="Interface/Screens/hud/status.png" />
+					</panel>
+					<panel id="walrusThrottle" childLayout="horizontal">
+						<image filename="Interface/Screens/hud/status.png" />
+						<interact onClick="setWalrusSpeed()" />
+					</panel>
+					<panel childLayout="vertical">
+						<image filename="Interface/Screens/hud/map.png" style="unselected">
+							<interact onClick="setWalrusSpeed(up)" />
+						</image>
+						<image filename="Interface/Screens/hud/map.png" style="unselected">
+							<interact onClick="setWalrusSpeed(down)" />
+						</image>
+					</panel>
+				</panel>
+				<panel id="walrusMapControls" visible="false" childLayout="horizontal">
+					<text text="Walrus Map" font="Interface/Fonts/Default.fnt" />
+				</panel>
+				<panel id="walrusEquipControls" visible="false" childLayout="horizontal">
+					<text text="Walrus Equip" font="Interface/Fonts/Default.fnt" />
+				</panel>
+				<panel id="walrusHangarControls" visible="false" childLayout="horizontal">
+					<text text="Walrus Hangar" font="Interface/Fonts/Default.fnt" />
+				</panel>
+				<panel id="walrusStatusControls" visible="false" childLayout="horizontal">
+					<text text="Walrus Status" font="Interface/Fonts/Default.fnt" />
+				</panel>
+
+
+				<panel id="mantaControlControls" visible="false" childLayout="horizontal">
+					<panel id="mantaRadar" childLayout="vertical">
+						<image filename="Interface/Screens/hud/control.png" />
+					</panel>
+					<panel childLayout="vertical">
+						<image filename="Interface/Screens/hud/map.png" style="unselected">
+							<interact onClick="mantaRadarZoom(in)" />
+						</image>
+						<image filename="Interface/Screens/hud/map.png" style="unselected">
+							<interact onClick="mantaRadarZoom(out)" />
+						</image>
+					</panel>
+					<image filename="Interface/Screens/hud/map.png" style="unselected">
+						<interact onClick="mantaStop(all)" />
+					</image>
+					<panel childLayout="vertical">
+						<image filename="Interface/Screens/hud/map.png" style="unselected">
+							<interact onClick="mantaStop(rudder)" />
+						</image>
+						<panel id="mantaAutoPilotButton" style="unselected" childLayout="vertical">
+							<image filename="Interface/Screens/hud/walrusHangar.png" />
+							<interact onClick="setMantaAutoPilot()" />
+						</panel>
+					</panel>
+					<panel childLayout="vertical" width="30%">
+						<text text="Position:" font="Interface/Fonts/Default.fnt" />
+						<text text="-4432,-4294" id="mantaPosition" font="Interface/Fonts/Default.fnt" />
+						<text text="Bearing:" font="Interface/Fonts/Default.fnt" />
+						<text text="000" id="mantaBearing" font="Interface/Fonts/Default.fnt" />
+						<text text="Island:" font="Interface/Fonts/Default.fnt" />
+						<text text="Vulcan" id="mantaIsland" font="Interface/Fonts/Default.fnt" />
+					</panel>
+					<panel id="mantaDepth" childLayout="horizontal">
+						<image filename="Interface/Screens/hud/status.png" />
+					</panel>
+					<panel id="mantaFuel" childLayout="horizontal">
+						<image filename="Interface/Screens/hud/status.png" />
+					</panel>
+					<panel id="mantaThrottle" childLayout="horizontal">
+						<image filename="Interface/Screens/hud/status.png" />
+						<interact onClick="setMantaSpeed()" />
+					</panel>
+					<panel childLayout="vertical">
+						<image filename="Interface/Screens/hud/map.png" style="unselected">
+							<interact onClick="setMantaSpeed(up)" />
+						</image>
+						<image filename="Interface/Screens/hud/map.png" style="unselected">
+							<interact onClick="setMantaSpeed(down)" />
+						</image>
+					</panel>
+				</panel>
+				<panel id="mantaMapControls" visible="false" childLayout="horizontal">
+					<text text="Manta Map" font="Interface/Fonts/Default.fnt" />
+				</panel>
+				<panel id="mantaEquipControls" visible="false" childLayout="horizontal">
+					<text text="Manta Equip" font="Interface/Fonts/Default.fnt" />
+				</panel>
+				<panel id="mantaHangarControls" visible="false" childLayout="horizontal">
+					<text text="Manta Hangar" font="Interface/Fonts/Default.fnt" />
+				</panel>
+				<panel id="mantaStatusControls" visible="false" childLayout="horizontal">
+					<text text="Manta Status" font="Interface/Fonts/Default.fnt" />
+				</panel>
+			</control>
+		</layer>
+	</screen>
+</nifty>
