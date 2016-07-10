@@ -58,9 +58,9 @@ public class Walrus extends PlayerUnit {
 	public Walrus(String name, AssetManager assetManager, BulletAppState phsyicsState, WaterFilter water, CameraNode camNode) {
 		super(name, assetManager, phsyicsState, water, camNode);
 
-		Spatial model = assetManager.loadModel("Models/BTR80/BTR.obj");
+		Spatial model = assetManager.loadModel("Models/BTR80/BTR_80.obj");
 		model.scale(0.05f);
-		model.rotate((float) FastMath.DEG_TO_RAD * -90, (float) FastMath.DEG_TO_RAD * -90, 0);
+		model.rotate(0, (float) FastMath.DEG_TO_RAD * -90, 0);
 		attachChild(model);
 
 		createCameraHooks();
@@ -76,7 +76,7 @@ public class Walrus extends PlayerUnit {
 
 		FloatControl floatControl = new FloatControl();
 		floatControl.setWater(water);
-		floatControl.setVerticalOffset(2);
+		floatControl.setVerticalOffset(-2);
 		floatControl.setWidth(width);
 		floatControl.setHeight(height);
 		floatControl.setLength(length);
@@ -88,7 +88,7 @@ public class Walrus extends PlayerUnit {
 	private void createCameraHooks() {
 		camHookFront = new Node();
 		attachChild(camHookFront);
-		camHookFront.setLocalTranslation(0, 3, -5);
+		camHookFront.setLocalTranslation(0, 8, 3);
 		camHookFront.rotate(0, FastMath.DEG_TO_RAD * 180, 0);
 
 		camHookRear = new Node();

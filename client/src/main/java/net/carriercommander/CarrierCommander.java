@@ -31,6 +31,7 @@
 
 package net.carriercommander;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -56,6 +57,9 @@ import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
+import com.jme3.network.Client;
+import com.jme3.network.ClientStateListener;
+import com.jme3.network.Network;
 import com.jme3.niftygui.NiftyJmeDisplay;
 import com.jme3.post.FilterPostProcessor;
 import com.jme3.post.filters.BloomFilter;
@@ -79,20 +83,27 @@ import de.lessvoid.nifty.Nifty;
 import de.lessvoid.nifty.elements.Element;
 import de.lessvoid.nifty.elements.render.TextRenderer;
 import de.lessvoid.nifty.tools.SizeValue;
+import net.carriercommander.Constants.GameType;
 import net.carriercommander.control.ShipControl;
+import net.carriercommander.network.ClientListener;
+import net.carriercommander.network.SceneManager;
 import net.carriercommander.objects.Carrier;
 import net.carriercommander.objects.Manta;
 import net.carriercommander.objects.PlayerUnit;
 import net.carriercommander.objects.Walrus;
 import net.carriercommander.screen.HudScreenControl;
 import net.carriercommander.screen.StartScreenControl;
+import net.carriercommander.shared.Utils;
+import net.carriercommander.shared.messages.PlayerDataMessage;
+import net.carriercommander.shared.messages.TextMessage;
+import net.carriercommander.shared.model.PlayerData;
 
 /**
  * Carrier Commander Main Class
  * 
  * @author Michael Neuweiler
  */
-public class CarrierCommander extends SimpleApplication {
+public class CarrierCommander extends SimpleApplication implements ClientStateListener {
 
 	private BulletAppState phsyicsState;
 	private Nifty nifty;
@@ -105,8 +116,16 @@ public class CarrierCommander extends SimpleApplication {
 	private float initialWaterHeight = 90f;
 	private boolean loading = false;
 	private int loadPart = 0;
+	private GameType gameType;
+	private String hostAddress = "127.0.0.1";
+	private int hostPort = 6000;
+	private Client networkClient;
+	private PlayerData playerData = new PlayerData();
+	private SceneManager sceneManager = new SceneManager(this);
+	private Carrier carrier;
 
 	public static void main(String[] args) {
+		Utils.initSerializers();
 		CarrierCommander app = new CarrierCommander();
 		app.start();
 	}
@@ -120,7 +139,15 @@ public class CarrierCommander extends SimpleApplication {
 		createNitfyGui();
 	}
 
-	public void startGame(String type) {
+	public void startGame(String gameType) {
+		if ("network".equals(gameType)) {
+			this.gameType = GameType.network;
+		} else if ("action".equals(gameType)) {
+			this.gameType = GameType.action;
+		} else {
+			this.gameType = GameType.strategy;
+		}
+
 		loading = true;
 		loadPart = 0;
 	}
@@ -144,27 +171,38 @@ public class CarrierCommander extends SimpleApplication {
 			createSky();
 			break;
 		case 4:
-			setProgress(0.4f, "creating sun");
-			createSun();
-			break;
-		case 5:
-			setProgress(0.5f, "creating water");
+			setProgress(0.4f, "creating water");
 			createWater();
 			break;
-		case 6:
-			setProgress(0.6f, "creating post process filter");
+		case 5:
+			setProgress(0.5f, "creating post process filter");
 			createPostProcessFilter();
+			break;
+		case 6:
+			if (gameType == GameType.network) {
+				setProgress(0.6f, "connecting to server");
+				connectToServer();
+			}
 			break;
 		case 7:
 			setProgress(0.7f, "creating carrier");
-			Carrier carrier = new Carrier(Constants.CARRIER_PLAYER, assetManager, phsyicsState, water, camNode);
+			carrier = new Carrier(Constants.CARRIER_PLAYER, assetManager, phsyicsState, water, camNode);
 			ShipControl control = carrier.getControl(ShipControl.class);
-			control.setPhysicsLocation(new Vector3f(-600, water.getWaterHeight() + 5, 400));
+			control.setPhysicsLocation(new Vector3f(-900 + (networkClient != null ? 100 * networkClient.getId() : 0), water.getWaterHeight() + 5, 400));
 			rootNode.attachChild(carrier);
-			carrier = new Carrier(Constants.CARRIER_ENEMY, assetManager, phsyicsState, water, camNode);
-			control = carrier.getControl(ShipControl.class);
-			control.setPhysicsLocation(new Vector3f(-800, water.getWaterHeight() + 5, 500));
-			rootNode.attachChild(carrier);
+			
+			if(playerData != null) {
+				playerData.getCarrier().setLocation(control.getPhysicsLocation());
+				playerData.getCarrier().setRotation(control.getPhysicsRotation());
+				playerData.getCarrier().setVelocity(new Vector3f());
+			}
+
+			if (gameType != GameType.network) {
+				carrier = new Carrier(Constants.CARRIER_ENEMY, assetManager, phsyicsState, water, camNode);
+				control = carrier.getControl(ShipControl.class);
+				control.setPhysicsLocation(new Vector3f(-800, water.getWaterHeight() + 5, 500));
+				rootNode.attachChild(carrier);
+			}
 			break;
 		case 8:
 			setProgress(0.8f, "creating walrus");
@@ -240,7 +278,7 @@ public class CarrierCommander extends SimpleApplication {
 		phsyicsState.setBroadphaseType(BroadphaseType.SIMPLE);
 		stateManager.attach(phsyicsState);
 
-		// phsyicsState.setDebugEnabled(true);
+//		phsyicsState.setDebugEnabled(true);
 	}
 
 	private void createKeyMappings() {
@@ -284,7 +322,7 @@ public class CarrierCommander extends SimpleApplication {
 			}
 
 			public void onMouseMotionEvent(MouseMotionEvent evt) {
-				System.out.println("Mouse moved x:" + evt.getX() + " Y:" + evt.getY());
+//				System.out.println("Mouse moved x:" + evt.getX() + " Y:" + evt.getY());
 			}
 
 			public void onMouseButtonEvent(MouseButtonEvent evt) {
@@ -352,6 +390,11 @@ public class CarrierCommander extends SimpleApplication {
 		Spatial sky = SkyFactory.createSky(assetManager, "Scenes/Beach/FullskiesSunset0068.dds", false);
 		sky.setLocalScale(350);
 		rootNode.attachChild(sky);
+
+		DirectionalLight sun = new DirectionalLight();
+		sun.setDirection(lightDir);
+		sun.setColor(ColorRGBA.White.clone().multLocal(1.7f));
+		rootNode.addLight(sun);
 	}
 
 	private void configureCamera() {
@@ -365,13 +408,6 @@ public class CarrierCommander extends SimpleApplication {
 
 		cam.setFrustumFar(4000);
 		// cam.setFrustumNear(100);
-	}
-
-	private void createSun() {
-		DirectionalLight sun = new DirectionalLight();
-		sun.setDirection(lightDir);
-		sun.setColor(ColorRGBA.White.clone().multLocal(1.7f));
-		rootNode.addLight(sun);
 	}
 
 	private void createTerrain() {
@@ -428,6 +464,36 @@ public class CarrierCommander extends SimpleApplication {
 		// terrain.addControl(control);
 	}
 
+	private void connectToServer() {
+		setPauseOnLostFocus(false);
+
+		try {
+			sceneManager = new SceneManager(this);
+			System.out.print("connecting to " + hostAddress + ", port " + hostPort + "...");
+			networkClient = Network.connectToServer(hostAddress, hostPort);
+			System.out.println("connected !");
+			networkClient.addMessageListener(new ClientListener(networkClient, sceneManager));
+			networkClient.addClientStateListener(this);
+			networkClient.start();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+	}
+
+	@Override
+	public void clientConnected(Client c) {
+		playerData.setId(c.getId());
+		sceneManager.setMyId(c.getId());
+		networkClient.send(new TextMessage("Hello Server! I'm ID" + c.getId()));
+	}
+
+	@Override
+	public void clientDisconnected(Client arg0, DisconnectInfo arg1) {
+		System.out.println("client disconnected!");
+	}
+
+
 	Quaternion carrierCurrentRotation = new Quaternion();
 	final static int maxDeltaWaterHeight = 20;
 
@@ -439,6 +505,16 @@ public class CarrierCommander extends SimpleApplication {
 			load();
 		}
 
+		
+		if (networkClient != null && networkClient.isConnected() && playerData != null /*&& playerData.isDirty()*/) {
+			playerData.getCarrier().setLocation(carrier.getLocalTranslation());
+			playerData.getCarrier().setRotation(carrier.getLocalRotation());
+			playerData.getCarrier().setVelocity(carrier.getControl(ShipControl.class).getLinearVelocity());
+
+			networkClient.send(new PlayerDataMessage(playerData));
+			playerData.clean();
+		}
+		
 		time += tpf;
 		float waterHeight = (float) Math.cos(((time * 0.3f) % FastMath.TWO_PI)) * 1.4f + initialWaterHeight;
 

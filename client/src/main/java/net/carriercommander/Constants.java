@@ -38,6 +38,8 @@ package net.carriercommander;
  */
 public interface Constants {
 
+	public enum GameType { strategy, action, network };
+	
 	// names of game objects
 	public final static String CARRIER_PLAYER = "carrier-1";
 	public final static String CARRIER_ENEMY = "carrier-2";

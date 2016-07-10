@@ -7,4 +7,12 @@
   </parent>
   <artifactId>server</artifactId>
   <name>Carrier Commander Server</name>
+  
+  <dependencies>
+  	<dependency>
+	    <groupId>net.carriercommander</groupId>
+  		<artifactId>shared</artifactId>
+	    <version>0.0.1-SNAPSHOT</version>
+  	</dependency>
+  </dependencies>
 </project>
