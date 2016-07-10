@@ -1,0 +1,35 @@
+# Max2Mtl Version 4.0 Mar 10th, 2001
+#
+newmtl studio.btr8_ref.mesh_01
+Ka  0.4 0.4 0.4
+Kd  0.4 0.4 0.4
+Ks  1.0 1.0 1.0
+d  1.0
+Ns  7.0
+illum 2
+#
+newmtl studio.btr8_ref.mesh_02
+Ka  0.4 0.4 0.4
+Kd  0.4 0.4 0.4
+Ks  1.0 1.0 1.0
+d  1.0
+Ns  7.0
+illum 2
+#
+newmtl studio.btr8_ref.mesh_03
+Ka  0.4 0.4 0.4
+Kd  0.4 0.4 0.4
+Ks  1.0 1.0 1.0
+d  1.0
+Ns  7.0
+illum 2
+#
+newmtl studio.btr8_ref.mesh_04
+Ka  0.4 0.4 0.4
+Kd  0.4 0.4 0.4
+Ks  1.0 1.0 1.0
+d  1.0
+Ns  3.9
+illum 2
+#
+# EOF

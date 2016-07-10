@@ -1,7 +1,7 @@
 # Exported by ZModeler 2.2.4 (Build 981) with WavefrontOBJ filter (Build 45)
-# 
+#
 
-mtllib carrier.mtl
+mtllib Models/AdmiralKuznetsovClasscarrier/carrier.mtl
 
 v -11.7332 9.59996 94.6514
 v -11.6198 -0.733818 120.281
