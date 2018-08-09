@@ -1,63 +1,71 @@
 package net.carriercommander.shared.model;
 
+import com.jme3.network.serializing.Serializable;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import com.jme3.network.serializing.Serializable;
-
+/**
+ * Object holding all the necessary data required to transfer between client and server.
+ *
+ * @author Michael Neuweiler
+ */
 @Serializable
 public class PlayerData {
 
-	private int id;
-	private GameObject carrier = new GameObject();
-	private List<GameObject> walrus = new ArrayList<GameObject>(4);
-	private List<GameObject> manta = new ArrayList<GameObject>(4);
+  private static final int NUM_WALRUS = 4;
+  private static final int NUM_MANTA  = 4;
 
-	public PlayerData() {
-		for (int i = 0; i < 4; i++) {
-			walrus.add(new GameObject());
-			manta.add(new GameObject());
-		}
-	}
+  private int              id;
+  private CarrierData      carrier;
+  private List<WalrusData> walrus;
+  private List<MantaData>  manta;
 
-	public boolean modified() {
-		boolean modified = carrier.modified();
-		for (int i = 0; i < 4; i++) {
-			if (walrus.get(i).modified() || manta.get(i).modified()) {
-				modified = true;
-				break;
-			}
-		}
-		return modified;
-	}
+  public PlayerData() {
+    carrier = new CarrierData();
 
-	public void clean() {
-		carrier.clean();
-		for (int i = 0; i < 4; i++) {
-			walrus.get(i).clean();
-			manta.get(i).clean();
-		}
-	}
+    walrus = new ArrayList<>(NUM_WALRUS);
+    for (int i = 0; i < NUM_WALRUS; i++) {
+      walrus.add(new WalrusData());
+    }
 
-	public int getId() {
-		return id;
-	}
+    manta = new ArrayList<>(NUM_MANTA);
+    for (int i = 0; i < NUM_MANTA; i++) {
+      manta.add(new MantaData());
+    }
+  }
 
-	public void setId(int id) {
-		this.id = id;
-	}
+  public boolean isModified() {
+    return carrier.isModified() |
+        walrus.stream().anyMatch(WalrusData::isModified) |
+        manta.stream().anyMatch(MantaData::isModified);
+  }
 
-	public GameObject getCarrier() {
-		return carrier;
-	}
+  public void clean() {
+    carrier.clean();
+    walrus.forEach(WalrusData::clean);
+    manta.forEach(MantaData::clean);
+  }
 
-	public GameObject getWalrus(int index) {
-		return walrus.get(index);
-	}
+  public int getId() {
+    return id;
+  }
 
-	public GameObject getManta(int index) {
-		return manta.get(index);
-	}
-	
-	
+  public void setId(int id) {
+    this.id = id;
+  }
+
+  public CarrierData getCarrier() {
+    return carrier;
+  }
+
+  public WalrusData getWalrus(int index) {
+    return walrus.get(index);
+  }
+
+  public MantaData getManta(int index) {
+    return manta.get(index);
+  }
+
+
 }
