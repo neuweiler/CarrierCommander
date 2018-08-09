@@ -1,7 +1,5 @@
 package net.carriercommander.server;
 
-import java.io.IOException;
-
 import com.jme3.app.SimpleApplication;
 import com.jme3.network.ConnectionListener;
 import com.jme3.network.HostedConnection;
@@ -14,48 +12,51 @@ import net.carriercommander.server.listener.PlayerDataListener;
 import net.carriercommander.server.status.PlayerManager;
 import net.carriercommander.shared.Utils;
 
+import java.io.IOException;
+
 public class CarrierCommandServer extends SimpleApplication implements ConnectionListener {
 
-	private Server server;
-	private PlayerManager playerManager;
+  private static final int SERVER_PORT = 6000;
 
-	public static void main(String[] args) {
-		Utils.initSerializers();
-		CarrierCommandServer app = new CarrierCommandServer();
-		app.start(JmeContext.Type.Headless);
-	}
+  private PlayerManager playerManager;
 
-	@Override
-	public void simpleInitApp() {
-		playerManager = new PlayerManager();
-		initServer(6000);
-	}
+  public static void main(String[] args) {
+    Utils.initSerializers();
+    CarrierCommandServer app = new CarrierCommandServer();
+    app.start(JmeContext.Type.Headless);
+  }
 
-	private void initServer(int port) {
-		try {
-			server = Network.createServer(port);
-			server.addConnectionListener(this);
+  @Override
+  public void simpleInitApp() {
+    playerManager = new PlayerManager();
+    initServer();
+  }
 
-			ClientUpdater updater = new ClientUpdater(server);
-			playerManager.addListener(updater);
+  private void initServer() {
+    try {
+      Server server = Network.createServer(SERVER_PORT);
+      server.addConnectionListener(this);
 
-			server.addMessageListener(new PlayerDataListener(server, playerManager));
-			server.start();
+      ClientUpdater updater = new ClientUpdater(server);
+      playerManager.addListener(updater);
 
-			System.out.println("Server started...");
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
+      server.addMessageListener(new PlayerDataListener(server, playerManager));
+      server.start();
 
-	@Override
-	public void connectionAdded(Server server, HostedConnection hostedConnection) {
-		System.out.println("client connected, id: " + hostedConnection.getId());
-	}
+      System.out.println("Server started...");
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+  }
 
-	@Override
-	public void connectionRemoved(Server server, HostedConnection hostedConnection) {
-		System.out.println("client disconnected, id: " + hostedConnection.getId());
-		playerManager.removePlayer(hostedConnection.getId());
-	}
+  @Override
+  public void connectionAdded(Server server, HostedConnection hostedConnection) {
+    System.out.println("client connected, id: " + hostedConnection.getId());
+  }
+
+  @Override
+  public void connectionRemoved(Server server, HostedConnection hostedConnection) {
+    System.out.println("client disconnected, id: " + hostedConnection.getId());
+    playerManager.removePlayer(hostedConnection.getId());
+  }
 }

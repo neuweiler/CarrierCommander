@@ -15,7 +15,7 @@
  * * Neither the name of CarrierCommander nor the names of its
  *   contributors may be used to endorse or promote products derived from
  *   this software without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -26,7 +26,7 @@
  * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- * 
+ *
  */
 
 package net.carriercommander.objects;
@@ -47,61 +47,61 @@ import net.carriercommander.control.ShipControl;
 
 /**
  * Manta
- * 
+ *
  * @author Michael Neuweiler
  */
-public class Manta extends PlayerUnit  {
-	private static final float width = 4.8f, length = 5.4f, height = 2f, mass = 5000f;
+public class Manta extends PlayerUnit {
+  private static final float width = 4.8f, length = 5.4f, height = 2f, mass = 5000f;
 
-	private Node camHookFront = null;
-	private Node camHookRear = null;
+  private Node camHookFront = null;
+  private Node camHookRear  = null;
 
-	public Manta(String name, AssetManager assetManager, BulletAppState phsyicsState, WaterFilter water, CameraNode camNode) {
-		super(name, assetManager, phsyicsState, water, camNode);
+  public Manta(String name, AssetManager assetManager, BulletAppState phsyicsState, WaterFilter water, CameraNode camNode) {
+    super(name, assetManager, phsyicsState, water, camNode);
 
-		Spatial model = assetManager.loadModel("Models/HoverTank/tankFinalExport.blend");
-		model.rotate(0, (float) FastMath.DEG_TO_RAD * 180, 0);
-		attachChild(model);
-		System.out.println("manta vertices: " + model.getVertexCount() + " triangles: " + model.getTriangleCount());
-		setLocalTranslation(-400, 100, 300);
+    Spatial model = assetManager.loadModel("Models/HoverTank/tankFinalExport.blend");
+    model.rotate(0, (float) FastMath.DEG_TO_RAD * 180, 0);
+    attachChild(model);
+    System.out.println("manta vertices: " + model.getVertexCount() + " triangles: " + model.getTriangleCount());
+    setLocalTranslation(-400, 100, 300);
 //		scale(2);
 
-		createCameraHooks();
+    createCameraHooks();
 
-		BoxCollisionShape collisionShape = new BoxCollisionShape(new Vector3f(width, height, length));
-		shipControl = new PlaneControl(collisionShape, mass);
-		shipControl.setRudderPositionZ(7);
-		addControl(shipControl);
-		shipControl.setDamping(0.1f, 0.2f);
-		phsyicsState.getPhysicsSpace().add(shipControl);
+    BoxCollisionShape collisionShape = new BoxCollisionShape(new Vector3f(width, height, length));
+    shipControl = new PlaneControl(collisionShape, mass);
+    shipControl.setRudderPositionZ(7);
+    addControl(shipControl);
+    shipControl.setDamping(0.1f, 0.2f);
+    phsyicsState.getPhysicsSpace().add(shipControl);
 
-		FloatControl floatControl = new FloatControl();
-		floatControl.setWater(water);
-		floatControl.setVerticalOffset(20);
-		floatControl.setWidth(width);
-		floatControl.setHeight(height);
-		floatControl.setLength(length);
+    FloatControl floatControl = new FloatControl();
+    floatControl.setWater(water);
+    floatControl.setVerticalOffset(20);
+    floatControl.setWidth(width);
+    floatControl.setHeight(height);
+    floatControl.setLength(length);
 //		addControl(floatControl);
-		shipControl.setGravity(new Vector3f());
-	}
+    shipControl.setGravity(new Vector3f());
+  }
 
-	private void createCameraHooks() {
-		camHookFront = new Node();
-		attachChild(camHookFront);
-		camHookFront.setLocalTranslation(0, 3, -5);
-		camHookFront.rotate(0, FastMath.DEG_TO_RAD * 180, 0);
+  private void createCameraHooks() {
+    camHookFront = new Node();
+    attachChild(camHookFront);
+    camHookFront.setLocalTranslation(0, 3, -5);
+    camHookFront.rotate(0, FastMath.DEG_TO_RAD * 180, 0);
 
-		camHookRear = new Node();
-		attachChild(camHookRear);
-		camHookRear.setLocalTranslation(0, 3, 5);
+    camHookRear = new Node();
+    attachChild(camHookRear);
+    camHookRear.setLocalTranslation(0, 3, 5);
 //		camHookRear.rotate(0, FastMath.DEG_TO_RAD * 90, 0);
-	}
+  }
 
-	public void setCameraToFront() {
-		setCameraNode(camHookFront);
-	}
+  public void setCameraToFront() {
+    setCameraNode(camHookFront);
+  }
 
-	public void setCameraToRear() {
-		setCameraNode(camHookRear);
-	}
+  public void setCameraToRear() {
+    setCameraNode(camHookRear);
+  }
 }

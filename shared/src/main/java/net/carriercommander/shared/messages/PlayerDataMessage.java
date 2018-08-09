@@ -5,19 +5,24 @@ import com.jme3.network.serializing.Serializable;
 
 import net.carriercommander.shared.model.PlayerData;
 
+/**
+ * The message sent from client to server to update the player's status.
+ *
+ * @author Michael Neuweiler
+ */
 @Serializable
 public class PlayerDataMessage extends AbstractMessage {
 
-	private PlayerData playerData;
+  private PlayerData playerData;
 
-	public PlayerDataMessage() {
-	}
+  public PlayerDataMessage() {
+  }
 
-	public PlayerDataMessage(PlayerData playerData) {
-		this.playerData = playerData;
-	}
+  public PlayerDataMessage(PlayerData playerData) {
+    this.playerData = playerData;
+  }
 
-	public PlayerData getPlayerData() {
-		return playerData;
-	}
+  public PlayerData getPlayerData() {
+    return playerData;
+  }
 }

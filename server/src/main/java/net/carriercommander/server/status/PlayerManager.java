@@ -11,7 +11,7 @@ import net.carriercommander.shared.model.PlayerData;
 public class PlayerManager {
 
 	private List<PlayerManagerListener> listeners = new ArrayList<>();
-	private Map<Integer, PlayerData> players = new HashMap<Integer, PlayerData>();
+	private Map<Integer, PlayerData> players = new HashMap<>();
 
 	public void addPlayer(PlayerData playerData) {
 		players.put(playerData.getId(), playerData);
@@ -21,9 +21,7 @@ public class PlayerManager {
 	}
 
 	public void removePlayer(int id) {
-		if (players.containsKey(id)) {
-			players.remove(id);
-		}
+		players.remove(id);
 	}
 	
 	public void addListener(PlayerManagerListener playerManagerListener) {

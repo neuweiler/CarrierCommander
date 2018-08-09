@@ -9,14 +9,14 @@ import net.carriercommander.shared.model.PlayerData;
 
 public class ClientUpdater implements PlayerManagerListener {
 
-	private Server server;
+  private Server server;
 
-	public ClientUpdater(Server server) {
-		this.server = server;
-	}
+  public ClientUpdater(Server server) {
+    this.server = server;
+  }
 
-	@Override
-	public void playerDataChanged(Map<Integer, PlayerData> players) {
-		server.broadcast(new ServerStatusMessage(players));
-	}
+  @Override
+  public void playerDataChanged(Map<Integer, PlayerData> players) {
+    server.broadcast(new ServerStatusMessage(players));
+  }
 }
