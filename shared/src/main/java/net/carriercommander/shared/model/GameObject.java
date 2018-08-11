@@ -47,7 +47,7 @@ public class GameObject {
     if (!location.equals(this.location)) {
       modified = true;
     }
-    this.location = location;
+    this.location.set(location);
   }
 
   public Quaternion getRotation() {
@@ -58,7 +58,7 @@ public class GameObject {
     if (!rotation.equals(this.rotation)) {
       modified = true;
     }
-    this.rotation = rotation;
+    this.rotation.set(rotation);
   }
 
   public Vector3f getVelocity() {
@@ -69,6 +69,6 @@ public class GameObject {
     if (!velocity.equals(this.velocity)) {
       modified = true;
     }
-    this.velocity = velocity;
+    this.velocity.set(velocity);
   }
 }

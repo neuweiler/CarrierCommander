@@ -10,9 +10,11 @@ import net.carriercommander.shared.messages.PlayerDataMessage;
 
 public class PlayerDataListener implements MessageListener<HostedConnection> {
 
+  private       Server        server;
   private final PlayerManager playerManager;
 
   public PlayerDataListener(Server server, PlayerManager playerManager) {
+    this.server = server;
     this.playerManager = playerManager;
   }
 
@@ -21,7 +23,6 @@ public class PlayerDataListener implements MessageListener<HostedConnection> {
     if (message instanceof PlayerDataMessage) {
       PlayerDataMessage playerDataMessage = (PlayerDataMessage) message;
       playerManager.addPlayer(playerDataMessage.getPlayerData());
-//			System.out.println("incoming message: " + playerDataMessage.getPlayerData());
     }
   }
 }

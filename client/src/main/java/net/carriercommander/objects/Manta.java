@@ -43,7 +43,6 @@ import com.jme3.water.WaterFilter;
 
 import net.carriercommander.control.FloatControl;
 import net.carriercommander.control.PlaneControl;
-import net.carriercommander.control.ShipControl;
 
 /**
  * Manta
