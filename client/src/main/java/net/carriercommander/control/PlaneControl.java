@@ -15,7 +15,7 @@
  * * Neither the name of CarrierCommander nor the names of its
  *   contributors may be used to endorse or promote products derived from
  *   this software without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -26,7 +26,7 @@
  * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- * 
+ *
  */
 
 package net.carriercommander.control;
@@ -35,35 +35,33 @@ import com.jme3.bullet.PhysicsSpace;
 import com.jme3.bullet.PhysicsTickListener;
 import com.jme3.bullet.collision.PhysicsCollisionListener;
 import com.jme3.bullet.collision.shapes.CollisionShape;
-import com.jme3.math.Matrix3f;
 import com.jme3.math.Quaternion;
-import com.jme3.math.Vector3f;
 
 /**
  * Controller for air planes
- * 
+ *
  * @author Michael Neuweiler
  */
 public class PlaneControl extends ShipControl implements PhysicsCollisionListener, PhysicsTickListener {
 
-	private Quaternion rotation = new Quaternion();
+  private Quaternion rotation = new Quaternion();
 
-	private float aileron = 0;
+  private float aileron = 0;
 
-	public PlaneControl() {
-	}
+  public PlaneControl() {
+  }
 
-	public PlaneControl(CollisionShape shape) {
-		super(shape);
-	}
+  public PlaneControl(CollisionShape shape) {
+    super(shape);
+  }
 
-	public PlaneControl(CollisionShape shape, float mass) {
-		super(shape, mass);
-	}
+  public PlaneControl(CollisionShape shape, float mass) {
+    super(shape, mass);
+  }
 
-	@Override
-	public void prePhysicsTick(PhysicsSpace arg0, float arg1) {
-		enginePower = throttle * getMass() * -10;
+  @Override
+  public void prePhysicsTick(PhysicsSpace arg0, float arg1) {
+    enginePower = throttle * getMass() * -10;
 //
 //		getPhysicsRotationMatrix(currentRotation);
 //		heading = FastMath.atan2(currentRotation.get(0, 2), currentRotation.get(2, 2)) + FastMath.PI;
@@ -77,21 +75,21 @@ public class PlaneControl extends ShipControl implements PhysicsCollisionListene
 //		applyForce(engineForce, rudderOffset);
 //		
 
-		
-		setPhysicsRotation(rotation.fromAngles(aileron, heading, rudder));
-		
-	}
 
-	public float getAileron() {
-		return aileron;
-	}
+    setPhysicsRotation(rotation.fromAngles(aileron, heading, rudder));
 
-	public void setAileron(float aileron) {
-		if (aileron > 1.0f)
-			aileron = 1.0f;
-		if (aileron < -1.0f)
-			aileron = -1.0f;
-		this.aileron = aileron;
-		System.out.printf("ship aileron: %f\n", this.aileron);
-	}
+  }
+
+  public float getAileron() {
+    return aileron;
+  }
+
+  public void setAileron(float aileron) {
+    if (aileron > 1.0f)
+      aileron = 1.0f;
+    if (aileron < -1.0f)
+      aileron = -1.0f;
+    this.aileron = aileron;
+    System.out.printf("ship aileron: %f\n", this.aileron);
+  }
 }
