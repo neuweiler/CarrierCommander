@@ -36,7 +36,6 @@ import com.jme3.bullet.BulletAppState;
 import com.jme3.scene.CameraNode;
 import com.jme3.scene.Node;
 import com.jme3.water.WaterFilter;
-
 import net.carriercommander.control.ShipControl;
 
 /**
@@ -44,41 +43,41 @@ import net.carriercommander.control.ShipControl;
  */
 public abstract class PlayerUnit extends Node {
 
-  protected ShipControl shipControl = null;
-  protected CameraNode  camNode     = null;
+	protected ShipControl shipControl = null;
+	protected CameraNode camNode = null;
 
-  PlayerUnit(String name, AssetManager assetManager, BulletAppState phsyicsState, WaterFilter water, CameraNode camNode) {
-    super(name);
-    this.camNode = camNode;
-  }
+	PlayerUnit(String name, AssetManager assetManager, BulletAppState phsyicsState, WaterFilter water, CameraNode camNode) {
+		super(name);
+		this.camNode = camNode;
+	}
 
-  public void steerLeft(float tpf) {
-    shipControl.setRudder(shipControl.getRudder() + 0.5f * tpf);
-  }
+	public void steerLeft(float tpf) {
+		shipControl.setRudder(shipControl.getRudder() + 0.5f * tpf);
+	}
 
-  public void steerRight(float tpf) {
-    shipControl.setRudder(shipControl.getRudder() - 0.5f * tpf);
-  }
+	public void steerRight(float tpf) {
+		shipControl.setRudder(shipControl.getRudder() - 0.5f * tpf);
+	}
 
-  public void steerUp(float tpf) {
-    shipControl.setAileron(shipControl.getAileron() - 0.5f * tpf);
-  }
+	public void steerUp(float tpf) {
+		shipControl.setAileron(shipControl.getAileron() - 0.5f * tpf);
+	}
 
-  public void steerDown(float tpf) {
-    shipControl.setAileron(shipControl.getAileron() + 0.5f * tpf);
-  }
+	public void steerDown(float tpf) {
+		shipControl.setAileron(shipControl.getAileron() + 0.5f * tpf);
+	}
 
-  public void increaseSpeed(float tpf) {
-    shipControl.setThrottle(shipControl.getThrottle() + 1f * tpf);
-  }
+	public void increaseSpeed(float tpf) {
+		shipControl.setThrottle(shipControl.getThrottle() + 1f * tpf);
+	}
 
-  public void decreaseSpeed(float tpf) {
-    shipControl.setThrottle(shipControl.getThrottle() - 1f * tpf);
-  }
+	public void decreaseSpeed(float tpf) {
+		shipControl.setThrottle(shipControl.getThrottle() - 1f * tpf);
+	}
 
-  void setCameraNode(Node node) {
-    if (camNode.getParent() != null)
-      camNode.getParent().detachChild(camNode);
-    node.attachChild(camNode);
-  }
+	void setCameraNode(Node node) {
+		if (camNode.getParent() != null)
+			camNode.getParent().detachChild(camNode);
+		node.attachChild(camNode);
+	}
 }

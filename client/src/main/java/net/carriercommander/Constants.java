@@ -38,58 +38,49 @@ package net.carriercommander;
  */
 public interface Constants {
 
-  public enum GameType {strategy, action, network}
-
-  // names of game objects
-  public final static String CARRIER_PLAYER = "carrier-1";
-  public final static String CARRIER_ENEMY  = "carrier-2";
-
-  public final static String WALRUS_1 = "walrus-1";
-  public final static String WALRUS_2 = "walrus-2";
-  public final static String WALRUS_3 = "walrus-3";
-  public final static String WALRUS_4 = "walrus-4";
-
-  public final static String MANTA_1 = "manta-1";
-  public final static String MANTA_2 = "manta-2";
-  public final static String MANTA_3 = "manta-3";
-  public final static String MANTA_4 = "manta-4";
-
-  // key input
-  public final static String INPUT_LEFT       = "left";
-  public final static String INPUT_RIGHT      = "right";
-  public final static String INPUT_UP         = "up";
-  public final static String INPUT_DOWN       = "down";
-  public final static String INPUT_ACCELERATE = "accelerate";
-  public final static String INPUT_DECELERATE = "decelerate";
-
-  // name of menu's and controls (nifty)
-  public final static String SCREEN_START = "start";
-  public final static String SCREEN_HUD   = "hud";
-
-  public final static String MENU_MAIN    = "main";
-  public final static String MENU_CARRIER = "carrier";
-  public final static String MENU_WEAPONS = "weapons";
-  public final static String MENU_WALRUS  = "walrus";
-  public final static String MENU_MANTA   = "manta";
-  public final static String MENU_GAME    = "game";
-
-  public final static String CONTROL_CONTROL   = "Control";
-  public final static String CONTROL_MAP       = "Map";
-  public final static String CONTROL_REPAIR    = "Repair";
-  public final static String CONTROL_RESOURCES = "Resources";
-  public final static String CONTROL_MESSAGES  = "Messages";
-  public final static String CONTROL_LASER     = "Laser";
-  public final static String CONTROL_FLARES    = "Flares";
-  public final static String CONTROL_MISSILES  = "Missiles";
-  public final static String CONTROL_DRONES    = "Drones";
-  public final static String CONTROL_STATUS    = "Status";
-  public final static String CONTROL_EQUIP     = "Equip";
-  public final static String CONTROL_HANGAR    = "Hangar";
-
-  public final static String CONTROL_EXTENSION_BUTTON   = "Button";
-  public final static String CONTROL_EXTENSION_CONTROLS = "Controls";
-  public final static String CONTROL_SUBCONTROLS        = "subControls";
-
-  public final static String STYLE_SELECTED   = "selected";
-  public final static String STYLE_UNSELECTED = "unselected";
+	// names of game objects
+	String CARRIER_PLAYER = "carrier-1";
+	String CARRIER_ENEMY = "carrier-2";
+	String WALRUS_1 = "walrus-1";
+	String WALRUS_2 = "walrus-2";
+	String WALRUS_3 = "walrus-3";
+	String WALRUS_4 = "walrus-4";
+	String MANTA_1 = "manta-1";
+	String MANTA_2 = "manta-2";
+	String MANTA_3 = "manta-3";
+	String MANTA_4 = "manta-4";
+	// key input
+	String INPUT_LEFT = "left";
+	String INPUT_RIGHT = "right";
+	String INPUT_UP = "up";
+	String INPUT_DOWN = "down";
+	String INPUT_ACCELERATE = "accelerate";
+	String INPUT_DECELERATE = "decelerate";
+	// name of menu's and controls (nifty)
+	String SCREEN_START = "start";
+	String SCREEN_HUD = "hud";
+	String MENU_MAIN = "main";
+	String MENU_CARRIER = "carrier";
+	String MENU_WEAPONS = "weapons";
+	String MENU_WALRUS = "walrus";
+	String MENU_MANTA = "manta";
+	String MENU_GAME = "game";
+	String CONTROL_CONTROL = "Control";
+	String CONTROL_MAP = "Map";
+	String CONTROL_REPAIR = "Repair";
+	String CONTROL_RESOURCES = "Resources";
+	String CONTROL_MESSAGES = "Messages";
+	String CONTROL_LASER = "Laser";
+	String CONTROL_FLARES = "Flares";
+	String CONTROL_MISSILES = "Missiles";
+	String CONTROL_DRONES = "Drones";
+	String CONTROL_STATUS = "Status";
+	String CONTROL_EQUIP = "Equip";
+	String CONTROL_HANGAR = "Hangar";
+	String CONTROL_EXTENSION_BUTTON = "Button";
+	String CONTROL_EXTENSION_CONTROLS = "Controls";
+	String CONTROL_SUBCONTROLS = "subControls";
+	String STYLE_SELECTED = "selected";
+	String STYLE_UNSELECTED = "unselected";
+	enum GameType {strategy, action, network}
 }

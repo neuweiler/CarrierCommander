@@ -31,10 +31,6 @@
 
 package net.carriercommander;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
 import com.jme3.app.SimpleApplication;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.PhysicsSpace.BroadphaseType;
@@ -67,12 +63,10 @@ import com.jme3.texture.Texture.WrapMode;
 import com.jme3.texture.Texture2D;
 import com.jme3.util.SkyFactory;
 import com.jme3.water.WaterFilter;
-
 import de.lessvoid.nifty.Nifty;
 import de.lessvoid.nifty.elements.Element;
 import de.lessvoid.nifty.elements.render.TextRenderer;
 import de.lessvoid.nifty.tools.SizeValue;
-
 import net.carriercommander.Constants.GameType;
 import net.carriercommander.network.ClientListener;
 import net.carriercommander.network.SceneManager;
@@ -85,317 +79,321 @@ import net.carriercommander.shared.model.PlayerData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Carrier Commander Main Class
  *
  * @author Michael Neuweiler
  */
 public class CarrierCommander extends SimpleApplication implements ClientStateListener {
-  Logger logger = LoggerFactory.getLogger(CarrierCommander.class);
+	Logger logger = LoggerFactory.getLogger(CarrierCommander.class);
 
-  private PlayerAppState playerAppState;
-  private BulletAppState physicsState;
-  private Nifty          nifty;
-  private Vector3f       lightDir = new Vector3f(-4.9236743f, -1.27054665f, 5.896916f);
-  private WaterFilter    water    = null;
-  private CameraNode     camNode  = null;
+	private PlayerAppState playerAppState;
+	private BulletAppState physicsState;
+	private Nifty nifty;
+	private final Vector3f lightDir = new Vector3f(-4.9236743f, -1.27054665f, 5.896916f);
+	private WaterFilter water = null;
+	private CameraNode camNode = null;
 
-  private float        time               = 0.0f;
-  private float        initialWaterHeight = 90f;
-  private boolean      loading            = false;
-  private int          loadPart           = 0;
-  private GameType     gameType;
-  private String       hostAddress        = "127.0.0.1";
-  private int          hostPort           = 6000;
-  private Client       networkClient;
-  private PlayerData   playerData         = new PlayerData();
-  private SceneManager sceneManager       = new SceneManager(this);
+	private float time = 0.0f;
+	private final float initialWaterHeight = 90f;
+	private boolean loading = false;
+	private int loadPart = 0;
+	private GameType gameType;
+	private final String hostAddress = "127.0.0.1";
+	private final int hostPort = 6000;
+	private Client networkClient;
+	private final PlayerData playerData = new PlayerData();
+	private SceneManager sceneManager = new SceneManager(this);
 
-  public static void main(String[] args) {
-    Utils.initSerializers();
-    CarrierCommander app = new CarrierCommander();
-    app.start();
-  }
+	public static void main(String[] args) {
+		Utils.initSerializers();
+		CarrierCommander app = new CarrierCommander();
+		app.start();
+	}
 
-  @Override
-  public void simpleInitApp() {
-    // setDisplayFps(false);
-    // setDisplayStatView(false);
-    flyCam.setEnabled(false); // Disable the default flyby cam
-    createNitfyGui();
-  }
+	@Override
+	public void simpleInitApp() {
+		// setDisplayFps(false);
+		// setDisplayStatView(false);
+		flyCam.setEnabled(false); // Disable the default flyby cam
+		createNitfyGui();
+	}
 
-  public void startGame(String gameType) {
-    if ("network".equals(gameType)) {
-      this.gameType = GameType.network;
-    } else if ("action".equals(gameType)) {
-      this.gameType = GameType.action;
-    } else {
-      this.gameType = GameType.strategy;
-    }
+	public void startGame(String gameType) {
+		if ("network".equals(gameType)) {
+			this.gameType = GameType.network;
+		} else if ("action".equals(gameType)) {
+			this.gameType = GameType.action;
+		} else {
+			this.gameType = GameType.strategy;
+		}
 
-    loading = true;
-    loadPart = 0;
-  }
+		loading = true;
+		loadPart = 0;
+	}
 
-  private void load() {
-    switch (loadPart) {
-      case 0:
-        if (gameType == GameType.network) {
-          setProgress(0.0f, "connecting to server");
-          connectToServer();
-        }
-        break;
-      case 1:
-        setProgress(0.1f, "activate physics");
-        activatePhysics();
-        break;
-      case 2:
-        setProgress(0.2f, "configure camera");
-        configureCamera();
-        break;
-      case 3:
-        setProgress(0.3f, "creating terrain");
-        createTerrain();
-        break;
-      case 4:
-        setProgress(0.4f, "creating sky");
-        createSky();
-        break;
-      case 5:
-        setProgress(0.5f, "creating water");
-        createWater();
-        break;
-      case 6:
-        setProgress(0.6f, "adding post process filter");
-        addPostProcessFilter();
-        break;
-      case 7:
-        setProgress(0.7f, "creating objects");
-        playerAppState = new PlayerAppState(physicsState, rootNode, playerData, camNode, water);
-        stateManager.attach(playerAppState);
-        break;
-      case 10:
-        setProgress(1.0f, "finished");
-        nifty.gotoScreen("hud");
-        loading = false;
-        break;
-    }
-    loadPart++;
-  }
+	private void load() {
+		switch (loadPart) {
+			case 0:
+				if (gameType == GameType.network) {
+					setProgress(0.0f, "connecting to server");
+					connectToServer();
+				}
+				break;
+			case 1:
+				setProgress(0.1f, "activate physics");
+				activatePhysics();
+				break;
+			case 2:
+				setProgress(0.2f, "configure camera");
+				configureCamera();
+				break;
+			case 3:
+				setProgress(0.3f, "creating terrain");
+				createTerrain();
+				break;
+			case 4:
+				setProgress(0.4f, "creating sky");
+				createSky();
+				break;
+			case 5:
+				setProgress(0.5f, "creating water");
+				createWater();
+				break;
+			case 6:
+				setProgress(0.6f, "adding post process filter");
+				addPostProcessFilter();
+				break;
+			case 7:
+				setProgress(0.7f, "creating objects");
+				playerAppState = new PlayerAppState(physicsState, rootNode, playerData, camNode, water);
+				stateManager.attach(playerAppState);
+				break;
+			case 10:
+				setProgress(1.0f, "finished");
+				nifty.gotoScreen("hud");
+				loading = false;
+				break;
+		}
+		loadPart++;
+	}
 
-  private void setProgress(final float progress, String loadingText) {
-    final int MIN_WIDTH = 32;
+	private void setProgress(final float progress, String loadingText) {
+		final int MIN_WIDTH = 32;
 
-    Element progressBarElement = nifty.getScreen("load").findElementById("progressbar");
-    int     pixelWidth         = (int) (MIN_WIDTH + (progressBarElement.getParent().getWidth() - MIN_WIDTH) * progress);
-    progressBarElement.setConstraintWidth(new SizeValue(pixelWidth + "px"));
-    progressBarElement.getParent().layoutElements();
+		Element progressBarElement = nifty.getScreen("load").findElementById("progressbar");
+		int pixelWidth = (int) (MIN_WIDTH + (progressBarElement.getParent().getWidth() - MIN_WIDTH) * progress);
+		progressBarElement.setConstraintWidth(new SizeValue(pixelWidth + "px"));
+		progressBarElement.getParent().layoutElements();
 
-    TextRenderer textRenderer = nifty.getScreen("load").findElementById("loadingtext").getRenderer(TextRenderer.class);
-    if (textRenderer != null) {
-      textRenderer.setText(loadingText);
-    }
-  }
+		TextRenderer textRenderer = nifty.getScreen("load").findElementById("loadingtext").getRenderer(TextRenderer.class);
+		if (textRenderer != null) {
+			textRenderer.setText(loadingText);
+		}
+	}
 
-  private void createNitfyGui() {
-    NiftyJmeDisplay niftyDisplay = new NiftyJmeDisplay(assetManager, inputManager, audioRenderer, viewPort);
-    nifty = niftyDisplay.getNifty();
+	private void createNitfyGui() {
+		NiftyJmeDisplay niftyDisplay = new NiftyJmeDisplay(assetManager, inputManager, audioRenderer, viewPort);
+		nifty = niftyDisplay.getNifty();
 
-    nifty.addXml("Interface/Screens/start.xml");
-    nifty.addXml("Interface/Screens/load.xml");
-    nifty.addXml("Interface/Screens/hud.xml");
-    nifty.gotoScreen("start");
+		nifty.addXml("Interface/Screens/start.xml");
+		nifty.addXml("Interface/Screens/load.xml");
+		nifty.addXml("Interface/Screens/hud.xml");
+		nifty.gotoScreen("start");
 
-    StartScreenControl startScreenControl = (StartScreenControl) nifty.getScreen(Constants.SCREEN_START).getScreenController();
-    HudScreenControl   hudScreenControl   = (HudScreenControl) nifty.getScreen(Constants.SCREEN_HUD).getScreenController();
+		StartScreenControl startScreenControl = (StartScreenControl) nifty.getScreen(Constants.SCREEN_START).getScreenController();
+		HudScreenControl hudScreenControl = (HudScreenControl) nifty.getScreen(Constants.SCREEN_HUD).getScreenController();
 
-    stateManager.attach(startScreenControl);
-    stateManager.attach(hudScreenControl);
-    guiViewPort.addProcessor(niftyDisplay);
-  }
+		stateManager.attach(startScreenControl);
+		stateManager.attach(hudScreenControl);
+		guiViewPort.addProcessor(niftyDisplay);
+	}
 
-  private void connectToServer() {
-    setPauseOnLostFocus(false);
+	private void connectToServer() {
+		setPauseOnLostFocus(false);
 
-    try {
-      sceneManager = new SceneManager(this);
-      logger.info("connecting to {}, port {}", hostAddress, hostPort);
-      networkClient = Network.connectToServer(hostAddress, hostPort);
-      logger.info("connected !");
-      networkClient.addMessageListener(new ClientListener(networkClient, sceneManager));
-      networkClient.addClientStateListener(this);
-      networkClient.start();
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
+		try {
+			sceneManager = new SceneManager(this);
+			logger.info("connecting to {}, port {}", hostAddress, hostPort);
+			networkClient = Network.connectToServer(hostAddress, hostPort);
+			logger.info("connected !");
+			networkClient.addMessageListener(new ClientListener(networkClient, sceneManager));
+			networkClient.addClientStateListener(this);
+			networkClient.start();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 
-  }
+	}
 
-  private void activatePhysics() {
-    physicsState = new BulletAppState();
-    physicsState.setThreadingType(BulletAppState.ThreadingType.PARALLEL); // do not set while enabling debug !
-    physicsState.setBroadphaseType(BroadphaseType.SIMPLE);
-    stateManager.attach(physicsState);
+	private void activatePhysics() {
+		physicsState = new BulletAppState();
+		physicsState.setThreadingType(BulletAppState.ThreadingType.PARALLEL); // do not set while enabling debug !
+		physicsState.setBroadphaseType(BroadphaseType.SIMPLE);
+		stateManager.attach(physicsState);
 
 //		phsyicsState.setDebugEnabled(true);
-  }
+	}
 
 
-  private void addPostProcessFilter() {
-    FilterPostProcessor fpp = new FilterPostProcessor(assetManager);
+	private void addPostProcessFilter() {
+		FilterPostProcessor fpp = new FilterPostProcessor(assetManager);
 
-    fpp.addFilter(water);
+		fpp.addFilter(water);
 
-    BloomFilter bloom = new BloomFilter();
-    bloom.setExposurePower(55);
-    bloom.setBloomIntensity(1.0f);
-     fpp.addFilter(bloom);
+		BloomFilter bloom = new BloomFilter();
+		bloom.setExposurePower(35);
+		bloom.setBloomIntensity(.5f);
+		fpp.addFilter(bloom);
 
-    LightScatteringFilter lsf = new LightScatteringFilter(lightDir.mult(-300));
-    lsf.setLightDensity(1.0f);
-     fpp.addFilter(lsf);
+		LightScatteringFilter lsf = new LightScatteringFilter(lightDir.mult(-300));
+		lsf.setLightDensity(1.0f);
+		fpp.addFilter(lsf);
 
-    DepthOfFieldFilter dof = new DepthOfFieldFilter();
-    dof.setFocusDistance(0);
-    dof.setFocusRange(1000);
-     fpp.addFilter(dof);
+//		DepthOfFieldFilter dof = new DepthOfFieldFilter();
+//		dof.setFocusDistance(1000);
+//		dof.setFocusRange(1000);
+//		fpp.addFilter(dof);
 
-     fpp.addFilter(new TranslucentBucketFilter());
-     fpp.setNumSamples(4);
+		fpp.addFilter(new TranslucentBucketFilter());
+		fpp.setNumSamples(4);
 
-    viewPort.addProcessor(fpp);
-  }
+		viewPort.addProcessor(fpp);
+	}
 
-  private void createWater() {
-    water = new WaterFilter(rootNode, lightDir);
+	private void createWater() {
+		water = new WaterFilter(rootNode, lightDir);
 
-    water.setWaveScale(0.003f);
-    water.setMaxAmplitude(2f);
-    water.setFoamExistence(new Vector3f(1f, 4, 0.5f));
-    water.setFoamTexture((Texture2D) assetManager.loadTexture("Common/MatDefs/Water/Textures/foam2.jpg"));
-    // water.setNormalScale(0.5f);
-    // water.setRefractionConstant(0.25f);
-    // water.setRefractionStrength(0.2f);
-    // water.setFoamHardness(0.6f);
-    water.setWaterHeight(initialWaterHeight);
-  }
+		water.setWaveScale(0.003f);
+		water.setMaxAmplitude(2f);
+		water.setFoamExistence(new Vector3f(1f, 4, 0.5f));
+		water.setFoamTexture((Texture2D) assetManager.loadTexture("Common/MatDefs/Water/Textures/foam2.jpg"));
+		// water.setNormalScale(0.5f);
+		// water.setRefractionConstant(0.25f);
+		// water.setRefractionStrength(0.2f);
+		// water.setFoamHardness(0.6f);
+		water.setWaterHeight(initialWaterHeight);
+	}
 
-  private void createSky() {
-    Spatial sky = SkyFactory.createSky(assetManager, "Scenes/Beach/FullskiesSunset0068.dds", SkyFactory.EnvMapType.CubeMap);
+	private void createSky() {
+		Spatial sky = SkyFactory.createSky(assetManager, "Scenes/Beach/FullskiesSunset0068.dds", SkyFactory.EnvMapType.CubeMap);
 
-    sky.setLocalScale(350);
-    rootNode.attachChild(sky);
+		sky.setLocalScale(350);
+		rootNode.attachChild(sky);
 
-    DirectionalLight sun = new DirectionalLight();
-    sun.setDirection(lightDir);
-    sun.setColor(ColorRGBA.White.clone().multLocal(1.7f));
-    rootNode.addLight(sun);
-  }
+		DirectionalLight sun = new DirectionalLight();
+		sun.setDirection(lightDir);
+		sun.setColor(ColorRGBA.White.clone().multLocal(1.7f));
+		rootNode.addLight(sun);
+	}
 
-  private void configureCamera() {
-    flyCam.setMoveSpeed(200);
+	private void configureCamera() {
+		flyCam.setMoveSpeed(200);
 
-    camNode = new CameraNode("Camera Node", cam);
-    camNode.setControlDir(ControlDirection.SpatialToCamera);
+		camNode = new CameraNode("Camera Node", cam);
+		camNode.setControlDir(ControlDirection.SpatialToCamera);
 
-    cam.setLocation(new Vector3f(-600, 130, 200));
-    cam.setRotation(new Quaternion().fromAngles(new float[]{FastMath.DEG_TO_RAD * 0f, FastMath.DEG_TO_RAD * 0f, 0}));
+		cam.setLocation(new Vector3f(-600, 130, 200));
+		cam.setRotation(new Quaternion().fromAngles(new float[]{FastMath.DEG_TO_RAD * 0f, FastMath.DEG_TO_RAD * 0f, 0}));
 
-    cam.setFrustumFar(4000);
-    // cam.setFrustumNear(100);
-  }
+		cam.setFrustumFar(4000);
+		// cam.setFrustumNear(100);
+	}
 
-  private void createTerrain() {
-    Material matRock = new Material(assetManager, "Common/MatDefs/Terrain/TerrainLighting.j3md");
-    matRock.setBoolean("useTriPlanarMapping", false);
-    matRock.setBoolean("WardIso", true);
-    matRock.setTexture("AlphaMap", assetManager.loadTexture("Textures/Terrain/splat/alphamap.png"));
-    Texture heightMapImage = assetManager.loadTexture("Textures/Terrain/splat/mountains512.png");
-    Texture grass          = assetManager.loadTexture("Textures/Terrain/splat/grass.jpg");
-    grass.setWrap(WrapMode.Repeat);
-    matRock.setTexture("DiffuseMap", grass);
-    matRock.setFloat("DiffuseMap_0_scale", 64);
-    Texture dirt = assetManager.loadTexture("Textures/Terrain/splat/dirt.jpg");
-    dirt.setWrap(WrapMode.Repeat);
-    matRock.setTexture("DiffuseMap_1", dirt);
-    matRock.setFloat("DiffuseMap_1_scale", 16);
-    Texture rock = assetManager.loadTexture("Textures/Terrain/splat/road.jpg");
-    rock.setWrap(WrapMode.Repeat);
-    matRock.setTexture("DiffuseMap_2", rock);
-    matRock.setFloat("DiffuseMap_2_scale", 128);
-    Texture normalMap0 = assetManager.loadTexture("Textures/Terrain/splat/grass_normal.jpg");
-    normalMap0.setWrap(WrapMode.Repeat);
-    Texture normalMap1 = assetManager.loadTexture("Textures/Terrain/splat/dirt_normal.png");
-    normalMap1.setWrap(WrapMode.Repeat);
-    Texture normalMap2 = assetManager.loadTexture("Textures/Terrain/splat/road_normal.png");
-    normalMap2.setWrap(WrapMode.Repeat);
-    matRock.setTexture("NormalMap", normalMap0);
-    matRock.setTexture("NormalMap_1", normalMap2);
-    matRock.setTexture("NormalMap_2", normalMap2);
+	private void createTerrain() {
+		Material matRock = new Material(assetManager, "Common/MatDefs/Terrain/TerrainLighting.j3md");
+		matRock.setBoolean("useTriPlanarMapping", false);
+		matRock.setBoolean("WardIso", true);
+		matRock.setTexture("AlphaMap", assetManager.loadTexture("Textures/Terrain/splat/alphamap.png"));
+		Texture heightMapImage = assetManager.loadTexture("Textures/Terrain/splat/mountains512.png");
+		Texture grass = assetManager.loadTexture("Textures/Terrain/splat/grass.jpg");
+		grass.setWrap(WrapMode.Repeat);
+		matRock.setTexture("DiffuseMap", grass);
+		matRock.setFloat("DiffuseMap_0_scale", 64);
+		Texture dirt = assetManager.loadTexture("Textures/Terrain/splat/dirt.jpg");
+		dirt.setWrap(WrapMode.Repeat);
+		matRock.setTexture("DiffuseMap_1", dirt);
+		matRock.setFloat("DiffuseMap_1_scale", 16);
+		Texture rock = assetManager.loadTexture("Textures/Terrain/splat/road.jpg");
+		rock.setWrap(WrapMode.Repeat);
+		matRock.setTexture("DiffuseMap_2", rock);
+		matRock.setFloat("DiffuseMap_2_scale", 128);
+		Texture normalMap0 = assetManager.loadTexture("Textures/Terrain/splat/grass_normal.jpg");
+		normalMap0.setWrap(WrapMode.Repeat);
+		Texture normalMap1 = assetManager.loadTexture("Textures/Terrain/splat/dirt_normal.png");
+		normalMap1.setWrap(WrapMode.Repeat);
+		Texture normalMap2 = assetManager.loadTexture("Textures/Terrain/splat/road_normal.png");
+		normalMap2.setWrap(WrapMode.Repeat);
+		matRock.setTexture("NormalMap", normalMap0);
+		matRock.setTexture("NormalMap_1", normalMap2);
+		matRock.setTexture("NormalMap_2", normalMap2);
 
-    AbstractHeightMap heightmap = null;
-    try {
-      heightmap = new ImageBasedHeightMap(heightMapImage.getImage(), 0.25f);
-      heightmap.load();
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
-    TerrainQuad  terrain = new TerrainQuad("terrain", 65, 513, heightmap.getHeightMap());
-    List<Camera> cameras = new ArrayList<>();
-    cameras.add(getCamera());
-    terrain.setMaterial(matRock);
-    terrain.setLocalScale(new Vector3f(5, 5, 5));
-    terrain.setLocalTranslation(new Vector3f(0, -30, 0));
-    terrain.setLocked(false); // unlock it so we can edit the height
+		AbstractHeightMap heightmap = null;
+		try {
+			heightmap = new ImageBasedHeightMap(heightMapImage.getImage(), 0.25f);
+			heightmap.load();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		TerrainQuad terrain = new TerrainQuad("terrain", 65, 513, heightmap.getHeightMap());
+		List<Camera> cameras = new ArrayList<>();
+		cameras.add(getCamera());
+		terrain.setMaterial(matRock);
+		terrain.setLocalScale(new Vector3f(5, 5, 5));
+		terrain.setLocalTranslation(new Vector3f(0, -30, 0));
+		terrain.setLocked(false); // unlock it so we can edit the height
 
-    RigidBodyControl rbc = new RigidBodyControl(0);
-    terrain.addControl(rbc);
-    physicsState.getPhysicsSpace().add(rbc);
+		RigidBodyControl rbc = new RigidBodyControl(0);
+		terrain.addControl(rbc);
+		physicsState.getPhysicsSpace().add(rbc);
 
-    terrain.setShadowMode(ShadowMode.Receive);
-    rootNode.attachChild(terrain);
+		terrain.setShadowMode(ShadowMode.Receive);
+		rootNode.attachChild(terrain);
 
-    // TerrainLodControl control = new TerrainLodControl(terrain, getCamera());
-    // terrain.addControl(control);
-  }
+		// TerrainLodControl control = new TerrainLodControl(terrain, getCamera());
+		// terrain.addControl(control);
+	}
 
-  @Override
-  public void clientConnected(Client c) {
-    playerData.setId(c.getId());
-    sceneManager.setMyId(c.getId());
-    networkClient.send(new TextMessage("Hello Server! I'm ID" + c.getId()));
-  }
+	@Override
+	public void clientConnected(Client c) {
+		playerData.setId(c.getId());
+		sceneManager.setMyId(c.getId());
+		networkClient.send(new TextMessage("Hello Server! I'm ID" + c.getId()));
+	}
 
-  @Override
-  public void clientDisconnected(Client arg0, DisconnectInfo arg1) {
-    logger.warn("client disconnected!");
-  }
+	@Override
+	public void clientDisconnected(Client arg0, DisconnectInfo arg1) {
+		logger.warn("client disconnected!");
+	}
 
-  @Override
-  public void simpleUpdate(float tpf) {
-    super.simpleUpdate(tpf);
+	@Override
+	public void simpleUpdate(float tpf) {
+		super.simpleUpdate(tpf);
 
-    if (loading) {
-      load();
-    }
+		if (loading) {
+			load();
+		}
 
-    sendPlayerData();
-    updateWaterHeight(tpf);
-  }
+		sendPlayerData();
+		updateWaterHeight(tpf);
+	}
 
-  private void updateWaterHeight(float tpf) {
-    time += tpf;
-    if (water != null) {
-      float waterHeight = (float) Math.cos(((time * 0.3f) % FastMath.TWO_PI)) * 1.4f + initialWaterHeight;
-      water.setWaterHeight(waterHeight);
-    }
-  }
+	private void updateWaterHeight(float tpf) {
+		time += tpf;
+		if (water != null) {
+			float waterHeight = (float) Math.cos(((time * 0.3f) % FastMath.TWO_PI)) * 1.4f + initialWaterHeight;
+			water.setWaterHeight(waterHeight);
+		}
+	}
 
-  private void sendPlayerData() {
-    if (networkClient != null && networkClient.isConnected() && playerData.isModified()) {
-      networkClient.send(new PlayerDataMessage(playerData));
-      playerData.clean();
-    }
-  }
+	private void sendPlayerData() {
+		if (networkClient != null && networkClient.isConnected() && playerData.isModified()) {
+			networkClient.send(new PlayerDataMessage(playerData));
+			playerData.clean();
+		}
+	}
 }

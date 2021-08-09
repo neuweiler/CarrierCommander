@@ -1,32 +1,28 @@
 package net.carriercommander.network;
 
+import com.jme3.app.SimpleApplication;
+import com.jme3.bullet.BulletAppState;
+import com.jme3.bullet.collision.shapes.BoxCollisionShape;
+import com.jme3.bullet.collision.shapes.CompoundCollisionShape;
+import com.jme3.math.Vector3f;
+import com.jme3.scene.Spatial;
+import net.carriercommander.control.ShipControl;
+import net.carriercommander.shared.model.PlayerData;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.Callable;
 
-import com.jme3.app.SimpleApplication;
-import com.jme3.bullet.BulletAppState;
-import com.jme3.bullet.collision.shapes.BoxCollisionShape;
-import com.jme3.bullet.collision.shapes.CompoundCollisionShape;
-import com.jme3.bullet.control.BetterCharacterControl;
-import com.jme3.math.Vector3f;
-import com.jme3.scene.Node;
-import com.jme3.scene.Spatial;
-
-import net.carriercommander.control.PlaneControl;
-import net.carriercommander.control.ShipControl;
-import net.carriercommander.shared.model.PlayerData;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 public class SceneManager {
 	Logger logger = LoggerFactory.getLogger(SceneManager.class);
 
 	private Map<Integer, PlayerData> players = new HashMap<Integer, PlayerData>();
-	private Map<Integer, Spatial> entities = new HashMap<Integer, Spatial>();
-	private SimpleApplication app;
+	private final Map<Integer, Spatial> entities = new HashMap<Integer, Spatial>();
+	private final SimpleApplication app;
 	private int myId;
 
 	public SceneManager(SimpleApplication app) {
@@ -39,9 +35,7 @@ public class SceneManager {
 	}
 
 	public void removePlayer(int id) {
-		if (players.containsKey(id)) {
-			players.remove(id);
-		}
+		players.remove(id);
 		if (entities.containsKey(id)) {
 			Spatial player = entities.get(id);
 			app.enqueue(new Callable<Object>() {
@@ -104,7 +98,7 @@ public class SceneManager {
 		Spatial player = loadSpatial(data);
 		entities.put(id, player);
 
-		
+
 		CompoundCollisionShape comp = new CompoundCollisionShape(); // use a simple compound shape to improve performance drastically!
 		comp.addChildShape(new BoxCollisionShape(new Vector3f(20, 13, 149)), new Vector3f(0f, -1f, -25f));
 		comp.addChildShape(new BoxCollisionShape(new Vector3f(7, 19, 30)), new Vector3f(30f, 30f, 5f));

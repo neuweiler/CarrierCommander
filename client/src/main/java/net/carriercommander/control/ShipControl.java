@@ -49,104 +49,102 @@ import org.slf4j.LoggerFactory;
  * @author Michael Neuweiler
  */
 public class ShipControl extends RigidBodyControl implements PhysicsCollisionListener, PhysicsTickListener {
-  Logger logger = LoggerFactory.getLogger(ShipControl.class);
+	protected Matrix3f currentRotation = new Matrix3f();
+	protected Vector3f engineForce = new Vector3f();
+	protected Vector3f rudderOffset = new Vector3f();
+	protected float rudder = 0, throttle = 0, enginePower = 0, rudderPositionZ = 75, heading = 0;
+	Logger logger = LoggerFactory.getLogger(ShipControl.class);
 
-  protected Matrix3f currentRotation = new Matrix3f();
-  protected Vector3f engineForce     = new Vector3f();
-  protected Vector3f rudderOffset    = new Vector3f();
+	public ShipControl() {
+	}
 
-  protected float rudder = 0, throttle = 0, enginePower = 0, rudderPositionZ = 75, heading = 0;
+	public ShipControl(CollisionShape shape) {
+		super(shape);
+	}
 
-  public ShipControl() {
-  }
+	public ShipControl(CollisionShape shape, float mass) {
+		super(shape, mass);
+	}
 
-  public ShipControl(CollisionShape shape) {
-    super(shape);
-  }
+	@Override
+	public void setPhysicsSpace(PhysicsSpace space) {
+		super.setPhysicsSpace(space);
+		if (space != null) {
+			space.addCollisionListener(this);
+			space.addTickListener(this);
+		}
+	}
 
-  public ShipControl(CollisionShape shape, float mass) {
-    super(shape, mass);
-  }
+	@Override
+	public void physicsTick(PhysicsSpace arg0, float arg1) {
+		// TODO Auto-generated method stub
 
-  @Override
-  public void setPhysicsSpace(PhysicsSpace space) {
-    super.setPhysicsSpace(space);
-    if (space != null) {
-      space.addCollisionListener(this);
-      space.addTickListener(this);
-    }
-  }
+	}
 
-  @Override
-  public void physicsTick(PhysicsSpace arg0, float arg1) {
-    // TODO Auto-generated method stub
+	@Override
+	public void prePhysicsTick(PhysicsSpace arg0, float arg1) {
+		enginePower = throttle * getMass() * -10;
 
-  }
+		getPhysicsRotationMatrix(currentRotation);
+		heading = FastMath.atan2(currentRotation.get(0, 2), currentRotation.get(2, 2)) + FastMath.PI;
 
-  @Override
-  public void prePhysicsTick(PhysicsSpace arg0, float arg1) {
-    enginePower = throttle * getMass() * -10;
+		engineForce.setX(-enginePower * FastMath.sin(heading + rudder / 2));
+		engineForce.setZ(enginePower * FastMath.sin(heading + 1.5f * FastMath.PI + rudder / 2));
 
-    getPhysicsRotationMatrix(currentRotation);
-    heading = FastMath.atan2(currentRotation.get(0, 2), currentRotation.get(2, 2)) + FastMath.PI;
+		rudderOffset.setX(rudderPositionZ * FastMath.sin(heading));
+		rudderOffset.setZ(rudderPositionZ * FastMath.sin(heading + 0.5f * FastMath.PI));
 
-    engineForce.setX(-enginePower * FastMath.sin(heading + rudder / 2));
-    engineForce.setZ(enginePower * FastMath.sin(heading + 1.5f * FastMath.PI + rudder / 2));
+		applyForce(engineForce, rudderOffset);
+	}
 
-    rudderOffset.setX(rudderPositionZ * FastMath.sin(heading));
-    rudderOffset.setZ(rudderPositionZ * FastMath.sin(heading + 0.5f * FastMath.PI));
+	@Override
+	public void collision(PhysicsCollisionEvent event) {
+		if (event.getObjectA() == this || event.getObjectB() == this) {
+			logger.debug("collision between {} and {}", event.getObjectA(), event.getObjectB());
+			setThrottle(0);
+			setRudder(0);
+		}
+	}
 
-    applyForce(engineForce, rudderOffset);
-  }
+	public float getRudder() {
+		return rudder;
+	}
 
-  @Override
-  public void collision(PhysicsCollisionEvent event) {
-    if (event.getObjectA() == this || event.getObjectB() == this) {
-      logger.debug("collision between {} and {}", event.getObjectA(), event.getObjectB());
-      setThrottle(0);
-      setRudder(0);
-    }
-  }
+	public void setRudder(float rudder) {
+		if (rudder > 1.0f)
+			rudder = 1.0f;
+		if (rudder < -1.0f)
+			rudder = -1.0f;
+		this.rudder = rudder;
+		logger.debug("rudder: {}", this.rudder);
+	}
 
-  public float getRudder() {
-    return rudder;
-  }
+	public float getThrottle() {
+		return throttle;
+	}
 
-  public void setRudder(float rudder) {
-    if (rudder > 1.0f)
-      rudder = 1.0f;
-    if (rudder < -1.0f)
-      rudder = -1.0f;
-    this.rudder = rudder;
-    logger.debug("rudder: {}", this.rudder);
-  }
+	public void setThrottle(float throttle) {
+		if (throttle > 1.0f)
+			throttle = 1.0f;
+		if (throttle < -0.2f)
+			throttle = -0.2f;
+		this.throttle = throttle;
+		logger.debug("throttle: {}", this.throttle);
+	}
 
-  public float getThrottle() {
-    return throttle;
-  }
+	public float getRudderPositionZ() {
+		return rudderPositionZ;
+	}
 
-  public void setThrottle(float throttle) {
-    if (throttle > 1.0f)
-      throttle = 1.0f;
-    if (throttle < -0.2f)
-      throttle = -0.2f;
-    this.throttle = throttle;
-    logger.debug("throttle: {}", this.throttle);
-  }
+	public void setRudderPositionZ(float rudderPositionZ) {
+		this.rudderPositionZ = rudderPositionZ;
+	}
 
-  public float getRudderPositionZ() {
-    return rudderPositionZ;
-  }
+	public float getAileron() {
+		return 0f;
+	}
 
-  public void setRudderPositionZ(float rudderPositionZ) {
-    this.rudderPositionZ = rudderPositionZ;
-  }
+	public void setAileron(float aileron) {
 
-  public float getAileron() {
-    return 0f;
-  }
-
-  public void setAileron(float aileron) {
-
-  }
+	}
 }

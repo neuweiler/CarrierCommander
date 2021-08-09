@@ -38,9 +38,6 @@ import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
 import com.jme3.scene.control.AbstractControl;
 import com.jme3.water.WaterFilter;
-import net.carriercommander.CarrierCommander;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * This control allows a spatial to float at a water surface created by the WaterFilter.
@@ -48,85 +45,85 @@ import org.slf4j.LoggerFactory;
  * @author Michael Neuweiler
  */
 public class FloatControl extends AbstractControl {
-  private Quaternion currentRotation = new Quaternion();
-  private Vector3f   rotationOffset  = new Vector3f();
-  private Vector3f   waterForce      = new Vector3f();
-  private Vector3f   waterOffset     = new Vector3f();
-  private float      meterBelowWater, percentageDisplacement, force;
-  private RigidBodyControl rbc = null;
+	private final Quaternion currentRotation = new Quaternion();
+	private final Vector3f rotationOffset = new Vector3f();
+	private final Vector3f waterForce = new Vector3f();
+	private final Vector3f waterOffset = new Vector3f();
+	private float meterBelowWater, percentageDisplacement, force;
+	private RigidBodyControl rbc = null;
 
-  private float width = 5, length = 10, height = 2.5f; // TODO read dimensions from spatial instead
-  private float       verticalOffset = 0;
-  private WaterFilter water          = null;
+	private float width = 5, length = 10, height = 2.5f; // TODO read dimensions from spatial instead
+	private float verticalOffset = 0;
+	private WaterFilter water = null;
 
-  @Override
-  protected void controlUpdate(float tpf) {
-    if (rbc == null) {
-      rbc = spatial.getControl(RigidBodyControl.class);
-    } else {
-      meterBelowWater = verticalOffset - rbc.getPhysicsLocation().getY();
-      if (water != null) {
-        meterBelowWater += water.getWaterHeight();
-      }
-      if (meterBelowWater > height)
-        meterBelowWater = height;
-      if (meterBelowWater < -height)
-        meterBelowWater = -height;
-      percentageDisplacement = meterBelowWater / height;
-      force = (rbc.getMass() + percentageDisplacement * rbc.getMass()) * 9.81f;
-      waterForce.setY(force);
+	@Override
+	protected void controlUpdate(float tpf) {
+		if (rbc == null) {
+			rbc = spatial.getControl(RigidBodyControl.class);
+		} else {
+			meterBelowWater = verticalOffset - rbc.getPhysicsLocation().getY();
+			if (water != null) {
+				meterBelowWater += water.getWaterHeight();
+			}
+			if (meterBelowWater > height)
+				meterBelowWater = height;
+			if (meterBelowWater < -height)
+				meterBelowWater = -height;
+			percentageDisplacement = meterBelowWater / height;
+			force = (rbc.getMass() + percentageDisplacement * rbc.getMass()) * 9.81f;
+			waterForce.setY(force);
 
-      rbc.getPhysicsRotation(currentRotation);
-      currentRotation.mult(Vector3f.UNIT_Y, rotationOffset);
-      waterOffset.set(width * rotationOffset.x, rotationOffset.y, length * rotationOffset.z);
-      rbc.applyForce(waterForce, waterOffset);
+			rbc.getPhysicsRotation(currentRotation);
+			currentRotation.mult(Vector3f.UNIT_Y, rotationOffset);
+			waterOffset.set(width * rotationOffset.x, rotationOffset.y, length * rotationOffset.z);
+			rbc.applyForce(waterForce, waterOffset);
 
-      // logger.debug("vector: x={}\ty={}\tz={}\tbelow water={}m\tdelta displacement={}%\tforce={}kN", rotationOffset.x,
-      // rotationOffset.y, rotationOffset.z, meterBelowWater, percentageDisplacement * 100, force / 1000);
-    }
-  }
+			// logger.debug("vector: x={}\ty={}\tz={}\tbelow water={}m\tdelta displacement={}%\tforce={}kN", rotationOffset.x,
+			// rotationOffset.y, rotationOffset.z, meterBelowWater, percentageDisplacement * 100, force / 1000);
+		}
+	}
 
-  @Override
-  protected void controlRender(RenderManager rm, ViewPort vp) {
-  }
+	@Override
+	protected void controlRender(RenderManager rm, ViewPort vp) {
+	}
 
-  public float getVerticalOffset() {
-    return verticalOffset;
-  }
+	public float getVerticalOffset() {
+		return verticalOffset;
+	}
 
-  public void setVerticalOffset(float verticalOffset) {
-    this.verticalOffset = verticalOffset;
-  }
+	public void setVerticalOffset(float verticalOffset) {
+		this.verticalOffset = verticalOffset;
+	}
 
-  public WaterFilter getWater() {
-    return water;
-  }
+	public WaterFilter getWater() {
+		return water;
+	}
 
-  public void setWater(WaterFilter water) {
-    this.water = water;
-  }
+	public void setWater(WaterFilter water) {
+		this.water = water;
+	}
 
-  public float getWidth() {
-    return width;
-  }
+	public float getWidth() {
+		return width;
+	}
 
-  public void setWidth(float width) {
-    this.width = width;
-  }
+	public void setWidth(float width) {
+		this.width = width;
+	}
 
-  public float getLength() {
-    return length;
-  }
+	public float getLength() {
+		return length;
+	}
 
-  public void setLength(float length) {
-    this.length = length;
-  }
+	public void setLength(float length) {
+		this.length = length;
+	}
 
-  public float getHeight() {
-    return height;
-  }
+	public float getHeight() {
+		return height;
+	}
 
-  public void setHeight(float height) {
-    this.height = height;
-  }
+	public void setHeight(float height) {
+		this.height = height;
+	}
 }

@@ -40,7 +40,6 @@ import com.jme3.scene.CameraNode;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.water.WaterFilter;
-
 import net.carriercommander.control.FloatControl;
 import net.carriercommander.control.PlaneControl;
 import org.slf4j.Logger;
@@ -52,59 +51,57 @@ import org.slf4j.LoggerFactory;
  * @author Michael Neuweiler
  */
 public class Manta extends PlayerUnit {
-  Logger logger = LoggerFactory.getLogger(PlayerUnit.class);
+	private static final float width = 4.8f, length = 5.4f, height = 2f, mass = 5000f;
+	Logger logger = LoggerFactory.getLogger(PlayerUnit.class);
+	private Node camHookFront = null;
+	private Node camHookRear = null;
 
-  private static final float width = 4.8f, length = 5.4f, height = 2f, mass = 5000f;
+	public Manta(String name, AssetManager assetManager, BulletAppState phsyicsState, WaterFilter water, CameraNode camNode) {
+		super(name, assetManager, phsyicsState, water, camNode);
 
-  private Node camHookFront = null;
-  private Node camHookRear  = null;
-
-  public Manta(String name, AssetManager assetManager, BulletAppState phsyicsState, WaterFilter water, CameraNode camNode) {
-    super(name, assetManager, phsyicsState, water, camNode);
-
-    Spatial model = assetManager.loadModel("Models/HoverTank/tankFinalExport.blend");
-    model.rotate(0, (float) FastMath.DEG_TO_RAD * 180, 0);
-    attachChild(model);
-    logger.debug("vertices: {} triangles: {}", model.getVertexCount(), model.getTriangleCount());
-    setLocalTranslation(-400, 100, 300);
+		Spatial model = assetManager.loadModel("Models/HoverTank/tankFinalExport.blend");
+		model.rotate(0, FastMath.DEG_TO_RAD * 180, 0);
+		attachChild(model);
+		logger.debug("vertices: {} triangles: {}", model.getVertexCount(), model.getTriangleCount());
+		setLocalTranslation(-400, 100, 300);
 //		scale(2);
 
-    createCameraHooks();
+		createCameraHooks();
 
-    BoxCollisionShape collisionShape = new BoxCollisionShape(new Vector3f(width, height, length));
-    shipControl = new PlaneControl(collisionShape, mass);
-    shipControl.setRudderPositionZ(7);
-    addControl(shipControl);
-    shipControl.setDamping(0.1f, 0.2f);
-    phsyicsState.getPhysicsSpace().add(shipControl);
+		BoxCollisionShape collisionShape = new BoxCollisionShape(new Vector3f(width, height, length));
+		shipControl = new PlaneControl(collisionShape, mass);
+		shipControl.setRudderPositionZ(7);
+		addControl(shipControl);
+		shipControl.setDamping(0.1f, 0.2f);
+		phsyicsState.getPhysicsSpace().add(shipControl);
 
-    FloatControl floatControl = new FloatControl();
-    floatControl.setWater(water);
-    floatControl.setVerticalOffset(20);
-    floatControl.setWidth(width);
-    floatControl.setHeight(height);
-    floatControl.setLength(length);
+		FloatControl floatControl = new FloatControl();
+		floatControl.setWater(water);
+		floatControl.setVerticalOffset(20);
+		floatControl.setWidth(width);
+		floatControl.setHeight(height);
+		floatControl.setLength(length);
 //		addControl(floatControl);
-    shipControl.setGravity(new Vector3f());
-  }
+		shipControl.setGravity(new Vector3f());
+	}
 
-  private void createCameraHooks() {
-    camHookFront = new Node();
-    attachChild(camHookFront);
-    camHookFront.setLocalTranslation(0, 3, -5);
-    camHookFront.rotate(0, FastMath.DEG_TO_RAD * 180, 0);
+	private void createCameraHooks() {
+		camHookFront = new Node();
+		attachChild(camHookFront);
+		camHookFront.setLocalTranslation(0, 3, -5);
+		camHookFront.rotate(0, FastMath.DEG_TO_RAD * 180, 0);
 
-    camHookRear = new Node();
-    attachChild(camHookRear);
-    camHookRear.setLocalTranslation(0, 3, 5);
+		camHookRear = new Node();
+		attachChild(camHookRear);
+		camHookRear.setLocalTranslation(0, 3, 5);
 //		camHookRear.rotate(0, FastMath.DEG_TO_RAD * 90, 0);
-  }
+	}
 
-  public void setCameraToFront() {
-    setCameraNode(camHookFront);
-  }
+	public void setCameraToFront() {
+		setCameraNode(camHookFront);
+	}
 
-  public void setCameraToRear() {
-    setCameraNode(camHookRear);
-  }
+	public void setCameraToRear() {
+		setCameraNode(camHookRear);
+	}
 }

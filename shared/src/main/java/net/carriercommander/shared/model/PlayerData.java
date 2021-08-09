@@ -13,59 +13,59 @@ import java.util.List;
 @Serializable
 public class PlayerData {
 
-  private static final int NUM_WALRUS = 4;
-  private static final int NUM_MANTA  = 4;
+	private static final int NUM_WALRUS = 4;
+	private static final int NUM_MANTA = 4;
 
-  private int              id;
-  private CarrierData      carrier;
-  private List<WalrusData> walrus;
-  private List<MantaData>  manta;
+	private int id;
+	private final CarrierData carrier;
+	private final List<WalrusData> walrus;
+	private final List<MantaData> manta;
 
-  public PlayerData() {
-    carrier = new CarrierData();
+	public PlayerData() {
+		carrier = new CarrierData();
 
-    walrus = new ArrayList<>(NUM_WALRUS);
-    for (int i = 0; i < NUM_WALRUS; i++) {
-      walrus.add(new WalrusData());
-    }
+		walrus = new ArrayList<>(NUM_WALRUS);
+		for (int i = 0; i < NUM_WALRUS; i++) {
+			walrus.add(new WalrusData());
+		}
 
-    manta = new ArrayList<>(NUM_MANTA);
-    for (int i = 0; i < NUM_MANTA; i++) {
-      manta.add(new MantaData());
-    }
-  }
+		manta = new ArrayList<>(NUM_MANTA);
+		for (int i = 0; i < NUM_MANTA; i++) {
+			manta.add(new MantaData());
+		}
+	}
 
-  public boolean isModified() {
-    return carrier.isModified() |
-        walrus.stream().anyMatch(WalrusData::isModified) |
-        manta.stream().anyMatch(MantaData::isModified);
-  }
+	public boolean isModified() {
+		return carrier.isModified() |
+				walrus.stream().anyMatch(WalrusData::isModified) |
+				manta.stream().anyMatch(MantaData::isModified);
+	}
 
-  public void clean() {
-    carrier.clean();
-    walrus.forEach(WalrusData::clean);
-    manta.forEach(MantaData::clean);
-  }
+	public void clean() {
+		carrier.clean();
+		walrus.forEach(WalrusData::clean);
+		manta.forEach(MantaData::clean);
+	}
 
-  public int getId() {
-    return id;
-  }
+	public int getId() {
+		return id;
+	}
 
-  public void setId(int id) {
-    this.id = id;
-  }
+	public void setId(int id) {
+		this.id = id;
+	}
 
-  public CarrierData getCarrier() {
-    return carrier;
-  }
+	public CarrierData getCarrier() {
+		return carrier;
+	}
 
-  public WalrusData getWalrus(int index) {
-    return walrus.get(index);
-  }
+	public WalrusData getWalrus(int index) {
+		return walrus.get(index);
+	}
 
-  public MantaData getManta(int index) {
-    return manta.get(index);
-  }
+	public MantaData getManta(int index) {
+		return manta.get(index);
+	}
 
 
 }

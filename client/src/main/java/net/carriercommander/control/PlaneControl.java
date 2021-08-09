@@ -31,11 +31,12 @@
 
 package net.carriercommander.control;
 
-import com.jme3.bullet.PhysicsSpace;
 import com.jme3.bullet.PhysicsTickListener;
 import com.jme3.bullet.collision.PhysicsCollisionListener;
 import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.math.Quaternion;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Controller for air planes
@@ -43,53 +44,53 @@ import com.jme3.math.Quaternion;
  * @author Michael Neuweiler
  */
 public class PlaneControl extends ShipControl implements PhysicsCollisionListener, PhysicsTickListener {
+	Logger logger = LoggerFactory.getLogger(PlaneControl.class);
 
-  private Quaternion rotation = new Quaternion();
+	private final Quaternion rotation = new Quaternion();
 
-  private float aileron = 0;
+	private float aileron = 0;
 
-  public PlaneControl() {
-  }
+	public PlaneControl() {
+	}
 
-  public PlaneControl(CollisionShape shape) {
-    super(shape);
-  }
+	public PlaneControl(CollisionShape shape) {
+		super(shape);
+	}
 
-  public PlaneControl(CollisionShape shape, float mass) {
-    super(shape, mass);
-  }
+	public PlaneControl(CollisionShape shape, float mass) {
+		super(shape, mass);
+	}
 
-  @Override
-  public void prePhysicsTick(PhysicsSpace arg0, float arg1) {
-    enginePower = throttle * getMass() * -10;
-//
-//		getPhysicsRotationMatrix(currentRotation);
-//		heading = FastMath.atan2(currentRotation.get(0, 2), currentRotation.get(2, 2)) + FastMath.PI;
-//
-//		engineForce.setX(-enginePower * FastMath.sin(heading + rudder / 2));
-//		engineForce.setZ(enginePower * FastMath.sin(heading + 1.5f * FastMath.PI + rudder / 2));
-//
-//		rudderOffset.setX(rudderPositionZ * FastMath.sin(heading));
-//		rudderOffset.setZ(rudderPositionZ * FastMath.sin(heading + 0.5f * FastMath.PI));
-//
-//		applyForce(engineForce, rudderOffset);
-//		
+	/*
+	  @Override
+	  public void prePhysicsTick(PhysicsSpace arg0, float arg1) {
+		enginePower = throttle * getMass() * -10;
+	rudderPositionZ = 5;
+			getPhysicsRotationMatrix(currentRotation);
+			heading = FastMath.atan2(currentRotation.get(0, 2), currentRotation.get(2, 2)) + FastMath.PI;
 
+			engineForce.setX(-enginePower * FastMath.sin(heading + rudder / 2));
+			engineForce.setZ(enginePower * FastMath.sin(heading + 1.5f * FastMath.PI + rudder / 2));
 
-    setPhysicsRotation(rotation.fromAngles(aileron, heading, rudder));
+			rudderOffset.setX(rudderPositionZ * FastMath.sin(heading));
+			rudderOffset.setZ(rudderPositionZ * FastMath.sin(heading + 0.5f * FastMath.PI));
 
-  }
+			applyForce(engineForce, rudderOffset);
 
-  public float getAileron() {
-    return aileron;
-  }
+		setPhysicsRotation(rotation.fromAngles(aileron, heading, rudder));
 
-  public void setAileron(float aileron) {
-    if (aileron > 1.0f)
-      aileron = 1.0f;
-    if (aileron < -1.0f)
-      aileron = -1.0f;
-    this.aileron = aileron;
-    System.out.printf("ship aileron: %f\n", this.aileron);
-  }
+	  }
+	*/
+	public float getAileron() {
+		return aileron;
+	}
+
+	public void setAileron(float aileron) {
+		if (aileron > 1.0f)
+			aileron = 1.0f;
+		if (aileron < -1.0f)
+			aileron = -1.0f;
+		this.aileron = aileron;
+		logger.debug("aileron: {}", this.aileron);
+	}
 }

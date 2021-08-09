@@ -42,9 +42,7 @@ import com.jme3.scene.CameraNode;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.water.WaterFilter;
-
 import net.carriercommander.control.FloatControl;
-import net.carriercommander.control.PlaneControl;
 import net.carriercommander.control.ShipControl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,103 +53,102 @@ import org.slf4j.LoggerFactory;
  * @author Michael Neuweiler
  */
 public class Carrier extends PlayerUnit {
-  Logger logger = LoggerFactory.getLogger(Carrier.class);
+	private final float weight = 100000000; // a carrier weighs 100'000 tons
+	Logger logger = LoggerFactory.getLogger(Carrier.class);
+	private Node camHookBridge = null;
+	private Node camHookRear = null;
+	private Node camHookFlightDeck = null;
+	private Node camHookLaser = null;
+	private Node camHookFlareLauncher = null;
+	private Node camHookSurfaceMissile = null;
 
-  private       Node  camHookBridge         = null;
-  private       Node  camHookRear           = null;
-  private       Node  camHookFlightDeck     = null;
-  private       Node  camHookLaser          = null;
-  private       Node  camHookFlareLauncher  = null;
-  private       Node  camHookSurfaceMissile = null;
-  private final float weight                = 100000000; // a carrier weighs 100'000 tons
+	public Carrier(String name, AssetManager assetManager, BulletAppState phsyicsState, WaterFilter water, CameraNode camNode) {
+		super(name, assetManager, phsyicsState, water, camNode);
 
-  public Carrier(String name, AssetManager assetManager, BulletAppState phsyicsState, WaterFilter water, CameraNode camNode) {
-    super(name, assetManager, phsyicsState, water, camNode);
+		Spatial model = assetManager.loadModel("Models/AdmiralKuznetsovClasscarrier/carrier.obj");
+		attachChild(model);
+		logger.debug("vertices: {} triangles: {}", model.getVertexCount(), model.getTriangleCount());
 
-    Spatial model = assetManager.loadModel("Models/AdmiralKuznetsovClasscarrier/carrier.obj");
-    attachChild(model);
-    logger.debug("vertices: {} triangles: {}", model.getVertexCount(), model.getTriangleCount());
+		createCameraHooks();
 
-    createCameraHooks();
+		CompoundCollisionShape comp = new CompoundCollisionShape(); // use a simple compound shape to improve performance drastically!
+		comp.addChildShape(new BoxCollisionShape(new Vector3f(20, 13, 149)), new Vector3f(0f, -1f, -25f));
+		comp.addChildShape(new BoxCollisionShape(new Vector3f(7, 19, 30)), new Vector3f(30f, 30f, 5f));
+		shipControl = new ShipControl(comp, weight);
+		shipControl.setRudderPositionZ(100);
+		shipControl.setFriction(0.5f);
+		shipControl.setDamping(0.2f, 0.3f);
+		addControl(shipControl);
+		phsyicsState.getPhysicsSpace().add(shipControl);
 
-    CompoundCollisionShape comp = new CompoundCollisionShape(); // use a simple compound shape to improve performance drastically!
-    comp.addChildShape(new BoxCollisionShape(new Vector3f(20, 13, 149)), new Vector3f(0f, -1f, -25f));
-    comp.addChildShape(new BoxCollisionShape(new Vector3f(7, 19, 30)), new Vector3f(30f, 30f, 5f));
-    shipControl = new ShipControl(comp, weight);
-    shipControl.setRudderPositionZ(100);
-    shipControl.setFriction(0.5f);
-    shipControl.setDamping(0.2f, 0.3f);
-    addControl(shipControl);
-    phsyicsState.getPhysicsSpace().add(shipControl);
-
-    FloatControl floatControl = new FloatControl();
-    floatControl.setWater(water);
-    floatControl.setVerticalOffset(3.7f);
-    floatControl.setWidth(50);
-    floatControl.setLength(100);
-    floatControl.setHeight(20);
-    addControl(floatControl);
+		FloatControl floatControl = new FloatControl();
+		floatControl.setWater(water);
+		floatControl.setVerticalOffset(3.7f);
+		floatControl.setWidth(50);
+		floatControl.setLength(100);
+		floatControl.setHeight(20);
+		addControl(floatControl);
 
 //		control.setAngularVelocity(new Vector3f(0f, 0f, 0.1f));
 //		control.setLinearVelocity(getLocalRotation().getRotationColumn(2).mult(-10));
 
-    float angles[] = {FastMath.DEG_TO_RAD * 0, FastMath.DEG_TO_RAD * 0, FastMath.DEG_TO_RAD * 0}; // pitch, yaw, roll
-    shipControl.setPhysicsRotation(new Quaternion(angles));
-  }
+		float[] angles = {FastMath.DEG_TO_RAD * 0, FastMath.DEG_TO_RAD * 0, FastMath.DEG_TO_RAD * 0}; // pitch, yaw, roll
+		shipControl.setPhysicsRotation(new Quaternion(angles));
+	}
 
-  private void createCameraHooks() {
-    camHookBridge = new Node();
-    attachChild(camHookBridge);
-    camHookBridge.setLocalTranslation(0, 40, 0);
-    camHookBridge.rotate(0, FastMath.DEG_TO_RAD * 180, 0);
+	private void createCameraHooks() {
+		camHookBridge = new Node();
+		attachChild(camHookBridge);
+		camHookBridge.setLocalTranslation(0, 40, 0);
+		camHookBridge.rotate(0, FastMath.DEG_TO_RAD * 180, 0);
 
-    camHookRear = new Node();
-    attachChild(camHookRear);
-    camHookRear.setLocalTranslation(-40, 10, 170);
-    camHookRear.rotate(0, FastMath.DEG_TO_RAD * 130, 0);
+		camHookRear = new Node();
+		attachChild(camHookRear);
+		camHookRear.setLocalTranslation(-40, 10, 170);
+		camHookRear.rotate(0, FastMath.DEG_TO_RAD * 130, 0);
 
-    camHookFlightDeck = new Node();
-    attachChild(camHookFlightDeck);
-    camHookFlightDeck.setLocalTranslation(0, 15, 0);
-    camHookFlightDeck.rotate(0, FastMath.DEG_TO_RAD * 180, 0);
+		camHookFlightDeck = new Node();
+		attachChild(camHookFlightDeck);
+		camHookFlightDeck.setLocalTranslation(0, 15, 0);
+		camHookFlightDeck.rotate(0, FastMath.DEG_TO_RAD * 180, 0);
 
-    camHookLaser = new Node();
-    attachChild(camHookLaser);
-    camHookLaser.setLocalTranslation(0, 20, 20);
-    camHookLaser.rotate(0, FastMath.DEG_TO_RAD * 180, 0);
+		camHookLaser = new Node();
+		attachChild(camHookLaser);
+		camHookLaser.setLocalTranslation(0, 20, 20);
+		camHookLaser.rotate(0, FastMath.DEG_TO_RAD * 180, 0);
 
-    camHookFlareLauncher = new Node();
-    attachChild(camHookFlareLauncher);
-    camHookFlareLauncher.setLocalTranslation(0, 15, 10);
-    camHookFlareLauncher.rotate(0, FastMath.DEG_TO_RAD * 180, 0);
+		camHookFlareLauncher = new Node();
+		attachChild(camHookFlareLauncher);
+		camHookFlareLauncher.setLocalTranslation(0, 15, 10);
+		camHookFlareLauncher.rotate(0, FastMath.DEG_TO_RAD * 180, 0);
 
-    camHookSurfaceMissile = new Node();
-    attachChild(camHookSurfaceMissile);
-    camHookSurfaceMissile.setLocalTranslation(0, 15, 10);
-    camHookSurfaceMissile.rotate(0, FastMath.DEG_TO_RAD * 0, 0);
-  }
+		camHookSurfaceMissile = new Node();
+		attachChild(camHookSurfaceMissile);
+		camHookSurfaceMissile.setLocalTranslation(0, 15, 10);
+		camHookSurfaceMissile.rotate(0, FastMath.DEG_TO_RAD * 0, 0);
+	}
 
-  public void setCameraToBridge() {
-    setCameraNode(camHookBridge);
-  }
+	public void setCameraToBridge() {
+		setCameraNode(camHookBridge);
+	}
 
-  public void setCameraToRear() {
-    setCameraNode(camHookRear);
-  }
+	public void setCameraToRear() {
+		setCameraNode(camHookRear);
+	}
 
-  public void setCameraToFlightDeck() {
-    setCameraNode(camHookFlightDeck);
-  }
+	public void setCameraToFlightDeck() {
+		setCameraNode(camHookFlightDeck);
+	}
 
-  public void setCameraToLaser() {
-    setCameraNode(camHookLaser);
-  }
+	public void setCameraToLaser() {
+		setCameraNode(camHookLaser);
+	}
 
-  public void setCameraToFlareLauncher() {
-    setCameraNode(camHookFlareLauncher);
-  }
+	public void setCameraToFlareLauncher() {
+		setCameraNode(camHookFlareLauncher);
+	}
 
-  public void setCameraToSurfaceMissile() {
-    setCameraNode(camHookSurfaceMissile);
-  }
+	public void setCameraToSurfaceMissile() {
+		setCameraNode(camHookSurfaceMissile);
+	}
 }

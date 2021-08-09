@@ -40,9 +40,7 @@ import com.jme3.scene.CameraNode;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.water.WaterFilter;
-
 import net.carriercommander.control.FloatControl;
-import net.carriercommander.control.PlaneControl;
 import net.carriercommander.control.ShipControl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,60 +51,58 @@ import org.slf4j.LoggerFactory;
  * @author Michael Neuweiler
  */
 public class Walrus extends PlayerUnit {
-  Logger logger = LoggerFactory.getLogger(Walrus.class);
+	private static final float width = 3.8f, length = 10f, height = 3f, mass = 5000;
+	Logger logger = LoggerFactory.getLogger(Walrus.class);
+	private Node camHookFront = null;
+	private Node camHookRear = null;
 
-  private static final float width = 3.8f, length = 10f, height = 3f, mass = 5000;
+	public Walrus(String name, AssetManager assetManager, BulletAppState phsyicsState, WaterFilter water, CameraNode camNode) {
+		super(name, assetManager, phsyicsState, water, camNode);
 
-  private Node camHookFront = null;
-  private Node camHookRear  = null;
+		Spatial model = assetManager.loadModel("Models/BTR80/BTR_80.obj");
+		model.scale(0.05f);
+		model.rotate(0, FastMath.DEG_TO_RAD * -90, 0);
+		attachChild(model);
 
-  public Walrus(String name, AssetManager assetManager, BulletAppState phsyicsState, WaterFilter water, CameraNode camNode) {
-    super(name, assetManager, phsyicsState, water, camNode);
+		createCameraHooks();
 
-    Spatial model = assetManager.loadModel("Models/BTR80/BTR_80.obj");
-    model.scale(0.05f);
-    model.rotate(0, (float) FastMath.DEG_TO_RAD * -90, 0);
-    attachChild(model);
+		logger.debug("vertices: {} triangles: {}", getVertexCount(), getTriangleCount());
 
-    createCameraHooks();
+		BoxCollisionShape collisionShape = new BoxCollisionShape(new Vector3f(width, height, length));
+		shipControl = new ShipControl(collisionShape, mass);
+		shipControl.setRudderPositionZ(length / 2);
+		addControl(shipControl);
+		shipControl.setDamping(0.2f, 0.3f);
+		phsyicsState.getPhysicsSpace().add(shipControl);
 
-    logger.debug("vertices: {} triangles: {}", getVertexCount(), getTriangleCount());
+		FloatControl floatControl = new FloatControl();
+		floatControl.setWater(water);
+		floatControl.setVerticalOffset(-2);
+		floatControl.setWidth(width);
+		floatControl.setHeight(height);
+		floatControl.setLength(length);
+		addControl(floatControl);
 
-    BoxCollisionShape collisionShape = new BoxCollisionShape(new Vector3f(width, height, length));
-    shipControl = new ShipControl(collisionShape, mass);
-    shipControl.setRudderPositionZ(length / 2);
-    addControl(shipControl);
-    shipControl.setDamping(0.2f, 0.3f);
-    phsyicsState.getPhysicsSpace().add(shipControl);
+		shipControl.setLinearVelocity(getLocalRotation().getRotationColumn(0).mult(-25));
+	}
 
-    FloatControl floatControl = new FloatControl();
-    floatControl.setWater(water);
-    floatControl.setVerticalOffset(-2);
-    floatControl.setWidth(width);
-    floatControl.setHeight(height);
-    floatControl.setLength(length);
-    addControl(floatControl);
+	private void createCameraHooks() {
+		camHookFront = new Node();
+		attachChild(camHookFront);
+		camHookFront.setLocalTranslation(0, 8, 3);
+		camHookFront.rotate(0, FastMath.DEG_TO_RAD * 180, 0);
 
-    shipControl.setLinearVelocity(getLocalRotation().getRotationColumn(0).mult(-25));
-  }
-
-  private void createCameraHooks() {
-    camHookFront = new Node();
-    attachChild(camHookFront);
-    camHookFront.setLocalTranslation(0, 8, 3);
-    camHookFront.rotate(0, FastMath.DEG_TO_RAD * 180, 0);
-
-    camHookRear = new Node();
-    attachChild(camHookRear);
-    camHookRear.setLocalTranslation(0, 3, 5);
+		camHookRear = new Node();
+		attachChild(camHookRear);
+		camHookRear.setLocalTranslation(0, 3, 5);
 //		camHookRear.rotate(0, FastMath.DEG_TO_RAD * 90, 0);
-  }
+	}
 
-  public void setCameraToFront() {
-    setCameraNode(camHookFront);
-  }
+	public void setCameraToFront() {
+		setCameraNode(camHookFront);
+	}
 
-  public void setCameraToRear() {
-    setCameraNode(camHookRear);
-  }
+	public void setCameraToRear() {
+		setCameraNode(camHookRear);
+	}
 }
