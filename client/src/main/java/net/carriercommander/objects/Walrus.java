@@ -34,6 +34,7 @@ package net.carriercommander.objects;
 import com.jme3.asset.AssetManager;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.collision.shapes.BoxCollisionShape;
+import com.jme3.bullet.collision.shapes.CompoundCollisionShape;
 import com.jme3.math.FastMath;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.CameraNode;
@@ -51,7 +52,7 @@ import org.slf4j.LoggerFactory;
  * @author Michael Neuweiler
  */
 public class Walrus extends PlayerUnit {
-	private static final float width = 3.8f, length = 10f, height = 3f, mass = 5000;
+	private static final float width = 3.8f, length = 10f, height = 3.2f, mass = 5000;
 	Logger logger = LoggerFactory.getLogger(Walrus.class);
 	private Node camHookFront = null;
 	private Node camHookRear = null;
@@ -68,8 +69,9 @@ public class Walrus extends PlayerUnit {
 
 		logger.debug("vertices: {} triangles: {}", getVertexCount(), getTriangleCount());
 
-		BoxCollisionShape collisionShape = new BoxCollisionShape(new Vector3f(width, height, length));
-		shipControl = new ShipControl(collisionShape, mass);
+		CompoundCollisionShape comp = new CompoundCollisionShape();
+		comp.addChildShape(new BoxCollisionShape(new Vector3f(width, height, length)), new Vector3f(0, 3.3f, 0));
+		shipControl = new ShipControl(comp, mass);
 		shipControl.setRudderPositionZ(length / 2);
 		addControl(shipControl);
 		shipControl.setDamping(0.2f, 0.3f);
