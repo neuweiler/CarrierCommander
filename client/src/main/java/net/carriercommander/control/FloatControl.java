@@ -38,6 +38,9 @@ import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
 import com.jme3.scene.control.AbstractControl;
 import com.jme3.water.WaterFilter;
+import net.carriercommander.CarrierCommander;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This control allows a spatial to float at a water surface created by the WaterFilter.
@@ -78,7 +81,7 @@ public class FloatControl extends AbstractControl {
       waterOffset.set(width * rotationOffset.x, rotationOffset.y, length * rotationOffset.z);
       rbc.applyForce(waterForce, waterOffset);
 
-      // System.out.printf("vector: x=%f\ty=%f\tz=%f\tbelow water=%.3fm\tdelta " + "displacement=%.2f%%\tforce=%.0fkN\n", rotationOffset.x,
+      // logger.debug("vector: x={}\ty={}\tz={}\tbelow water={}m\tdelta displacement={}%\tforce={}kN", rotationOffset.x,
       // rotationOffset.y, rotationOffset.z, meterBelowWater, percentageDisplacement * 100, force / 1000);
     }
   }

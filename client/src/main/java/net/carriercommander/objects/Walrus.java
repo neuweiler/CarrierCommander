@@ -42,7 +42,10 @@ import com.jme3.scene.Spatial;
 import com.jme3.water.WaterFilter;
 
 import net.carriercommander.control.FloatControl;
+import net.carriercommander.control.PlaneControl;
 import net.carriercommander.control.ShipControl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Walrus
@@ -50,6 +53,8 @@ import net.carriercommander.control.ShipControl;
  * @author Michael Neuweiler
  */
 public class Walrus extends PlayerUnit {
+  Logger logger = LoggerFactory.getLogger(Walrus.class);
+
   private static final float width = 3.8f, length = 10f, height = 3f, mass = 5000;
 
   private Node camHookFront = null;
@@ -65,7 +70,7 @@ public class Walrus extends PlayerUnit {
 
     createCameraHooks();
 
-    System.out.println("walrus vertices: " + getVertexCount() + " triangles: " + getTriangleCount());
+    logger.debug("vertices: {} triangles: {}", getVertexCount(), getTriangleCount());
 
     BoxCollisionShape collisionShape = new BoxCollisionShape(new Vector3f(width, height, length));
     shipControl = new ShipControl(collisionShape, mass);

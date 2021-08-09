@@ -10,6 +10,9 @@ import de.lessvoid.nifty.screen.Screen;
 import de.lessvoid.nifty.screen.ScreenController;
 
 import net.carriercommander.CarrierCommander;
+import net.carriercommander.control.PlaneControl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Start Screen Control
@@ -17,6 +20,7 @@ import net.carriercommander.CarrierCommander;
  * @author Michael Neuweiler
  */
 public class StartScreenControl extends AbstractAppState implements ScreenController {
+  Logger logger = LoggerFactory.getLogger(StartScreenControl.class);
 
   private Nifty             nifty;
   private Screen            screen;
@@ -34,7 +38,7 @@ public class StartScreenControl extends AbstractAppState implements ScreenContro
 
   public void startGame(String nextScreen, String type) {
     nifty.gotoScreen(nextScreen); // switch to another screen
-    System.out.println("game type: " + type);
+    logger.debug("game type: {}", type);
     ((CarrierCommander) app).startGame(type);
   }
 

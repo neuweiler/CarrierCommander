@@ -13,20 +13,8 @@
 	</modules>
 
 	<properties>
-		<version.jmonkeyengine>3.1.0-beta1</version.jmonkeyengine>
+		<version.jmonkeyengine>3.3.2-stable</version.jmonkeyengine>
 	</properties>
-
-	<repositories>
-		<repository>
-			<id>jmonkey-repo</id>
-			<name>jMonkey Repository</name>
-			<url>http://jcenter.bintray.com</url>
-		</repository>
-		<repository>
-			<id>nifty-maven-repo.sourceforge.net</id>
-			<url>http://nifty-gui.sourceforge.net/nifty-maven-repo</url>
-		</repository>
-	</repositories>
 
 	<dependencies>
 		<dependency>
@@ -48,6 +36,16 @@
 			<groupId>org.jmonkeyengine</groupId>
 			<artifactId>jme3-networking</artifactId>
 			<version>${version.jmonkeyengine}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>1.7.32</version>
+		</dependency>
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+			<version>1.2.5</version>
 		</dependency>
 	</dependencies>
 

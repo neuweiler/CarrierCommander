@@ -43,6 +43,8 @@ import com.jme3.water.WaterFilter;
 
 import net.carriercommander.control.FloatControl;
 import net.carriercommander.control.PlaneControl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Manta
@@ -50,6 +52,8 @@ import net.carriercommander.control.PlaneControl;
  * @author Michael Neuweiler
  */
 public class Manta extends PlayerUnit {
+  Logger logger = LoggerFactory.getLogger(PlayerUnit.class);
+
   private static final float width = 4.8f, length = 5.4f, height = 2f, mass = 5000f;
 
   private Node camHookFront = null;
@@ -61,7 +65,7 @@ public class Manta extends PlayerUnit {
     Spatial model = assetManager.loadModel("Models/HoverTank/tankFinalExport.blend");
     model.rotate(0, (float) FastMath.DEG_TO_RAD * 180, 0);
     attachChild(model);
-    System.out.println("manta vertices: " + model.getVertexCount() + " triangles: " + model.getTriangleCount());
+    logger.debug("vertices: {} triangles: {}", model.getVertexCount(), model.getTriangleCount());
     setLocalTranslation(-400, 100, 300);
 //		scale(2);
 

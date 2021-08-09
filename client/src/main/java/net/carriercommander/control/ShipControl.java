@@ -40,6 +40,8 @@ import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.math.FastMath;
 import com.jme3.math.Matrix3f;
 import com.jme3.math.Vector3f;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Controller for ships
@@ -47,6 +49,7 @@ import com.jme3.math.Vector3f;
  * @author Michael Neuweiler
  */
 public class ShipControl extends RigidBodyControl implements PhysicsCollisionListener, PhysicsTickListener {
+  Logger logger = LoggerFactory.getLogger(ShipControl.class);
 
   protected Matrix3f currentRotation = new Matrix3f();
   protected Vector3f engineForce     = new Vector3f();
@@ -99,7 +102,7 @@ public class ShipControl extends RigidBodyControl implements PhysicsCollisionLis
   @Override
   public void collision(PhysicsCollisionEvent event) {
     if (event.getObjectA() == this || event.getObjectB() == this) {
-      System.out.println("collision " + event.getObjectA() + " " + event.getObjectB());
+      logger.debug("collision between {} and {}", event.getObjectA(), event.getObjectB());
       setThrottle(0);
       setRudder(0);
     }
@@ -115,7 +118,7 @@ public class ShipControl extends RigidBodyControl implements PhysicsCollisionLis
     if (rudder < -1.0f)
       rudder = -1.0f;
     this.rudder = rudder;
-    System.out.printf("ship rudder: %f\n", this.rudder);
+    logger.debug("rudder: {}", this.rudder);
   }
 
   public float getThrottle() {
@@ -128,7 +131,7 @@ public class ShipControl extends RigidBodyControl implements PhysicsCollisionLis
     if (throttle < -0.2f)
       throttle = -0.2f;
     this.throttle = throttle;
-    System.out.printf("ship throttle: %f\n", this.throttle);
+    logger.debug("throttle: {}", this.throttle);
   }
 
   public float getRudderPositionZ() {

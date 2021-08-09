@@ -15,10 +15,14 @@ import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 
+import net.carriercommander.control.PlaneControl;
 import net.carriercommander.control.ShipControl;
 import net.carriercommander.shared.model.PlayerData;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class SceneManager {
+	Logger logger = LoggerFactory.getLogger(SceneManager.class);
 
 	private Map<Integer, PlayerData> players = new HashMap<Integer, PlayerData>();
 	private Map<Integer, Spatial> entities = new HashMap<Integer, Spatial>();
@@ -78,7 +82,7 @@ public class SceneManager {
 	private void updatePlayerEntity(int id, PlayerData data) {
 		if (myId != id) {
 			if (!entities.containsKey(id)) {
-System.out.println("adding new player");
+				logger.info("adding new player");
 				loadAndAddPlayer(id, data);
 				return;
 			}

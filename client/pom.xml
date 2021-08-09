@@ -12,7 +12,7 @@
 	<dependencies>
 		<dependency>
 			<groupId>org.jmonkeyengine</groupId>
-			<artifactId>jme3-bullet</artifactId>
+			<artifactId>jme3-bullet-native</artifactId>
 			<version>${version.jmonkeyengine}</version>
 		</dependency>
 		<dependency>

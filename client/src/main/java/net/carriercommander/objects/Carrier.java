@@ -44,7 +44,10 @@ import com.jme3.scene.Spatial;
 import com.jme3.water.WaterFilter;
 
 import net.carriercommander.control.FloatControl;
+import net.carriercommander.control.PlaneControl;
 import net.carriercommander.control.ShipControl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Carrier
@@ -52,6 +55,7 @@ import net.carriercommander.control.ShipControl;
  * @author Michael Neuweiler
  */
 public class Carrier extends PlayerUnit {
+  Logger logger = LoggerFactory.getLogger(Carrier.class);
 
   private       Node  camHookBridge         = null;
   private       Node  camHookRear           = null;
@@ -66,7 +70,7 @@ public class Carrier extends PlayerUnit {
 
     Spatial model = assetManager.loadModel("Models/AdmiralKuznetsovClasscarrier/carrier.obj");
     attachChild(model);
-    System.out.println("carrier vertices: " + model.getVertexCount() + " triangles: " + model.getTriangleCount());
+    logger.debug("vertices: {} triangles: {}", model.getVertexCount(), model.getTriangleCount());
 
     createCameraHooks();
 

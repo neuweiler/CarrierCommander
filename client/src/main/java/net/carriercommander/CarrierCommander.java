@@ -50,6 +50,10 @@ import com.jme3.network.ClientStateListener;
 import com.jme3.network.Network;
 import com.jme3.niftygui.NiftyJmeDisplay;
 import com.jme3.post.FilterPostProcessor;
+import com.jme3.post.filters.BloomFilter;
+import com.jme3.post.filters.DepthOfFieldFilter;
+import com.jme3.post.filters.LightScatteringFilter;
+import com.jme3.post.filters.TranslucentBucketFilter;
 import com.jme3.renderer.Camera;
 import com.jme3.renderer.queue.RenderQueue.ShadowMode;
 import com.jme3.scene.CameraNode;
@@ -78,6 +82,8 @@ import net.carriercommander.shared.Utils;
 import net.carriercommander.shared.messages.PlayerDataMessage;
 import net.carriercommander.shared.messages.TextMessage;
 import net.carriercommander.shared.model.PlayerData;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Carrier Commander Main Class
@@ -85,9 +91,10 @@ import net.carriercommander.shared.model.PlayerData;
  * @author Michael Neuweiler
  */
 public class CarrierCommander extends SimpleApplication implements ClientStateListener {
+  Logger logger = LoggerFactory.getLogger(CarrierCommander.class);
 
   private PlayerAppState playerAppState;
-  private BulletAppState phsyicsState;
+  private BulletAppState physicsState;
   private Nifty          nifty;
   private Vector3f       lightDir = new Vector3f(-4.9236743f, -1.27054665f, 5.896916f);
   private WaterFilter    water    = null;
@@ -165,7 +172,7 @@ public class CarrierCommander extends SimpleApplication implements ClientStateLi
         break;
       case 7:
         setProgress(0.7f, "creating objects");
-        playerAppState = new PlayerAppState(phsyicsState, rootNode, playerData, camNode, water);
+        playerAppState = new PlayerAppState(physicsState, rootNode, playerData, camNode, water);
         stateManager.attach(playerAppState);
         break;
       case 10:
@@ -213,9 +220,9 @@ public class CarrierCommander extends SimpleApplication implements ClientStateLi
 
     try {
       sceneManager = new SceneManager(this);
-      System.out.print("connecting to " + hostAddress + ", port " + hostPort + "...");
+      logger.info("connecting to {}, port {}", hostAddress, hostPort);
       networkClient = Network.connectToServer(hostAddress, hostPort);
-      System.out.println("connected !");
+      logger.info("connected !");
       networkClient.addMessageListener(new ClientListener(networkClient, sceneManager));
       networkClient.addClientStateListener(this);
       networkClient.start();
@@ -226,10 +233,10 @@ public class CarrierCommander extends SimpleApplication implements ClientStateLi
   }
 
   private void activatePhysics() {
-    phsyicsState = new BulletAppState();
-    phsyicsState.setThreadingType(BulletAppState.ThreadingType.PARALLEL); // do not set while enabling debug !
-    phsyicsState.setBroadphaseType(BroadphaseType.SIMPLE);
-    stateManager.attach(phsyicsState);
+    physicsState = new BulletAppState();
+    physicsState.setThreadingType(BulletAppState.ThreadingType.PARALLEL); // do not set while enabling debug !
+    physicsState.setBroadphaseType(BroadphaseType.SIMPLE);
+    stateManager.attach(physicsState);
 
 //		phsyicsState.setDebugEnabled(true);
   }
@@ -240,22 +247,22 @@ public class CarrierCommander extends SimpleApplication implements ClientStateLi
 
     fpp.addFilter(water);
 
-    //BloomFilter bloom = new BloomFilter();
-    //bloom.setExposurePower(55);
-    //bloom.setBloomIntensity(1.0f);
-    // fpp.addFilter(bloom);
+    BloomFilter bloom = new BloomFilter();
+    bloom.setExposurePower(55);
+    bloom.setBloomIntensity(1.0f);
+     fpp.addFilter(bloom);
 
-    //LightScatteringFilter lsf = new LightScatteringFilter(lightDir.mult(-300));
-    //lsf.setLightDensity(1.0f);
-    // fpp.addFilter(lsf);
+    LightScatteringFilter lsf = new LightScatteringFilter(lightDir.mult(-300));
+    lsf.setLightDensity(1.0f);
+     fpp.addFilter(lsf);
 
-    //DepthOfFieldFilter dof = new DepthOfFieldFilter();
-    //dof.setFocusDistance(0);
-    //dof.setFocusRange(1000);
-    // fpp.addFilter(dof);
+    DepthOfFieldFilter dof = new DepthOfFieldFilter();
+    dof.setFocusDistance(0);
+    dof.setFocusRange(1000);
+     fpp.addFilter(dof);
 
-    // fpp.addFilter(new TranslucentBucketFilter());
-    // fpp.setNumSamples(4);
+     fpp.addFilter(new TranslucentBucketFilter());
+     fpp.setNumSamples(4);
 
     viewPort.addProcessor(fpp);
   }
@@ -344,7 +351,7 @@ public class CarrierCommander extends SimpleApplication implements ClientStateLi
 
     RigidBodyControl rbc = new RigidBodyControl(0);
     terrain.addControl(rbc);
-    phsyicsState.getPhysicsSpace().add(rbc);
+    physicsState.getPhysicsSpace().add(rbc);
 
     terrain.setShadowMode(ShadowMode.Receive);
     rootNode.attachChild(terrain);
@@ -362,7 +369,7 @@ public class CarrierCommander extends SimpleApplication implements ClientStateLi
 
   @Override
   public void clientDisconnected(Client arg0, DisconnectInfo arg1) {
-    System.out.println("client disconnected!");
+    logger.warn("client disconnected!");
   }
 
   @Override
