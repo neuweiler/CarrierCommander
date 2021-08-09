@@ -15,10 +15,13 @@ import de.lessvoid.nifty.screen.ScreenController;
 import net.carriercommander.CarrierCommander;
 import net.carriercommander.Constants;
 import net.carriercommander.PlayerAppState;
+import net.carriercommander.control.PlaneControl;
 import net.carriercommander.control.ShipControl;
 import net.carriercommander.objects.Carrier;
 import net.carriercommander.objects.Manta;
 import net.carriercommander.objects.Walrus;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
 
@@ -28,11 +31,14 @@ import javax.annotation.Nonnull;
  * @author Michael Neuweiler
  */
 public class HudScreenControl extends AbstractAppState implements ScreenController {
+  Logger logger = LoggerFactory.getLogger(HudScreenControl.class);
 
   private Nifty               nifty;
   private Screen              screen;
   private CarrierCommander    app              = null;
   private Map<String, String> currentSelection = new HashMap<>();
+  private int selectedManta = 1;
+  private int selectedWalrus = 1;
 
   /**
    * Constructor
@@ -88,41 +94,23 @@ public class HudScreenControl extends AbstractAppState implements ScreenControll
     }
 
     // mark the currently selected toggle button as unselected
-    Element element = screen.findElementById(menu + currentSelection.get(menu) + Constants.CONTROL_EXTENSION_BUTTON);
-    if (element != null) {
-      element.setStyle(Constants.STYLE_UNSELECTED);
-    }
+    setStyle(menu + currentSelection.get(menu) + Constants.CONTROL_EXTENSION_BUTTON, Constants.STYLE_UNSELECTED);
     // hide the current control panel (2nd level)
-    element = screen.findElementById(menu + currentSelection.get(menu) + Constants.CONTROL_EXTENSION_CONTROLS);
-    if (element != null) {
-      element.hide();
-    }
+    showElement(menu + currentSelection.get(menu) + Constants.CONTROL_EXTENSION_CONTROLS, false);
     // hide the current sub panel (3rd level)
-    element = screen.findElementById(currentSelection.get(Constants.CONTROL_SUBCONTROLS));
-    if (element != null) {
-      element.hide();
-    }
+    showElement(currentSelection.get(Constants.CONTROL_SUBCONTROLS), false);
 
     // mark the new toggle button as selected
-    element = screen.findElementById(menu + selection + Constants.CONTROL_EXTENSION_BUTTON);
-    if (element != null) {
-      element.setStyle(Constants.STYLE_SELECTED);
-    }
+    setStyle(menu + selection + Constants.CONTROL_EXTENSION_BUTTON, Constants.STYLE_SELECTED);
     // find the control panel to display (2nd and 3rd level)
-    element = screen.findElementById(menu + selection + Constants.CONTROL_EXTENSION_CONTROLS);
-    if (element != null) {
-      element.show();
-      // when button is pressed in main panel, find the current selected 2nd level button to show correct 3rd level panel
-      String elementId = selection.toLowerCase() + currentSelection.get(selection.toLowerCase()) + Constants.CONTROL_EXTENSION_CONTROLS;
-      if ("main".equals(menu)) {
-        element = screen.findElementById(elementId);
-        if (element != null) {
-          element.show();
-          currentSelection.put(Constants.CONTROL_SUBCONTROLS, elementId);
-        }
-      } else {
-        currentSelection.put(Constants.CONTROL_SUBCONTROLS, menu + selection + Constants.CONTROL_EXTENSION_CONTROLS);
-      }
+    showElement(menu + selection + Constants.CONTROL_EXTENSION_CONTROLS, true);
+    // when button is pressed in main panel, find the current selected 2nd level button to show correct 3rd level panel
+    String elementId = selection.toLowerCase() + currentSelection.get(selection.toLowerCase()) + Constants.CONTROL_EXTENSION_CONTROLS;
+    if ("main".equals(menu)) {
+      showElement(elementId, true);
+      currentSelection.put(Constants.CONTROL_SUBCONTROLS, elementId);
+    } else {
+      currentSelection.put(Constants.CONTROL_SUBCONTROLS, menu + selection + Constants.CONTROL_EXTENSION_CONTROLS);
     }
     currentSelection.put(menu, selection);
 
@@ -139,27 +127,76 @@ public class HudScreenControl extends AbstractAppState implements ScreenControll
     if (subControl == null) {
       return;
     }
+    Carrier carrier = (Carrier) app.getRootNode().getChild(Constants.CARRIER_PLAYER);
 
-    System.out.println("subcontrol: " + subControl);
+    logger.debug("subcontrol: {}", subControl);
     switch (subControl) {
       case "carrierControlControls":
-        Carrier carrier = (Carrier) app.getRootNode().getChild(Constants.CARRIER_PLAYER);
         carrier.setCameraToBridge();
         app.getStateManager().getState(PlayerAppState.class).setActiveUnit(carrier);
         break;
-      case "weapons":
+      case "carrierMapControls":
+        //TODO show map
+        break;
+      case "carrierRepairControls":
+        //TODO show repair screen
+        break;
+      case "carrierResourcesControls":
+        //TODO show resources screen
+        break;
+      case "carrierMessagesControls":
+        //TODO show messages screen
+        break;
 
+      case "weaponsLaserControls":
+        carrier.setCameraToLaser();
+//        app.getStateManager().getState(PlayerAppState.class).setActiveUnit(carrier);
         break;
+      case "weaponsFlaresControls":
+        carrier.setCameraToFlareLauncher();
+//        app.getStateManager().getState(PlayerAppState.class).setActiveUnit(carrier);
+        break;
+      case "weaponsMissilesControls":
+        carrier.setCameraToSurfaceMissile();
+//        app.getStateManager().getState(PlayerAppState.class).setActiveUnit(carrier);
+        break;
+      case "weaponsDronesControls":
+        carrier.setCameraToRear();
+//        app.getStateManager().getState(PlayerAppState.class).setActiveUnit(carrier);
+        break;
+
       case "walrusControlControls":
-        Walrus walrus = (Walrus) app.getRootNode().getChild(Constants.WALRUS_1);
-        walrus.setCameraToFront();
-        app.getStateManager().getState(PlayerAppState.class).setActiveUnit(walrus);
+        selectWalrus(String.valueOf(selectedWalrus));
         break;
+      case "walrusMapControls":
+        //TODO show map screen
+        break;
+      case "walrusEquipControls":
+        //TODO show equip screen
+        break;
+      case "walrusHangarControls":
+        //TODO show hangar screen
+        break;
+      case "walrusStatusControls":
+        //TODO show status screen
+        break;
+
       case "mantaControlControls":
-        Manta manta = (Manta) app.getRootNode().getChild(Constants.MANTA_1);
-        manta.setCameraToFront();
-        app.getStateManager().getState(PlayerAppState.class).setActiveUnit(manta);
+        selectManta(String.valueOf(selectedManta));
         break;
+      case "mantaMapControls":
+        //TODO show map screen
+        break;
+      case "mantaEquipControls":
+        //TODO show equip screen
+        break;
+      case "mantaHangarControls":
+        //TODO show hangar screen
+        break;
+      case "mantaStatusControls":
+        //TODO show status screen
+        break;
+
       case "games":
 
         break;
@@ -172,5 +209,49 @@ public class HudScreenControl extends AbstractAppState implements ScreenControll
       control.setThrottle(0);
     }
     control.setRudder(0);
+  }
+
+  public void selectWalrus(String id) {
+    int walrusId = Integer.parseInt(id);
+    setStyle("walrus" + selectedWalrus + Constants.CONTROL_EXTENSION_BUTTON, Constants.STYLE_UNSELECTED);
+    setStyle("walrus" + walrusId + Constants.CONTROL_EXTENSION_BUTTON, Constants.STYLE_SELECTED);
+    selectedWalrus = walrusId;
+
+    Walrus walrus = (Walrus) app.getRootNode().getChild("walrus-" + id);
+    if(walrus != null) {
+      walrus.setCameraToFront();
+      app.getStateManager().getState(PlayerAppState.class).setActiveUnit(walrus);
+    }
+  }
+
+  public void selectManta(String id) {
+    int mantaId = Integer.parseInt(id);
+    setStyle("manta" + selectedManta + Constants.CONTROL_EXTENSION_BUTTON, Constants.STYLE_UNSELECTED);
+    setStyle("manta" + mantaId + Constants.CONTROL_EXTENSION_BUTTON, Constants.STYLE_SELECTED);
+    selectedManta = mantaId;
+
+    Manta manta = (Manta) app.getRootNode().getChild("manta-" + id);
+    if(manta != null) {
+      manta.setCameraToFront();
+      app.getStateManager().getState(PlayerAppState.class).setActiveUnit(manta);
+    }
+  }
+
+  private void setStyle(String id, String style) {
+    Element element = screen.findElementById(id);
+    if (element != null) {
+      element.setStyle(style);
+    }
+  }
+
+  private void showElement(String id, boolean show) {
+    Element element = screen.findElementById(id);
+    if (element != null) {
+      if (show) {
+        element.show();
+      } else {
+        element.hide();
+      }
+    }
   }
 }
