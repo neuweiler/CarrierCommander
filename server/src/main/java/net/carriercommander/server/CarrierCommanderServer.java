@@ -11,10 +11,13 @@ import net.carriercommander.server.listener.ClientUpdater;
 import net.carriercommander.server.listener.PlayerDataListener;
 import net.carriercommander.server.status.PlayerManager;
 import net.carriercommander.shared.Utils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 
-public class CarrierCommandServer extends SimpleApplication implements ConnectionListener {
+public class CarrierCommanderServer extends SimpleApplication implements ConnectionListener {
+  Logger logger = LoggerFactory.getLogger(CarrierCommanderServer.class);
 
   private static final int SERVER_PORT = 6000;
 
@@ -22,7 +25,7 @@ public class CarrierCommandServer extends SimpleApplication implements Connectio
 
   public static void main(String[] args) {
     Utils.initSerializers();
-    CarrierCommandServer app = new CarrierCommandServer();
+    CarrierCommanderServer app = new CarrierCommanderServer();
     app.start(JmeContext.Type.Headless);
   }
 
@@ -43,7 +46,7 @@ public class CarrierCommandServer extends SimpleApplication implements Connectio
       server.addMessageListener(new PlayerDataListener(server, playerManager));
       server.start();
 
-      System.out.println("Server started...");
+      logger.info("Server started...");
     } catch (IOException e) {
       e.printStackTrace();
     }
@@ -51,12 +54,12 @@ public class CarrierCommandServer extends SimpleApplication implements Connectio
 
   @Override
   public void connectionAdded(Server server, HostedConnection hostedConnection) {
-    System.out.println("client connected, id: " + hostedConnection.getId());
+    logger.info("client connected, id: {}", hostedConnection.getId());
   }
 
   @Override
   public void connectionRemoved(Server server, HostedConnection hostedConnection) {
-    System.out.println("client disconnected, id: " + hostedConnection.getId());
+    logger.info("client disconnected, id: {}", hostedConnection.getId());
     playerManager.removePlayer(hostedConnection.getId());
   }
 }
