@@ -140,11 +140,11 @@ public class ShipControl extends RigidBodyControl implements PhysicsCollisionLis
 		this.rudderPositionZ = rudderPositionZ;
 	}
 
-	public float getAileron() {
+	public float getAttitude() {
 		return 0f;
 	}
 
-	public void setAileron(float aileron) {
+	public void setAttitude(float attitude) {
 
 	}
 }

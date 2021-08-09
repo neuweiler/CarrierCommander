@@ -361,7 +361,7 @@ s					<panel id="mainWeaponsButton" style="unselected" childLayout="vertical">
 							<interact onClick="mantaStop(rudder)" />
 						</image>
 						<image filename="Interface/Screens/hud/level.png" style="unselected">
-							<interact onClick="mantaStop(level)" />
+							<interact onClick="mantaStop(aileron)" />
 						</image>
 					</panel>
 					<panel childLayout="vertical" width="30%">

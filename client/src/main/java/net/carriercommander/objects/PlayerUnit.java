@@ -60,11 +60,11 @@ public abstract class PlayerUnit extends Node {
 	}
 
 	public void steerUp(float tpf) {
-		shipControl.setAileron(shipControl.getAileron() - 0.5f * tpf);
+		shipControl.setAttitude(shipControl.getAttitude() - 0.5f * tpf);
 	}
 
 	public void steerDown(float tpf) {
-		shipControl.setAileron(shipControl.getAileron() + 0.5f * tpf);
+		shipControl.setAttitude(shipControl.getAttitude() + 0.5f * tpf);
 	}
 
 	public void increaseSpeed(float tpf) {

@@ -40,7 +40,6 @@ import com.jme3.scene.CameraNode;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.water.WaterFilter;
-import net.carriercommander.control.FloatControl;
 import net.carriercommander.control.PlaneControl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -64,25 +63,16 @@ public class Manta extends PlayerUnit {
 		attachChild(model);
 		logger.debug("vertices: {} triangles: {}", model.getVertexCount(), model.getTriangleCount());
 		setLocalTranslation(-400, 100, 300);
-//		scale(2);
 
 		createCameraHooks();
 
 		BoxCollisionShape collisionShape = new BoxCollisionShape(new Vector3f(width, height, length));
 		shipControl = new PlaneControl(collisionShape, mass);
-		shipControl.setRudderPositionZ(7);
 		addControl(shipControl);
-		shipControl.setDamping(0.1f, 0.2f);
+		shipControl.setDamping(0.1f, 0.5f);
 		phsyicsState.getPhysicsSpace().add(shipControl);
 
-		FloatControl floatControl = new FloatControl();
-		floatControl.setWater(water);
-		floatControl.setVerticalOffset(20);
-		floatControl.setWidth(width);
-		floatControl.setHeight(height);
-		floatControl.setLength(length);
-//		addControl(floatControl);
-		shipControl.setGravity(new Vector3f());
+		shipControl.setGravity(Vector3f.ZERO);
 	}
 
 	private void createCameraHooks() {

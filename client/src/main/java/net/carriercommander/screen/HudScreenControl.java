@@ -10,6 +10,7 @@ import de.lessvoid.nifty.screen.ScreenController;
 import net.carriercommander.CarrierCommander;
 import net.carriercommander.Constants;
 import net.carriercommander.PlayerAppState;
+import net.carriercommander.control.PlaneControl;
 import net.carriercommander.control.ShipControl;
 import net.carriercommander.objects.Carrier;
 import net.carriercommander.objects.Manta;
@@ -230,6 +231,20 @@ public class HudScreenControl extends AbstractAppState implements ScreenControll
 		if (manta != null) {
 			manta.setCameraToFront();
 			app.getStateManager().getState(PlayerAppState.class).setActiveUnit(manta);
+		}
+	}
+
+	public void mantaStop(String what) {
+		PlaneControl control = app.getRootNode().getChild("manta-" + selectedManta).getControl(PlaneControl.class);
+		switch (what) {
+			case "all":
+				control.setThrottle(0);
+			case "rudder":
+				control.setRudder(0);
+				break;
+			case "aileron":
+				control.setAttitude(0);
+				break;
 		}
 	}
 

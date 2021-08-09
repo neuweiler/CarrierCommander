@@ -31,10 +31,14 @@
 
 package net.carriercommander.control;
 
+import com.jme3.bullet.PhysicsSpace;
 import com.jme3.bullet.PhysicsTickListener;
+import com.jme3.bullet.collision.PhysicsCollisionEvent;
 import com.jme3.bullet.collision.PhysicsCollisionListener;
 import com.jme3.bullet.collision.shapes.CollisionShape;
+import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
+import com.jme3.math.Vector3f;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,7 +52,8 @@ public class PlaneControl extends ShipControl implements PhysicsCollisionListene
 
 	private final Quaternion rotation = new Quaternion();
 
-	private float aileron = 0;
+	private float attitude = 0; // aka pitch of airplane
+	private float bank = 0; // aka roll of airplane
 
 	public PlaneControl() {
 	}
@@ -61,36 +66,32 @@ public class PlaneControl extends ShipControl implements PhysicsCollisionListene
 		super(shape, mass);
 	}
 
-	/*
-	  @Override
-	  public void prePhysicsTick(PhysicsSpace arg0, float arg1) {
-		enginePower = throttle * getMass() * -10;
-	rudderPositionZ = 5;
-			getPhysicsRotationMatrix(currentRotation);
-			heading = FastMath.atan2(currentRotation.get(0, 2), currentRotation.get(2, 2)) + FastMath.PI;
-
-			engineForce.setX(-enginePower * FastMath.sin(heading + rudder / 2));
-			engineForce.setZ(enginePower * FastMath.sin(heading + 1.5f * FastMath.PI + rudder / 2));
-
-			rudderOffset.setX(rudderPositionZ * FastMath.sin(heading));
-			rudderOffset.setZ(rudderPositionZ * FastMath.sin(heading + 0.5f * FastMath.PI));
-
-			applyForce(engineForce, rudderOffset);
-
-		setPhysicsRotation(rotation.fromAngles(aileron, heading, rudder));
-
-	  }
-	*/
-	public float getAileron() {
-		return aileron;
+	@Override
+	public void prePhysicsTick(PhysicsSpace arg0, float arg1) {
+		bank = rudder;
+		heading += bank / 100;
+		setLinearVelocity(new Vector3f(FastMath.sin(heading) * throttle * -100, attitude * 100, FastMath.cos(heading) * throttle * -100));
+		setPhysicsRotation(rotation.fromAngles(attitude, heading, bank));
 	}
 
-	public void setAileron(float aileron) {
-		if (aileron > 1.0f)
-			aileron = 1.0f;
-		if (aileron < -1.0f)
-			aileron = -1.0f;
-		this.aileron = aileron;
-		logger.debug("aileron: {}", this.aileron);
+	@Override
+	public void collision(PhysicsCollisionEvent event) {
+		super.collision(event);
+		if (event.getObjectA() == this || event.getObjectB() == this) {
+			setAttitude(0);
+		}
+	}
+
+	public float getAttitude() {
+		return attitude;
+	}
+
+	public void setAttitude(float attitude) {
+		if (attitude > 1.0f)
+			attitude = 1.0f;
+		if (attitude < -1.0f)
+			attitude = -1.0f;
+		this.attitude = attitude;
+		logger.debug("attitude: {}", this.attitude);
 	}
 }
