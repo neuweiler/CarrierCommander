@@ -144,25 +144,25 @@ s					<panel id="mainWeaponsButton" style="unselected" childLayout="vertical">
 
 				<panel id="carrierControlControls" visible="false" childLayout="horizontal">
 					<panel id="carrierRadar" childLayout="vertical">
-						<image filename="Interface/Screens/hud/radarScreen.gif" />
+						<image filename="Interface/Screens/hud/radarScreen.png" />
 					</panel>
 					<panel childLayout="vertical">
-						<image filename="Interface/Screens/hud/radarZoomIn.gif" style="unselected">
+						<image filename="Interface/Screens/hud/zoomIn.png" style="unselected">
 							<interact onClick="carrierRadarZoom(in)" />
 						</image>
-						<image filename="Interface/Screens/hud/radarZoomOut.gif" style="unselected">
+						<image filename="Interface/Screens/hud/zoomOut.png" style="unselected">
 							<interact onClick="carrierRadarZoom(out)" />
 						</image>
 					</panel>
-					<image filename="Interface/Screens/hud/stop.gif" style="unselected">
+					<image filename="Interface/Screens/hud/stop.png" style="unselected">
 						<interact onClick="carrierStop(all)" />
 					</image>
 					<panel childLayout="vertical">
-						<image filename="Interface/Screens/hud/centerRudder.gif" style="unselected">
+						<image filename="Interface/Screens/hud/centerRudder.png" style="unselected">
 							<interact onClick="carrierStop(rudder)" />
 						</image>
 						<panel id="carrierAutoPilotButton" style="unselected" childLayout="vertical">
-							<image filename="Interface/Screens/hud/autoPilot.gif" />
+							<image filename="Interface/Screens/hud/autoPilot.png" />
 							<interact onClick="carrierAutoPilot()" />
 						</panel>
 					</panel>
@@ -172,20 +172,20 @@ s					<panel id="mainWeaponsButton" style="unselected" childLayout="vertical">
 						<text text="Island: Vulcan" id="carrierIsland" font="Interface/Fonts/Default.fnt" />
 					</panel>
 					<panel id="carrierDepth" childLayout="horizontal">
-						<image filename="Interface/Screens/hud/depth.gif" />
+						<image filename="Interface/Screens/hud/depth.png" />
 					</panel>
 					<panel id="carrierFuel" childLayout="horizontal">
-						<image filename="Interface/Screens/hud/fuel.gif" />
+						<image filename="Interface/Screens/hud/fuel.png" />
 					</panel>
 					<panel id="carrierThrottle" childLayout="horizontal">
-						<image filename="Interface/Screens/hud/speed.gif" />
+						<image filename="Interface/Screens/hud/speed.png" />
 						<interact onClick="carrierSpeed()" />
 					</panel>
 					<panel childLayout="vertical">
-						<image filename="Interface/Screens/hud/speedIncrease.gif" style="unselected">
+						<image filename="Interface/Screens/hud/speedIncrease.png" style="unselected">
 							<interact onClick="carrierSpeed(increase)" />
 						</image>
-						<image filename="Interface/Screens/hud/speedDecrease.gif" style="unselected">
+						<image filename="Interface/Screens/hud/speedDecrease.png" style="unselected">
 							<interact onClick="carrierSpeed(decrease)" />
 						</image>
 					</panel>
@@ -264,16 +264,16 @@ s					<panel id="mainWeaponsButton" style="unselected" childLayout="vertical">
 							<interact onClick="selectWalrus(4)" />
 						</panel>
 						<panel id="walrusAutopilotButton" style="unselected" childLayout="vertical">
-							<image filename="Interface/Screens/hud/autoPilot.gif" style="unselected"/>
+							<image filename="Interface/Screens/hud/autoPilot.png" style="unselected"/>
 							<interact onClick="setWalrusAutoPilot()" />
 						</panel>
 					</panel>
 					<panel childLayout="vertical">
-						<image filename="Interface/Screens/hud/centerRudder.gif" style="unselected">
+						<image filename="Interface/Screens/hud/centerRudder.png" style="unselected">
 							<interact onClick="walrusStop(rudder)" />
 						</image>
-						<image filename="Interface/Screens/hud/level.png" style="unselected">
-							<interact onClick="walrusStop(level)" />
+						<image filename="Interface/Screens/hud/link.png" style="unselected">
+							<interact onClick="walrusLink()" />
 						</image>
 					</panel>
 					<panel childLayout="vertical" width="30%">
@@ -281,22 +281,19 @@ s					<panel id="mainWeaponsButton" style="unselected" childLayout="vertical">
 						<text text="Bearing: 000" id="walrusBearing" font="Interface/Fonts/Default.fnt" />
 						<text text="Island: Vulcan" id="walrusIsland" font="Interface/Fonts/Default.fnt" />
 					</panel>
-					<panel id="walrusDepth" childLayout="horizontal">
-						<image filename="Interface/Screens/hud/status.png" />
-					</panel>
 					<panel id="walrusFuel" childLayout="horizontal">
-						<image filename="Interface/Screens/hud/status.png" />
+						<image filename="Interface/Screens/hud/fuel.png" />
 					</panel>
-					<panel id="walrusThrottle" childLayout="horizontal">
-						<image filename="Interface/Screens/hud/status.png" />
+					<panel id="walrusSpeed" childLayout="horizontal">
+						<image filename="Interface/Screens/hud/speed.png" />
 						<interact onClick="setWalrusSpeed()" />
 					</panel>
 					<panel childLayout="vertical">
-						<image filename="Interface/Screens/hud/map.png" style="unselected">
-							<interact onClick="setWalrusSpeed(up)" />
+						<image filename="Interface/Screens/hud/radar.png" style="unselected" width="42" height="44" >
+							<interact onClick="toggleWalrusRadar()" />
 						</image>
-						<image filename="Interface/Screens/hud/map.png" style="unselected">
-							<interact onClick="setWalrusSpeed(down)" />
+						<image filename="Interface/Screens/hud/rearView.png" style="unselected">
+							<interact onClick="toggleWalrusRearView()" />
 						</image>
 					</panel>
 				</panel>
@@ -352,12 +349,12 @@ s					<panel id="mainWeaponsButton" style="unselected" childLayout="vertical">
 							<interact onClick="selectManta(4)" />
 						</panel>
 						<panel id="mantaAutopilotButton" style="unselected" childLayout="vertical">
-							<image filename="Interface/Screens/hud/autoPilot.gif" style="unselected"/>
+							<image filename="Interface/Screens/hud/autoPilot.png" style="unselected"/>
 							<interact onClick="setMantaAutoPilot()" />
 						</panel>
 					</panel>
 					<panel childLayout="vertical">
-						<image filename="Interface/Screens/hud/centerRudder.gif" style="unselected">
+						<image filename="Interface/Screens/hud/centerRudder.png" style="unselected">
 							<interact onClick="mantaStop(rudder)" />
 						</image>
 						<image filename="Interface/Screens/hud/level.png" style="unselected">
@@ -370,20 +367,20 @@ s					<panel id="mainWeaponsButton" style="unselected" childLayout="vertical">
 						<text text="Island: Vulcan" id="mantaIsland" font="Interface/Fonts/Default.fnt" />
 					</panel>
 					<panel id="mantaAltitude" childLayout="horizontal">
-						<image filename="Interface/Screens/hud/altitude.gif" />
+						<image filename="Interface/Screens/hud/altitude.png" />
 					</panel>
 					<panel id="mantaFuel" childLayout="horizontal">
-						<image filename="Interface/Screens/hud/fuel.gif" />
+						<image filename="Interface/Screens/hud/fuel.png" />
 					</panel>
 					<panel id="mantaThrottle" childLayout="horizontal">
-						<image filename="Interface/Screens/hud/speed.gif" />
+						<image filename="Interface/Screens/hud/speed.png" />
 						<interact onClick="setMantaSpeed()" />
 					</panel>
 					<panel childLayout="vertical">
-						<image filename="Interface/Screens/hud/radar.gif" style="unselected" width="42" height="44">
+						<image filename="Interface/Screens/hud/radar.png" style="unselected" width="42" height="44">
 							<interact onClick="setMantaSpeed(up)" />
 						</image>
-						<image filename="Interface/Screens/hud/rearView.gif" style="unselected">
+						<image filename="Interface/Screens/hud/rearView.png" style="unselected">
 							<interact onClick="setMantaSpeed(down)" />
 						</image>
 					</panel>
