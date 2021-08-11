@@ -101,8 +101,8 @@ public class ShipControl extends RigidBodyControl implements PhysicsCollisionLis
 	public void collision(PhysicsCollisionEvent event) {
 		if (event.getObjectA() == this || event.getObjectB() == this) {
 			logger.debug("collision between {} and {}", event.getObjectA(), event.getObjectB());
-			setThrottle(0);
-			setRudder(0);
+//			setThrottle(0);
+//			setRudder(0);
 		}
 	}
 
