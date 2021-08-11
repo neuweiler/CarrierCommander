@@ -92,8 +92,8 @@ public class Carrier extends PlayerUnit {
 //		control.setAngularVelocity(new Vector3f(0f, 0f, 0.1f));
 //		control.setLinearVelocity(getLocalRotation().getRotationColumn(2).mult(-10));
 
-		float[] angles = {FastMath.DEG_TO_RAD * 0, FastMath.DEG_TO_RAD * 0, FastMath.DEG_TO_RAD * 0}; // pitch, yaw, roll
-		shipControl.setPhysicsRotation(new Quaternion(angles));
+//		float[] angles = {FastMath.DEG_TO_RAD * 0, FastMath.DEG_TO_RAD * 0, FastMath.DEG_TO_RAD * 0}; // pitch, yaw, roll
+//		shipControl.setPhysicsRotation(new Quaternion(angles));
 	}
 
 	private void createCameraHooks() {
