@@ -167,9 +167,9 @@ s					<panel id="mainWeaponsButton" style="unselected" childLayout="vertical">
 						</panel>
 					</panel>
 					<panel childLayout="vertical" width="30%">
-						<text text="Position: -4432,-4294" id="carrierPosition" font="Interface/Fonts/Default.fnt" />
-						<text text="Bearing: 000" id="carrierBearing" font="Interface/Fonts/Default.fnt" />
-						<text text="Island: Vulcan" id="carrierIsland" font="Interface/Fonts/Default.fnt" />
+						<text text="" id="carrierPosition" font="Interface/Fonts/Default.fnt" />
+						<text text="" id="carrierHeading" font="Interface/Fonts/Default.fnt" />
+						<text text="" id="carrierIsland" font="Interface/Fonts/Default.fnt" />
 					</panel>
 					<panel id="carrierDepth" childLayout="horizontal">
 						<image filename="Interface/Screens/hud/depth.png" />
@@ -277,9 +277,9 @@ s					<panel id="mainWeaponsButton" style="unselected" childLayout="vertical">
 						</image>
 					</panel>
 					<panel childLayout="vertical" width="30%">
-						<text text="Position: -4432,-4294" id="walrusPosition" font="Interface/Fonts/Default.fnt" />
-						<text text="Bearing: 000" id="walrusBearing" font="Interface/Fonts/Default.fnt" />
-						<text text="Island: Vulcan" id="walrusIsland" font="Interface/Fonts/Default.fnt" />
+						<text text="" id="walrusPosition" font="Interface/Fonts/Default.fnt" />
+						<text text="" id="walrusHeading" font="Interface/Fonts/Default.fnt" />
+						<text text="" id="walrusIsland" font="Interface/Fonts/Default.fnt" />
 					</panel>
 					<panel id="walrusFuel" childLayout="horizontal">
 						<image filename="Interface/Screens/hud/fuel.png" />
@@ -362,9 +362,9 @@ s					<panel id="mainWeaponsButton" style="unselected" childLayout="vertical">
 						</image>
 					</panel>
 					<panel childLayout="vertical" width="30%">
-						<text text="Position: -4432,-4294" id="mantaPosition" font="Interface/Fonts/Default.fnt" />
-						<text text="Bearing: 000" id="mantaBearing" font="Interface/Fonts/Default.fnt" />
-						<text text="Island: Vulcan" id="mantaIsland" font="Interface/Fonts/Default.fnt" />
+						<text text="" id="mantaPosition" font="Interface/Fonts/Default.fnt" />
+						<text text="" id="mantaHeading" font="Interface/Fonts/Default.fnt" />
+						<text text="" id="mantaIsland" font="Interface/Fonts/Default.fnt" />
 					</panel>
 					<panel id="mantaAltitude" childLayout="horizontal">
 						<image filename="Interface/Screens/hud/altitude.png" />

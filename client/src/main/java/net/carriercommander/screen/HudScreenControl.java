@@ -3,8 +3,10 @@ package net.carriercommander.screen;
 import com.jme3.app.Application;
 import com.jme3.app.state.AbstractAppState;
 import com.jme3.app.state.AppStateManager;
+import com.jme3.math.FastMath;
 import de.lessvoid.nifty.Nifty;
 import de.lessvoid.nifty.elements.Element;
+import de.lessvoid.nifty.elements.render.TextRenderer;
 import de.lessvoid.nifty.screen.Screen;
 import de.lessvoid.nifty.screen.ScreenController;
 import net.carriercommander.CarrierCommander;
@@ -14,6 +16,7 @@ import net.carriercommander.control.PlaneControl;
 import net.carriercommander.control.ShipControl;
 import net.carriercommander.objects.Carrier;
 import net.carriercommander.objects.Manta;
+import net.carriercommander.objects.PlayerUnit;
 import net.carriercommander.objects.Walrus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,6 +36,8 @@ public class HudScreenControl extends AbstractAppState implements ScreenControll
 	private Nifty nifty;
 	private Screen screen;
 	private CarrierCommander app = null;
+	private PlayerAppState playerAppState = null;
+
 	private final Map<String, String> currentSelection = new HashMap<>();
 	private int selectedManta = 1;
 	private int selectedWalrus = 1;
@@ -54,6 +59,40 @@ public class HudScreenControl extends AbstractAppState implements ScreenControll
 
 	@Override
 	public void update(float tpf) {
+		//TODO optimize
+		if (playerAppState != null && screen != null) {
+			PlayerUnit activeUnit = playerAppState.getActiveUnit();
+			String subControl = currentSelection.get(Constants.CONTROL_SUBCONTROLS);
+			if (subControl == null) {
+				return;
+			}
+			String type = null;
+			switch (subControl) {
+				case "carrierControlControls":
+					type = "carrier";
+					break;
+				case "mantaControlControls":
+					type = "manta";
+					break;
+				case "walrusControlControls":
+					type = "walrus";
+					break;
+			}
+			Element positionText = screen.findElementById(type + "Position");;
+			if (positionText != null) {
+				positionText.getRenderer(TextRenderer.class).setText("Position: "
+						+ String.format("%.02f", activeUnit.getLocalTranslation().getX() / 1000f) + " "
+						+ String.format("%.02f", activeUnit.getLocalTranslation().getZ() / 1000f));
+			}
+			Element headingText = screen.findElementById(type + "Heading");
+			if (headingText != null) {
+				float[] angles = activeUnit.getWorldRotation().toAngles(null);
+				headingText.getRenderer(TextRenderer.class).setText("Heading: "
+						+ Math.round(FastMath.RAD_TO_DEG * angles[1])); //TODO not correct heading yet
+			}
+		}  else {
+			playerAppState = app.getStateManager().getState(PlayerAppState.class);
+		}
 	}
 
 	@Override
@@ -172,7 +211,7 @@ public class HudScreenControl extends AbstractAppState implements ScreenControll
 				//TODO show equip screen
 				break;
 			case "walrusHangarControls":
-				//TODO show hangar screen
+				carrier.setCameraToRear();
 				break;
 			case "walrusStatusControls":
 				//TODO show status screen
@@ -188,7 +227,7 @@ public class HudScreenControl extends AbstractAppState implements ScreenControll
 				//TODO show equip screen
 				break;
 			case "mantaHangarControls":
-				//TODO show hangar screen
+				carrier.setCameraToFlightDeck();
 				break;
 			case "mantaStatusControls":
 				//TODO show status screen

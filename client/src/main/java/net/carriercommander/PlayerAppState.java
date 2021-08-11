@@ -28,11 +28,14 @@ import net.carriercommander.objects.PlayerUnit;
 import net.carriercommander.objects.Walrus;
 import net.carriercommander.shared.model.GameObject;
 import net.carriercommander.shared.model.PlayerData;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class PlayerAppState extends AbstractAppState {
+	Logger logger = LoggerFactory.getLogger(PlayerAppState.class);
 
 	private final BulletAppState physicsState;
 	private final Node rootNode;
@@ -80,7 +83,7 @@ public class PlayerAppState extends AbstractAppState {
 	private void createCarrier() {
 		carrier = new Carrier(Constants.CARRIER_PLAYER, assetManager, physicsState, water, camNode);
 		ShipControl control = carrier.getControl(ShipControl.class);
-		control.setPhysicsLocation(new Vector3f(-900, water.getWaterHeight() + 5, 400));
+		control.setPhysicsLocation(new Vector3f(-9000, water.getWaterHeight() + 5, 4000));
 		rootNode.attachChild(carrier);
 //		bulletAppState.getPhysicsSpace().addAll(player);
 	}
@@ -88,25 +91,25 @@ public class PlayerAppState extends AbstractAppState {
 	private void createWalrus() {
 		Walrus unit = new Walrus(Constants.WALRUS_1, assetManager, physicsState, water, camNode);
 		ShipControl control = unit.getControl(ShipControl.class);
-		control.setPhysicsLocation(new Vector3f(-425, water.getWaterHeight() + 2, 300));
+		control.setPhysicsLocation(new Vector3f(-4250, water.getWaterHeight() + 2, 3000));
 		rootNode.attachChild(unit);
 		walrus.add(unit);
 
 		unit = new Walrus(Constants.WALRUS_2, assetManager, physicsState, water, camNode);
 		control = unit.getControl(ShipControl.class);
-		control.setPhysicsLocation(new Vector3f(-400, water.getWaterHeight() + 2, 300));
+		control.setPhysicsLocation(new Vector3f(-4000, water.getWaterHeight() + 2, 3000));
 		rootNode.attachChild(unit);
 		walrus.add(unit);
 
 		unit = new Walrus(Constants.WALRUS_3, assetManager, physicsState, water, camNode);
 		control = unit.getControl(ShipControl.class);
-		control.setPhysicsLocation(new Vector3f(-375, water.getWaterHeight() + 2, 300));
+		control.setPhysicsLocation(new Vector3f(-3750, water.getWaterHeight() + 2, 3000));
 		rootNode.attachChild(unit);
 		walrus.add(unit);
 
 		unit = new Walrus(Constants.WALRUS_4, assetManager, physicsState, water, camNode);
 		control = unit.getControl(ShipControl.class);
-		control.setPhysicsLocation(new Vector3f(-350, water.getWaterHeight() + 2, 300));
+		control.setPhysicsLocation(new Vector3f(-3500, water.getWaterHeight() + 2, 3000));
 		rootNode.attachChild(unit);
 		walrus.add(unit);
 	}
@@ -114,25 +117,25 @@ public class PlayerAppState extends AbstractAppState {
 	private void createManta() {
 		Manta unit = new Manta(Constants.MANTA_1, assetManager, physicsState, water, camNode);
 		ShipControl control = unit.getControl(ShipControl.class);
-		control.setPhysicsLocation(new Vector3f(-425, water.getWaterHeight() + 2, 300));
+		control.setPhysicsLocation(new Vector3f(-4250, water.getWaterHeight() + 2, 3000));
 		rootNode.attachChild(unit);
 		manta.add(unit);
 
 		unit = new Manta(Constants.MANTA_2, assetManager, physicsState, water, camNode);
 		control = unit.getControl(ShipControl.class);
-		control.setPhysicsLocation(new Vector3f(-400, water.getWaterHeight() + 2, 300));
+		control.setPhysicsLocation(new Vector3f(-4000, water.getWaterHeight() + 2, 3000));
 		rootNode.attachChild(unit);
 		manta.add(unit);
 
 		unit = new Manta(Constants.MANTA_3, assetManager, physicsState, water, camNode);
 		control = unit.getControl(ShipControl.class);
-		control.setPhysicsLocation(new Vector3f(-375, water.getWaterHeight() + 2, 300));
+		control.setPhysicsLocation(new Vector3f(-3750, water.getWaterHeight() + 2, 3000));
 		rootNode.attachChild(unit);
 		manta.add(unit);
 
 		unit = new Manta(Constants.MANTA_4, assetManager, physicsState, water, camNode);
 		control = unit.getControl(ShipControl.class);
-		control.setPhysicsLocation(new Vector3f(-350, water.getWaterHeight() + 2, 300));
+		control.setPhysicsLocation(new Vector3f(-3500, water.getWaterHeight() + 2, 3000));
 		rootNode.attachChild(unit);
 		manta.add(unit);
 	}
@@ -200,6 +203,10 @@ public class PlayerAppState extends AbstractAppState {
 
 	public void setActiveUnit(PlayerUnit unit) {
 		activeUnit = unit;
+	}
+
+	public PlayerUnit getActiveUnit() {
+		return activeUnit;
 	}
 
 	@Override
