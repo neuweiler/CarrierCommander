@@ -14,16 +14,14 @@ import net.carriercommander.Constants;
 import net.carriercommander.PlayerAppState;
 import net.carriercommander.control.PlaneControl;
 import net.carriercommander.control.ShipControl;
-import net.carriercommander.objects.Carrier;
-import net.carriercommander.objects.Manta;
-import net.carriercommander.objects.PlayerUnit;
-import net.carriercommander.objects.Walrus;
+import net.carriercommander.objects.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * Hud Screen Control
@@ -37,10 +35,16 @@ public class HudScreenControl extends AbstractAppState implements ScreenControll
 	private Screen screen;
 	private CarrierCommander app = null;
 	private PlayerAppState playerAppState = null;
+	private String subControl = null;
 
 	private final Map<String, String> currentSelection = new HashMap<>();
 	private int selectedManta = 1;
 	private int selectedWalrus = 1;
+	private long timestamp = 0;
+
+	private TextRenderer positionTextRenderer = null;
+	private TextRenderer headingTextRenderer = null;
+	private TextRenderer islandTextRenderer = null;
 
 	/**
 	 * Constructor
@@ -57,41 +61,53 @@ public class HudScreenControl extends AbstractAppState implements ScreenControll
 		this.app = (CarrierCommander) app;
 	}
 
+	private void switchSubControl(String subControl) {
+		this.subControl = subControl;
+		String type = "";
+		switch (subControl) {
+			case "carrierControlControls":
+				type = "carrier";
+				break;
+			case "mantaControlControls":
+				type = "manta";
+				break;
+			case "walrusControlControls":
+				type = "walrus";
+				break;
+		}
+		positionTextRenderer = screen.findElementById(type + "Position").getRenderer(TextRenderer.class);
+		headingTextRenderer = screen.findElementById(type + "Heading").getRenderer(TextRenderer.class);
+		islandTextRenderer = screen.findElementById(type + "Island").getRenderer(TextRenderer.class);
+	}
+
 	@Override
 	public void update(float tpf) {
-		//TODO optimize
-		if (playerAppState != null && screen != null) {
-			PlayerUnit activeUnit = playerAppState.getActiveUnit();
-			String subControl = currentSelection.get(Constants.CONTROL_SUBCONTROLS);
-			if (subControl == null) {
-				return;
-			}
-			String type = null;
-			switch (subControl) {
-				case "carrierControlControls":
-					type = "carrier";
-					break;
-				case "mantaControlControls":
-					type = "manta";
-					break;
-				case "walrusControlControls":
-					type = "walrus";
-					break;
-			}
-			Element positionText = screen.findElementById(type + "Position");;
-			if (positionText != null) {
-				positionText.getRenderer(TextRenderer.class).setText("Position: "
-						+ String.format("%.02f", activeUnit.getLocalTranslation().getX() / 1000f) + " "
-						+ String.format("%.02f", activeUnit.getLocalTranslation().getZ() / 1000f));
-			}
-			Element headingText = screen.findElementById(type + "Heading");
-			if (headingText != null) {
+		if (System.currentTimeMillis() > timestamp + 200) {
+			if (playerAppState != null && screen != null) {
+				if (subControl != currentSelection.get(Constants.CONTROL_SUBCONTROLS)) {
+					switchSubControl(currentSelection.get(Constants.CONTROL_SUBCONTROLS));
+				}
+				if (subControl == null) {
+					return;
+				}
+				PlayerUnit activeUnit = playerAppState.getActiveUnit();
+				positionTextRenderer.setText("Position: "
+						+ String.format("%.02f", activeUnit.getLocalTranslation().getX() / Constants.MAP_SCENE_FACTOR) + " "
+						+ String.format("%.02f", activeUnit.getLocalTranslation().getZ() / Constants.MAP_SCENE_FACTOR));
+
 				float[] angles = activeUnit.getWorldRotation().toAngles(null);
-				headingText.getRenderer(TextRenderer.class).setText("Heading: "
+				headingTextRenderer.setText("Heading: "
 						+ Math.round(FastMath.RAD_TO_DEG * angles[1])); //TODO not correct heading yet
+
+				Optional<Island> island = IslandMap.getInstance().getClosestIsland(activeUnit.getWorldTranslation());
+				islandTextRenderer.setText("Island: " +
+						(island.isPresent() ? island.get().getName() : "-") +
+						" (" + Math.round(island.get().getPosition().distance(activeUnit.getWorldTranslation()) / Constants.MAP_SCENE_FACTOR) + ")"
+				);
+			} else {
+				playerAppState = app.getStateManager().getState(PlayerAppState.class); // lazy init
 			}
-		}  else {
-			playerAppState = app.getStateManager().getState(PlayerAppState.class);
+			timestamp = System.currentTimeMillis();
 		}
 	}
 
