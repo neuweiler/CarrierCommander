@@ -75,9 +75,12 @@ public class HudScreenControl extends AbstractAppState implements ScreenControll
 				type = "walrus";
 				break;
 		}
-		positionTextRenderer = screen.findElementById(type + "Position").getRenderer(TextRenderer.class);
-		headingTextRenderer = screen.findElementById(type + "Heading").getRenderer(TextRenderer.class);
-		islandTextRenderer = screen.findElementById(type + "Island").getRenderer(TextRenderer.class);
+		Element position = screen.findElementById(type + "Position");
+		positionTextRenderer = (position != null ? position.getRenderer(TextRenderer.class) : null);
+		Element heading = screen.findElementById(type + "Heading");
+		headingTextRenderer = (heading != null ? heading.getRenderer(TextRenderer.class) : null);
+		Element island = screen.findElementById(type + "Island");
+		islandTextRenderer = (island != null ? island.getRenderer(TextRenderer.class) : null);
 	}
 
 	@Override
@@ -87,7 +90,7 @@ public class HudScreenControl extends AbstractAppState implements ScreenControll
 				if (subControl != currentSelection.get(Constants.CONTROL_SUBCONTROLS)) {
 					switchSubControl(currentSelection.get(Constants.CONTROL_SUBCONTROLS));
 				}
-				if (subControl == null) {
+				if (subControl == null || positionTextRenderer == null || headingTextRenderer == null || islandTextRenderer == null) {
 					return;
 				}
 				PlayerUnit activeUnit = playerAppState.getActiveUnit();
@@ -273,6 +276,17 @@ public class HudScreenControl extends AbstractAppState implements ScreenControll
 		if (walrus != null) {
 			walrus.setCameraToFront();
 			app.getStateManager().getState(PlayerAppState.class).setActiveUnit(walrus);
+		}
+	}
+
+	public void walrusStop(String what) {
+		ShipControl control = app.getRootNode().getChild("walrus-" + selectedWalrus).getControl(ShipControl.class);
+		switch (what) {
+			case "all":
+				control.setThrottle(0);
+			case "rudder":
+				control.setRudder(0);
+				break;
 		}
 	}
 
