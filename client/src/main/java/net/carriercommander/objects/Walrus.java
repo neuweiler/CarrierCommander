@@ -60,9 +60,9 @@ public class Walrus extends PlayerUnit {
 	public Walrus(String name, AssetManager assetManager, BulletAppState phsyicsState, WaterFilter water, CameraNode camNode) {
 		super(name, assetManager, phsyicsState, water, camNode);
 
-		Spatial model = assetManager.loadModel("Models/BTR80/BTR_80.obj");
+		Spatial model = assetManager.loadModel("Models/BTR80/br01.fbx");
 		model.scale(0.05f);
-		model.rotate(0, FastMath.DEG_TO_RAD * -90, 0);
+		model.move(0,6.8f,0);
 		attachChild(model);
 
 		createCameraHooks();
