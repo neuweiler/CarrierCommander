@@ -70,6 +70,7 @@ import de.lessvoid.nifty.tools.SizeValue;
 import net.carriercommander.Constants.GameType;
 import net.carriercommander.network.ClientListener;
 import net.carriercommander.network.SceneManager;
+import net.carriercommander.objects.IslandMap;
 import net.carriercommander.screen.HudScreenControl;
 import net.carriercommander.screen.StartScreenControl;
 import net.carriercommander.shared.Utils;
@@ -99,7 +100,7 @@ public class CarrierCommander extends SimpleApplication implements ClientStateLi
 	private CameraNode camNode = null;
 
 	private float time = 0.0f;
-	private final float initialWaterHeight = 90f;
+	private final float initialWaterHeight = 0f;
 	private boolean loading = false;
 	private int loadPart = 0;
 	private GameType gameType;
@@ -236,7 +237,7 @@ public class CarrierCommander extends SimpleApplication implements ClientStateLi
 		physicsState.setBroadphaseType(BroadphaseType.SIMPLE);
 		stateManager.attach(physicsState);
 
-//		phsyicsState.setDebugEnabled(true);
+//		physicsState.setDebugEnabled(true);
 	}
 
 
@@ -272,6 +273,7 @@ public class CarrierCommander extends SimpleApplication implements ClientStateLi
 		water.setMaxAmplitude(2f);
 		water.setFoamExistence(new Vector3f(1f, 4, 0.5f));
 		water.setFoamTexture((Texture2D) assetManager.loadTexture("Common/MatDefs/Water/Textures/foam2.jpg"));
+		//water.setUseHQShoreline(true);
 		// water.setNormalScale(0.5f);
 		// water.setRefractionConstant(0.25f);
 		// water.setRefractionStrength(0.2f);
@@ -332,27 +334,25 @@ public class CarrierCommander extends SimpleApplication implements ClientStateLi
 		matRock.setTexture("NormalMap_1", normalMap2);
 		matRock.setTexture("NormalMap_2", normalMap2);
 
-		AbstractHeightMap heightmap = null;
-		try {
-			heightmap = new ImageBasedHeightMap(heightMapImage.getImage(), 0.25f);
-			heightmap.load();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		TerrainQuad terrain = new TerrainQuad("terrain", 65, 513, heightmap.getHeightMap());
-		List<Camera> cameras = new ArrayList<>();
-		cameras.add(getCamera());
-		terrain.setMaterial(matRock);
-		terrain.setLocalScale(new Vector3f(5, 5, 5));
-		terrain.setLocalTranslation(new Vector3f(0, -30, 0));
-		terrain.setLocked(false); // unlock it so we can edit the height
+		final AbstractHeightMap heightmap = new ImageBasedHeightMap(heightMapImage.getImage(), 0.25f);
+		heightmap.load();
 
-		RigidBodyControl rbc = new RigidBodyControl(0);
-		terrain.addControl(rbc);
-		physicsState.getPhysicsSpace().add(rbc);
+		IslandMap.getInstance().getIslands().stream().forEach(island -> {
+			logger.debug("creating island {}", island.getName());
+			TerrainQuad terrain = new TerrainQuad("terrain", 65, 513, heightmap.getHeightMap());
+			terrain.setName(island.getName());
+			terrain.setMaterial(matRock);
+			terrain.setLocalScale(new Vector3f(5, 5, 5));
+			terrain.setLocalTranslation(island.getPosition());
+			terrain.setLocked(false); // unlock it so we can edit the height
 
-		terrain.setShadowMode(ShadowMode.Receive);
-		rootNode.attachChild(terrain);
+			RigidBodyControl rbc = new RigidBodyControl(0);
+			terrain.addControl(rbc);
+			physicsState.getPhysicsSpace().add(rbc);
+
+			terrain.setShadowMode(ShadowMode.Receive);
+			rootNode.attachChild(terrain);
+		});
 
 		// TerrainLodControl control = new TerrainLodControl(terrain, getCamera());
 		// terrain.addControl(control);

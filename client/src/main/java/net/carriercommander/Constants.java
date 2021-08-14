@@ -82,5 +82,8 @@ public interface Constants {
 	String CONTROL_SUBCONTROLS = "subControls";
 	String STYLE_SELECTED = "selected";
 	String STYLE_UNSELECTED = "unselected";
+
+	int MAP_SCENE_FACTOR = 100; // by how much the map coordinates are multiplied for the scene graph
+
 	enum GameType {strategy, action, network}
 }
