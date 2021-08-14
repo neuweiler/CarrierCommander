@@ -13,6 +13,12 @@
 			<onFocus name="pulsate" startColor="#f007" endColor="#800f" />
 		</effect>
 	</style>
+	<style id="infoBox">
+		<attributes backgroundColor="#0005" width="200px" padding="5px,5px" />
+	</style>
+	<style id="infoText">
+		<attributes font="Interface/Fonts/Default.fnt" textHAlign="left" />
+	</style>
 
 	<screen id="hud" controller="net.carriercommander.screen.HudScreenControl">
 		<layer id="background">
@@ -166,10 +172,10 @@ s					<panel id="mainWeaponsButton" style="unselected" childLayout="vertical">
 							<interact onClick="carrierAutoPilot()" />
 						</panel>
 					</panel>
-					<panel childLayout="vertical" width="30%">
-						<text text="" id="carrierPosition" font="Interface/Fonts/Default.fnt" />
-						<text text="" id="carrierHeading" font="Interface/Fonts/Default.fnt" />
-						<text text="" id="carrierIsland" font="Interface/Fonts/Default.fnt" />
+					<panel childLayout="vertical" style="infoBox">
+						<text text="" id="carrierPosition" style="infoText" />
+						<text text="" id="carrierHeading" style="infoText" />
+						<text text="" id="carrierIsland" style="infoText" />
 					</panel>
 					<panel id="carrierDepth" childLayout="horizontal">
 						<image filename="Interface/Screens/hud/depth.png" />
@@ -276,10 +282,10 @@ s					<panel id="mainWeaponsButton" style="unselected" childLayout="vertical">
 							<interact onClick="walrusLink()" />
 						</image>
 					</panel>
-					<panel childLayout="vertical" width="30%">
-						<text text="" id="walrusPosition" font="Interface/Fonts/Default.fnt" />
-						<text text="" id="walrusHeading" font="Interface/Fonts/Default.fnt" />
-						<text text="" id="walrusIsland" font="Interface/Fonts/Default.fnt" />
+					<panel childLayout="vertical" style="infoBox">
+						<text text="" id="walrusPosition" style="infoText" />
+						<text text="" id="walrusHeading" style="infoText" />
+						<text text="" id="walrusIsland" style="infoText" />
 					</panel>
 					<panel id="walrusFuel" childLayout="horizontal">
 						<image filename="Interface/Screens/hud/fuel.png" />
@@ -361,10 +367,10 @@ s					<panel id="mainWeaponsButton" style="unselected" childLayout="vertical">
 							<interact onClick="mantaStop(aileron)" />
 						</image>
 					</panel>
-					<panel childLayout="vertical" width="30%">
-						<text text="" id="mantaPosition" font="Interface/Fonts/Default.fnt" />
-						<text text="" id="mantaHeading" font="Interface/Fonts/Default.fnt" />
-						<text text="" id="mantaIsland" font="Interface/Fonts/Default.fnt" />
+					<panel childLayout="vertical" style="infoBox">
+						<text text="" id="mantaPosition" style="infoText" />
+						<text text="" id="mantaHeading" style="infoText" />
+						<text text="" id="mantaIsland" style="infoText" />
 					</panel>
 					<panel id="mantaAltitude" childLayout="horizontal">
 						<image filename="Interface/Screens/hud/altitude.png" />
