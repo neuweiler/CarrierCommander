@@ -3,10 +3,13 @@ package net.carriercommander.screen;
 import com.jme3.app.Application;
 import com.jme3.app.state.AbstractAppState;
 import com.jme3.app.state.AppStateManager;
+import com.jme3.asset.TextureKey;
 import com.jme3.math.FastMath;
 import de.lessvoid.nifty.Nifty;
 import de.lessvoid.nifty.elements.Element;
+import de.lessvoid.nifty.elements.render.ImageRenderer;
 import de.lessvoid.nifty.elements.render.TextRenderer;
+import de.lessvoid.nifty.render.NiftyImage;
 import de.lessvoid.nifty.screen.Screen;
 import de.lessvoid.nifty.screen.ScreenController;
 import net.carriercommander.CarrierCommander;
@@ -46,6 +49,10 @@ public class HudScreenControl extends AbstractAppState implements ScreenControll
 	private TextRenderer headingTextRenderer = null;
 	private TextRenderer islandTextRenderer = null;
 
+	private ImageRenderer carrierRadarRenderer = null;
+	PaintedRadar carrierRadar = new PaintedRadar(86, 90);
+	TextureKey carrierRadarTextureKey = new TextureKey("carrierRadarKey");
+
 	/**
 	 * Constructor
 	 */
@@ -81,16 +88,20 @@ public class HudScreenControl extends AbstractAppState implements ScreenControll
 		headingTextRenderer = (heading != null ? heading.getRenderer(TextRenderer.class) : null);
 		Element island = screen.findElementById(type + "Island");
 		islandTextRenderer = (island != null ? island.getRenderer(TextRenderer.class) : null);
+
+		Element carrierRadar = screen.findElementById("carrierRadar");
+		carrierRadarRenderer = (carrierRadar != null ? carrierRadar.getRenderer(ImageRenderer.class) : null); // Note: if you want to replace the image itself, use carrierRadar.getChildren().get(0).getRenderer()
 	}
 
 	@Override
 	public void update(float tpf) {
 		if (System.currentTimeMillis() > timestamp + 200) {
-			if (playerAppState != null && screen != null) {
+			if (nifty != null && playerAppState != null && screen != null) {
 				if (subControl != currentSelection.get(Constants.CONTROL_SUBCONTROLS)) {
 					switchSubControl(currentSelection.get(Constants.CONTROL_SUBCONTROLS));
 				}
-				if (subControl == null || positionTextRenderer == null || headingTextRenderer == null || islandTextRenderer == null) {
+				if (subControl == null || positionTextRenderer == null || headingTextRenderer == null
+						|| islandTextRenderer == null || carrierRadarRenderer == null) {
 					return;
 				}
 				PlayerUnit activeUnit = playerAppState.getActiveUnit();
@@ -107,6 +118,11 @@ public class HudScreenControl extends AbstractAppState implements ScreenControll
 						(island.isPresent() ? island.get().getName() : "-") +
 						" (" + Math.round(island.get().getPosition().distance(activeUnit.getWorldTranslation()) / Constants.MAP_SCENE_FACTOR) + ")"
 				);
+
+				carrierRadar.refreshImage();
+				app.getAssetManager().addToCache(carrierRadarTextureKey, carrierRadar.getTexture());
+				NiftyImage image = nifty.createImage(screen, "carrierRadarKey", false); // name must correlate with name of above texture key!
+				carrierRadarRenderer.setImage(image);
 			} else {
 				playerAppState = app.getStateManager().getState(PlayerAppState.class); // lazy init
 			}
