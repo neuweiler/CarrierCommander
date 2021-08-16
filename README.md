@@ -1,19 +1,11 @@
 # CarrierCommander
 A java based open source re-make of a fantastic 80's game...
 
-##Purpose of this re-make
+## Purpose
 1) Keep up the original spirit of the game: It's a futuristic strategy game and machines are fighting against each other - humans are controlling remotely
 2) Use state-of-the-art graphics based on OpenGL
 3) Make the program run on major platforms (Linux, Mac, Windows, Android) by using Java and the JMonkey3 platform
 4) Have fun and learn a lot
-
-## License
-OpenBSD
-
-## References
-- current carrier model: http://tf3dm.com/3d-model/admiral-kuznetsov-class-carrier-19210.html (only during development)
-- current walrus model: http://tf3dm.com/3d-model/btr80-34552.html (only during development)
-- current textures, terrains, effects and manta model: jmonkey3 demos
 
 ## Development
 This is a maven project. You can import it into Eclipse, IntelliJ, etc. Maven will
@@ -56,3 +48,11 @@ One precondition: I want to understand what's being changed in PR's
 ![Walrus on water](resources/screenshots/walrus-1.png)
 ![Walrus on land](resources/screenshots/walrus-2.png)
 ![Walrus shore](resources/screenshots/walrus-3.png)
+
+## License
+OpenBSD
+
+## References
+- current carrier model: http://tf3dm.com/3d-model/admiral-kuznetsov-class-carrier-19210.html (only during development)
+- current walrus model: http://tf3dm.com/3d-model/btr80-34552.html (only during development)
+- current textures, terrains, effects and manta model: jmonkey3 demos
