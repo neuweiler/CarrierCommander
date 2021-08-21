@@ -1,7 +1,5 @@
 package net.carriercommander.screen;
 
-import net.carriercommander.screen.PaintableImage;
-
 import java.awt.Color;
 import java.awt.Graphics2D;
 

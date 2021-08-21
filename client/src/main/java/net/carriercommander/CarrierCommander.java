@@ -51,6 +51,7 @@ import com.jme3.post.filters.DepthOfFieldFilter;
 import com.jme3.post.filters.LightScatteringFilter;
 import com.jme3.post.filters.TranslucentBucketFilter;
 import com.jme3.renderer.Camera;
+import com.jme3.renderer.ViewPort;
 import com.jme3.renderer.queue.RenderQueue.ShadowMode;
 import com.jme3.scene.CameraNode;
 import com.jme3.scene.Spatial;
@@ -81,8 +82,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Carrier Commander Main Class
@@ -208,6 +207,7 @@ public class CarrierCommander extends SimpleApplication implements ClientStateLi
 
 		StartScreenControl startScreenControl = (StartScreenControl) nifty.getScreen(Constants.SCREEN_START).getScreenController();
 		HudScreenControl hudScreenControl = (HudScreenControl) nifty.getScreen(Constants.SCREEN_HUD).getScreenController();
+		hudScreenControl.attachScene(rootNode);
 
 		stateManager.attach(startScreenControl);
 		stateManager.attach(hudScreenControl);
@@ -244,7 +244,9 @@ public class CarrierCommander extends SimpleApplication implements ClientStateLi
 	private void addPostProcessFilter() {
 		FilterPostProcessor fpp = new FilterPostProcessor(assetManager);
 
-		fpp.addFilter(water);
+		if (water != null) {
+			fpp.addFilter(water);
+		}
 
 		BloomFilter bloom = new BloomFilter();
 		bloom.setExposurePower(35);
@@ -255,11 +257,11 @@ public class CarrierCommander extends SimpleApplication implements ClientStateLi
 		lsf.setLightDensity(1.0f);
 		fpp.addFilter(lsf);
 
-//		DepthOfFieldFilter dof = new DepthOfFieldFilter();
-//		dof.setFocusDistance(1000);
-//		dof.setFocusRange(1000);
-//		fpp.addFilter(dof);
-
+/*		DepthOfFieldFilter dof = new DepthOfFieldFilter();
+		dof.setFocusDistance(1000);
+		dof.setFocusRange(1000);
+		fpp.addFilter(dof);
+*/
 		fpp.addFilter(new TranslucentBucketFilter());
 		fpp.setNumSamples(4);
 
@@ -294,16 +296,10 @@ public class CarrierCommander extends SimpleApplication implements ClientStateLi
 	}
 
 	private void configureCamera() {
-		flyCam.setMoveSpeed(200);
-
 		camNode = new CameraNode("Camera Node", cam);
 		camNode.setControlDir(ControlDirection.SpatialToCamera);
 
-		cam.setLocation(new Vector3f(-600, 130, 200));
-		cam.setRotation(new Quaternion().fromAngles(new float[]{FastMath.DEG_TO_RAD * 0f, FastMath.DEG_TO_RAD * 0f, 0}));
-
-		cam.setFrustumFar(4000);
-		// cam.setFrustumNear(100);
+		cam.setFrustumFar(20000);
 	}
 
 	private void createTerrain() {

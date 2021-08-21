@@ -5,6 +5,7 @@ import com.jme3.app.state.AbstractAppState;
 import com.jme3.app.state.AppStateManager;
 import com.jme3.asset.TextureKey;
 import com.jme3.math.FastMath;
+import com.jme3.scene.Node;
 import de.lessvoid.nifty.Nifty;
 import de.lessvoid.nifty.elements.Element;
 import de.lessvoid.nifty.elements.render.ImageRenderer;
@@ -37,7 +38,7 @@ public class HudScreenControl extends AbstractAppState implements ScreenControll
 	private Nifty nifty;
 	private Screen screen;
 	private CarrierCommander app = null;
-	private PlayerAppState playerAppState = null;
+		private PlayerAppState playerAppState = null;
 	private String subControl = null;
 
 	private final Map<String, String> currentSelection = new HashMap<>();
@@ -50,8 +51,9 @@ public class HudScreenControl extends AbstractAppState implements ScreenControll
 	private TextRenderer islandTextRenderer = null;
 
 	private ImageRenderer carrierRadarRenderer = null;
-	PaintedRadar carrierRadar = new PaintedRadar(86, 90);
+	PaintedRadar carrierRadar;
 	TextureKey carrierRadarTextureKey = new TextureKey("carrierRadarKey");
+	private Node rootNode;
 
 	/**
 	 * Constructor
@@ -66,6 +68,7 @@ public class HudScreenControl extends AbstractAppState implements ScreenControll
 	public void initialize(AppStateManager stateManager, Application app) {
 		super.initialize(stateManager, app);
 		this.app = (CarrierCommander) app;
+		this.carrierRadar = new PaintedRadar(86, 90, 86, rootNode);
 	}
 
 	private void switchSubControl(String subControl) {
@@ -89,8 +92,9 @@ public class HudScreenControl extends AbstractAppState implements ScreenControll
 		Element island = screen.findElementById(type + "Island");
 		islandTextRenderer = (island != null ? island.getRenderer(TextRenderer.class) : null);
 
-		Element carrierRadar = screen.findElementById("carrierRadar");
-		carrierRadarRenderer = (carrierRadar != null ? carrierRadar.getRenderer(ImageRenderer.class) : null); // Note: if you want to replace the image itself, use carrierRadar.getChildren().get(0).getRenderer()
+		Element carrierRadarImage = screen.findElementById("carrierRadar");
+		carrierRadarRenderer = (carrierRadar != null ? carrierRadarImage.getRenderer(ImageRenderer.class) : null); // Note: if you want to replace the image itself, use carrierRadar.getChildren().get(0).getRenderer()
+		carrierRadar.setActiveUnit(playerAppState.getActiveUnit());
 	}
 
 	@Override
@@ -274,6 +278,14 @@ public class HudScreenControl extends AbstractAppState implements ScreenControll
 		}
 	}
 
+	public void carrierRadarZoom(String direction) {
+		if ("in".equals(direction)) {
+			this.carrierRadar.changeRange(-1000);
+		} else {
+			this.carrierRadar.changeRange(1000);
+		}
+	}
+
 	public void carrierStop(String what) {
 		ShipControl control = app.getRootNode().getChild(Constants.CARRIER_PLAYER).getControl(ShipControl.class);
 		if ("all".equals(what)) {
@@ -349,5 +361,9 @@ public class HudScreenControl extends AbstractAppState implements ScreenControll
 				element.hide();
 			}
 		}
+	}
+
+	public void attachScene(Node rootNode) {
+		this.rootNode = rootNode;
 	}
 }
