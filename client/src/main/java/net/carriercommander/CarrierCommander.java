@@ -118,7 +118,7 @@ public class CarrierCommander extends SimpleApplication implements ClientStateLi
 	@Override
 	public void simpleInitApp() {
 		// setDisplayFps(false);
-		// setDisplayStatView(false);
+		setDisplayStatView(false);
 		flyCam.setEnabled(false); // Disable the default flyby cam
 		createNitfyGui();
 	}
