@@ -45,6 +45,6 @@ public abstract class PaintableImage extends Image {
 		return texture;
 	}
 
-	public abstract void paint(Graphics2D graphicsContext);
+	protected abstract void paint(Graphics2D graphicsContext);
 }
 

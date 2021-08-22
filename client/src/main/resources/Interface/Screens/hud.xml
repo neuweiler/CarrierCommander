@@ -177,7 +177,7 @@ s					<panel id="mainWeaponsButton" style="unselected" childLayout="vertical">
 						<text text="" id="carrierHeading" style="infoText" />
 						<text text="" id="carrierIsland" style="infoText" />
 					</panel>
-					<panel id="carrierDepth" childLayout="horizontal">
+					<panel id="carrierAltitude" childLayout="horizontal">
 						<image filename="Interface/Screens/hud/depth.png" />
 					</panel>
 					<panel id="carrierFuel" childLayout="horizontal">
@@ -290,7 +290,7 @@ s					<panel id="mainWeaponsButton" style="unselected" childLayout="vertical">
 					<panel id="walrusFuel" childLayout="horizontal">
 						<image filename="Interface/Screens/hud/fuel.png" />
 					</panel>
-					<panel id="walrusSpeed" childLayout="horizontal">
+					<panel id="walrusThrottle" childLayout="horizontal">
 						<image filename="Interface/Screens/hud/speed.png" />
 						<interact onClick="setWalrusSpeed()" />
 					</panel>

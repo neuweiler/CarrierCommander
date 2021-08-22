@@ -50,10 +50,20 @@ public class HudScreenControl extends AbstractAppState implements ScreenControll
 	private TextRenderer headingTextRenderer = null;
 	private TextRenderer islandTextRenderer = null;
 
-	private ImageRenderer carrierRadarRenderer = null;
-	PaintedRadar carrierRadar;
-	TextureKey carrierRadarTextureKey = new TextureKey("carrierRadarKey");
+	private PaintedRadar radar;
+	private ImageRenderer radarRenderer = null;
+	TextureKey radarTextureKey = new TextureKey("radarKey");
 	private Node rootNode;
+
+	private PaintedGauge fuelGauge;
+	private PaintedGauge throttleGauge;
+	private PaintedGauge altitudeGauge;
+	private ImageRenderer fuelGaugeRenderer = null;
+	private ImageRenderer throttleGaugeRenderer = null;
+	private ImageRenderer altitudeGaugeRenderer = null;
+	TextureKey fuelTextureKey = new TextureKey("fuelKey");
+	TextureKey throttleTextureKey = new TextureKey("throttleKey");
+	TextureKey altitudeTextureKey = new TextureKey("altitudeKey");
 
 	/**
 	 * Constructor
@@ -68,7 +78,10 @@ public class HudScreenControl extends AbstractAppState implements ScreenControll
 	public void initialize(AppStateManager stateManager, Application app) {
 		super.initialize(stateManager, app);
 		this.app = (CarrierCommander) app;
-		this.carrierRadar = new PaintedRadar(86, 90, 86, rootNode);
+		this.radar = new PaintedRadar(86, 90, 42, 46, 39, rootNode);
+		this.fuelGauge = new PaintedGauge(42, 90, 30,7, 4, 74, true);
+		this.throttleGauge = new PaintedGauge(42, 90, 30,7, 4, 74, true);
+		this.altitudeGauge = new PaintedGauge(42, 90, 30,7, 4, 74, true);
 	}
 
 	private void switchSubControl(String subControl) {
@@ -92,9 +105,16 @@ public class HudScreenControl extends AbstractAppState implements ScreenControll
 		Element island = screen.findElementById(type + "Island");
 		islandTextRenderer = (island != null ? island.getRenderer(TextRenderer.class) : null);
 
-		Element carrierRadarImage = screen.findElementById("carrierRadar");
-		carrierRadarRenderer = (carrierRadar != null ? carrierRadarImage.getRenderer(ImageRenderer.class) : null); // Note: if you want to replace the image itself, use carrierRadar.getChildren().get(0).getRenderer()
-		carrierRadar.setActiveUnit(playerAppState.getActiveUnit());
+		Element radarImage = screen.findElementById(type + "Radar");
+		radarRenderer = (radarImage != null ? radarImage.getRenderer(ImageRenderer.class) : null);
+		radar.setActiveUnit(playerAppState.getActiveUnit());
+
+		Element fuelImage = screen.findElementById(type + "Fuel");
+		fuelGaugeRenderer = (fuelImage != null ? fuelImage.getRenderer(ImageRenderer.class) : null);
+		Element throttleImage = screen.findElementById(type + "Throttle");
+		throttleGaugeRenderer = (throttleImage != null ? throttleImage.getRenderer(ImageRenderer.class) : null);
+		Element altitudeImage = screen.findElementById(type + "Altitude");
+		altitudeGaugeRenderer = (altitudeImage != null ? altitudeImage.getRenderer(ImageRenderer.class) : null);
 	}
 
 	@Override
@@ -104,34 +124,65 @@ public class HudScreenControl extends AbstractAppState implements ScreenControll
 				if (subControl != currentSelection.get(Constants.CONTROL_SUBCONTROLS)) {
 					switchSubControl(currentSelection.get(Constants.CONTROL_SUBCONTROLS));
 				}
-				if (subControl == null || positionTextRenderer == null || headingTextRenderer == null
-						|| islandTextRenderer == null || carrierRadarRenderer == null) {
-					return;
-				}
-				PlayerUnit activeUnit = playerAppState.getActiveUnit();
-				positionTextRenderer.setText("Position: "
-						+ String.format("%.02f", activeUnit.getLocalTranslation().getX() / Constants.MAP_SCENE_FACTOR) + " "
-						+ String.format("%.02f", activeUnit.getLocalTranslation().getZ() / Constants.MAP_SCENE_FACTOR));
-
-				float[] angles = activeUnit.getWorldRotation().toAngles(null);
-				headingTextRenderer.setText("Heading: "
-						+ Math.round(FastMath.RAD_TO_DEG * angles[1])); //TODO not correct heading yet
-
-				Optional<Island> island = IslandMap.getInstance().getClosestIsland(activeUnit.getWorldTranslation());
-				islandTextRenderer.setText("Island: " +
-						(island.isPresent() ? island.get().getName() : "-") +
-						" (" + Math.round(island.get().getPosition().distance(activeUnit.getWorldTranslation()) / Constants.MAP_SCENE_FACTOR) + ")"
-				);
-
-				carrierRadar.refreshImage();
-				app.getAssetManager().addToCache(carrierRadarTextureKey, carrierRadar.getTexture());
-				NiftyImage image = nifty.createImage(screen, "carrierRadarKey", false); // name must correlate with name of above texture key!
-				carrierRadarRenderer.setImage(image);
+				updateInfoBox();
+				updateRadar();
+				updateGauges();
 			} else {
 				playerAppState = app.getStateManager().getState(PlayerAppState.class); // lazy init
 			}
 			timestamp = System.currentTimeMillis();
 		}
+	}
+
+	private void updateInfoBox() {
+		PlayerUnit activeUnit = playerAppState.getActiveUnit();
+		if (positionTextRenderer != null) {
+			positionTextRenderer.setText("Position: "
+					+ String.format("%.02f", activeUnit.getLocalTranslation().getX() / Constants.MAP_SCENE_FACTOR) + " "
+					+ String.format("%.02f", activeUnit.getLocalTranslation().getZ() / Constants.MAP_SCENE_FACTOR));
+		}
+		if (headingTextRenderer != null) {
+			float[] angles = activeUnit.getWorldRotation().toAngles(null);
+			headingTextRenderer.setText("Heading: "
+					+ Math.round(FastMath.RAD_TO_DEG * angles[1])); //TODO not correct heading yet
+		}
+		if (islandTextRenderer != null) {
+			Optional<Island> island = IslandMap.getInstance().getClosestIsland(activeUnit.getWorldTranslation());
+			islandTextRenderer.setText("Island: " +
+					(island.isPresent() ? island.get().getName() : "-") +
+					" (" + Math.round(island.get().getPosition().distance(activeUnit.getWorldTranslation()) / Constants.MAP_SCENE_FACTOR) + ")"
+			);
+		}
+	}
+
+	private void updateRadar() {
+		if (radarRenderer != null) {
+			radar.refreshImage();
+			replaceNiftyImage(radar, radarTextureKey, radarRenderer);
+		}
+	}
+
+	private void updateGauges() {
+		PlayerUnit activeUnit = playerAppState.getActiveUnit();
+
+		if (fuelGaugeRenderer != null) {
+			fuelGauge.setValue((float)Math.random());
+			replaceNiftyImage(fuelGauge, fuelTextureKey, fuelGaugeRenderer);
+		}
+		if (throttleGaugeRenderer != null) {
+			throttleGauge.setValue((float)Math.random());
+			replaceNiftyImage(throttleGauge, throttleTextureKey, throttleGaugeRenderer);
+		}
+		if (altitudeGaugeRenderer != null) {
+			altitudeGauge.setValue((float)Math.random());
+			replaceNiftyImage(altitudeGauge, altitudeTextureKey, altitudeGaugeRenderer);
+		}
+	}
+
+	private void replaceNiftyImage(PaintableImage imageBuffer, TextureKey fuelTextureKey, ImageRenderer renderer) {
+		app.getAssetManager().addToCache(fuelTextureKey, imageBuffer.getTexture());
+		NiftyImage image = nifty.createImage(screen, fuelTextureKey.getName(), false);
+		renderer.setImage(image);
 	}
 
 	@Override
@@ -280,9 +331,9 @@ public class HudScreenControl extends AbstractAppState implements ScreenControll
 
 	public void carrierRadarZoom(String direction) {
 		if ("in".equals(direction)) {
-			this.carrierRadar.changeRange(-1000);
+			this.radar.changeRange(-1000);
 		} else {
-			this.carrierRadar.changeRange(1000);
+			this.radar.changeRange(1000);
 		}
 	}
 
