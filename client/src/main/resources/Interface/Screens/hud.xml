@@ -189,10 +189,10 @@ s					<panel id="mainWeaponsButton" style="unselected" childLayout="vertical">
 					</panel>
 					<panel childLayout="vertical">
 						<image filename="Interface/Screens/hud/speedIncrease.png" style="unselected">
-							<interact onClick="carrierSpeed(increase)" />
+							<interact onClickRepeat="carrierSpeed(increase)" />
 						</image>
 						<image filename="Interface/Screens/hud/speedDecrease.png" style="unselected">
-							<interact onClick="carrierSpeed(decrease)" />
+							<interact onClickRepeat="carrierSpeed(decrease)" />
 						</image>
 					</panel>
 				</panel>

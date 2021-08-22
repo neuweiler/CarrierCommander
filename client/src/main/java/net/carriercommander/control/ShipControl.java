@@ -52,7 +52,7 @@ public class ShipControl extends RigidBodyControl implements PhysicsCollisionLis
 	protected Matrix3f currentRotation = new Matrix3f();
 	protected Vector3f engineForce = new Vector3f();
 	protected Vector3f rudderOffset = new Vector3f();
-	protected float rudder = 0, throttle = 0, enginePower = 0, rudderPositionZ = 75, heading = 0;
+	protected float rudder = 0, throttle = 0, enginePower = 0, rudderPositionZ = 75, heading = 0, fuel = 1.0f;
 	Logger logger = LoggerFactory.getLogger(ShipControl.class);
 
 	public ShipControl() {
@@ -94,7 +94,10 @@ public class ShipControl extends RigidBodyControl implements PhysicsCollisionLis
 		rudderOffset.setX(rudderPositionZ * FastMath.sin(heading));
 		rudderOffset.setZ(rudderPositionZ * FastMath.sin(heading + 0.5f * FastMath.PI));
 
-		applyForce(engineForce, rudderOffset);
+		if (fuel > 0) {
+			fuel -= FastMath.abs(throttle) * 0.00001f; //TODO find correct factor
+			applyForce(engineForce, rudderOffset);
+		}
 	}
 
 	@Override
@@ -130,6 +133,14 @@ public class ShipControl extends RigidBodyControl implements PhysicsCollisionLis
 			throttle = -0.2f;
 		this.throttle = throttle;
 		logger.debug("throttle: {}", this.throttle);
+	}
+
+	public float getFuel() {
+		return fuel;
+	}
+
+	public void setFuel(float fuel) {
+		this.fuel = fuel;
 	}
 
 	public float getRudderPositionZ() {

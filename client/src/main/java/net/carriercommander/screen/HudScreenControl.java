@@ -164,17 +164,18 @@ public class HudScreenControl extends AbstractAppState implements ScreenControll
 
 	private void updateGauges() {
 		PlayerUnit activeUnit = playerAppState.getActiveUnit();
+		ShipControl control = activeUnit.getControl(ShipControl.class);
 
 		if (fuelGaugeRenderer != null) {
-			fuelGauge.setValue((float)Math.random());
+			fuelGauge.setValue(control.getFuel());
 			replaceNiftyImage(fuelGauge, fuelTextureKey, fuelGaugeRenderer);
 		}
 		if (throttleGaugeRenderer != null) {
-			throttleGauge.setValue((float)Math.random());
+			throttleGauge.setValue(control.getThrottle());
 			replaceNiftyImage(throttleGauge, throttleTextureKey, throttleGaugeRenderer);
 		}
 		if (altitudeGaugeRenderer != null) {
-			altitudeGauge.setValue((float)Math.random());
+			altitudeGauge.setValue(0);
 			replaceNiftyImage(altitudeGauge, altitudeTextureKey, altitudeGaugeRenderer);
 		}
 	}
@@ -343,6 +344,15 @@ public class HudScreenControl extends AbstractAppState implements ScreenControll
 			control.setThrottle(0);
 		}
 		control.setRudder(0);
+	}
+
+	public void carrierSpeed(String command) {
+		ShipControl control = app.getRootNode().getChild(Constants.CARRIER_PLAYER).getControl(ShipControl.class);
+		if ("increase".equals(command)) {
+			control.setThrottle(control.getThrottle() + 0.05f);
+		} else {
+			control.setThrottle(control.getThrottle() - 0.05f);
+		}
 	}
 
 	public void selectWalrus(String id) {

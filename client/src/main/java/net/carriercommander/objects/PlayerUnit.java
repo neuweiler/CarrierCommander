@@ -45,6 +45,7 @@ public abstract class PlayerUnit extends Node {
 
 	protected ShipControl shipControl = null;
 	protected CameraNode camNode = null;
+	private float fuel;
 
 	PlayerUnit(String name, AssetManager assetManager, BulletAppState phsyicsState, WaterFilter water, CameraNode camNode) {
 		super(name);
@@ -68,11 +69,11 @@ public abstract class PlayerUnit extends Node {
 	}
 
 	public void increaseSpeed(float tpf) {
-		shipControl.setThrottle(shipControl.getThrottle() + 1f * tpf);
+		shipControl.setThrottle(shipControl.getThrottle() + 0.5f * tpf);
 	}
 
 	public void decreaseSpeed(float tpf) {
-		shipControl.setThrottle(shipControl.getThrottle() - 1f * tpf);
+		shipControl.setThrottle(shipControl.getThrottle() - 0.5f * tpf);
 	}
 
 	void setCameraNode(Node node) {
