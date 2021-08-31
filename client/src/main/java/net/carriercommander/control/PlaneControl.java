@@ -70,7 +70,7 @@ public class PlaneControl extends ShipControl implements PhysicsCollisionListene
 	public void prePhysicsTick(PhysicsSpace arg0, float arg1) {
 		bank = rudder;
 		heading += bank / 100;
-		setLinearVelocity(new Vector3f(FastMath.sin(heading) * throttle * -100, attitude * 100, FastMath.cos(heading) * throttle * -100));
+		setLinearVelocity(new Vector3f(FastMath.sin(heading) * throttle * -100, attitude * throttle * 100, FastMath.cos(heading) * throttle * -100));
 		setPhysicsRotation(rotation.fromAngles(attitude, heading, bank));
 	}
 
