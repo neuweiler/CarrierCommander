@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Map;
 
 public class PlayerManager {
-
 	private final List<PlayerManagerListener> listeners = new ArrayList<>();
 	private final Map<Integer, PlayerData> players = new HashMap<>();
 
