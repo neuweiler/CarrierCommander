@@ -299,7 +299,7 @@ s					<panel id="mainWeaponsButton" style="unselected" childLayout="vertical">
 							<interact onClick="toggleWalrusRadar()" />
 						</image>
 						<image filename="Interface/Screens/hud/rearView.png" style="unselected">
-							<interact onClick="toggleWalrusRearView()" />
+							<interact onClick="toggleRearView()" />
 						</image>
 					</panel>
 				</panel>
@@ -387,7 +387,7 @@ s					<panel id="mainWeaponsButton" style="unselected" childLayout="vertical">
 							<interact onClick="setMantaSpeed(up)" />
 						</image>
 						<image filename="Interface/Screens/hud/rearView.png" style="unselected">
-							<interact onClick="setMantaSpeed(down)" />
+							<interact onClick="toggleRearView(down)" />
 						</image>
 					</panel>
 				</panel>

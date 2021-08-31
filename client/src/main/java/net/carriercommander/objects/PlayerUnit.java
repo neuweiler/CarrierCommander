@@ -32,6 +32,7 @@
 package net.carriercommander.objects;
 
 import com.jme3.asset.AssetManager;
+import com.jme3.audio.AudioNode;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.scene.CameraNode;
 import com.jme3.scene.Node;
@@ -46,6 +47,10 @@ public abstract class PlayerUnit extends Node {
 	protected ShipControl shipControl = null;
 	protected CameraNode camNode = null;
 	private float fuel;
+	private boolean rearView = false;
+	protected AudioNode audio = null;
+	protected Node camHookFront = null;
+	protected Node camHookRear = null;
 
 	PlayerUnit(String name, AssetManager assetManager, BulletAppState phsyicsState, WaterFilter water, CameraNode camNode) {
 		super(name);
@@ -70,15 +75,39 @@ public abstract class PlayerUnit extends Node {
 
 	public void increaseSpeed(float tpf) {
 		shipControl.setThrottle(shipControl.getThrottle() + 0.5f * tpf);
+		if (audio != null) {
+			audio.setPitch(1.0f + shipControl.getThrottle());
+		}
 	}
 
 	public void decreaseSpeed(float tpf) {
 		shipControl.setThrottle(shipControl.getThrottle() - 0.5f * tpf);
+		if (audio != null) {
+			audio.setPitch(1.0f + shipControl.getThrottle());
+		}
 	}
 
 	void setCameraNode(Node node) {
 		if (camNode.getParent() != null)
 			camNode.getParent().detachChild(camNode);
 		node.attachChild(camNode);
+	}
+
+	public void toggleRearView() {
+		if (rearView) {
+			setCameraToFront();
+		} else {
+			setCameraToRear();
+		}
+	}
+
+	public void setCameraToFront() {
+		setCameraNode(camHookFront);
+		rearView = false;
+	}
+
+	public void setCameraToRear() {
+		setCameraNode(camHookRear);
+		rearView = true;
 	}
 }

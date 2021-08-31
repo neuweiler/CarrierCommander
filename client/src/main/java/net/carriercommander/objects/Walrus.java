@@ -34,6 +34,7 @@ package net.carriercommander.objects;
 import com.jme3.asset.AssetManager;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.collision.shapes.BoxCollisionShape;
+import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.collision.shapes.CompoundCollisionShape;
 import com.jme3.math.FastMath;
 import com.jme3.math.Vector3f;
@@ -52,40 +53,50 @@ import org.slf4j.LoggerFactory;
  * @author Michael Neuweiler
  */
 public class Walrus extends PlayerUnit {
-	private static final float width = 3.8f, length = 10f, height = 3.2f, mass = 5000;
-	Logger logger = LoggerFactory.getLogger(Walrus.class);
-	private Node camHookFront = null;
-	private Node camHookRear = null;
+	private final Logger logger = LoggerFactory.getLogger(Walrus.class);
+	private final float WIDTH = 3.8f, LENGTH = 10f, HEIGHT = 3.2f, MASS = 5f;
 
 	public Walrus(String name, AssetManager assetManager, BulletAppState phsyicsState, WaterFilter water, CameraNode camNode) {
 		super(name, assetManager, phsyicsState, water, camNode);
 
+		loadModel(assetManager);
+		createCameraHooks();
+		CollisionShape collisionShape = createCollisionShape();
+
+		createShipControl(phsyicsState, collisionShape);
+		createFloatControl(water);
+	}
+
+	private void loadModel(AssetManager assetManager) {
 		Spatial model = assetManager.loadModel("Models/BTR80/br01.fbx");
 		model.scale(0.05f);
 		model.move(0,6.8f,0);
 		attachChild(model);
-
-		createCameraHooks();
-
 		logger.debug("vertices: {} triangles: {}", getVertexCount(), getTriangleCount());
+	}
 
+	private CollisionShape createCollisionShape() {
 		CompoundCollisionShape comp = new CompoundCollisionShape();
-		comp.addChildShape(new BoxCollisionShape(new Vector3f(width, height, length)), new Vector3f(0, 3.3f, 0));
-		shipControl = new ShipControl(comp, mass);
-		shipControl.setRudderPositionZ(length / 2);
+		comp.addChildShape(new BoxCollisionShape(new Vector3f(WIDTH, HEIGHT, LENGTH)), new Vector3f(0, 3.3f, 0));
+		return comp;
+	}
+
+	private void createShipControl(BulletAppState phsyicsState, CollisionShape comp) {
+		shipControl = new ShipControl(comp, MASS);
+		shipControl.setRudderPositionZ(LENGTH / 2);
 		addControl(shipControl);
 		shipControl.setDamping(0.2f, 0.3f);
 		phsyicsState.getPhysicsSpace().add(shipControl);
+	}
 
+	private void createFloatControl(WaterFilter water) {
 		FloatControl floatControl = new FloatControl();
 		floatControl.setWater(water);
 		floatControl.setVerticalOffset(-2);
-		floatControl.setWidth(width);
-		floatControl.setHeight(height);
-		floatControl.setLength(length);
+		floatControl.setWidth(WIDTH);
+		floatControl.setHeight(HEIGHT);
+		floatControl.setLength(LENGTH);
 		addControl(floatControl);
-
-		shipControl.setLinearVelocity(getLocalRotation().getRotationColumn(0).mult(-25));
 	}
 
 	private void createCameraHooks() {
@@ -96,15 +107,7 @@ public class Walrus extends PlayerUnit {
 
 		camHookRear = new Node();
 		attachChild(camHookRear);
-		camHookRear.setLocalTranslation(0, 3, 5);
+		camHookRear.setLocalTranslation(0, 7, 5);
 //		camHookRear.rotate(0, FastMath.DEG_TO_RAD * 90, 0);
-	}
-
-	public void setCameraToFront() {
-		setCameraNode(camHookFront);
-	}
-
-	public void setCameraToRear() {
-		setCameraNode(camHookRear);
 	}
 }

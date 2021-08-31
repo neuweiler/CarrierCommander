@@ -259,7 +259,7 @@ public class HudScreenControl extends AbstractAppState implements ScreenControll
 		logger.debug("subcontrol: {}", subControl);
 		switch (subControl) {
 			case "carrierControlControls":
-				carrier.setCameraToBridge();
+				carrier.setCameraToFront();
 				app.getStateManager().getState(PlayerAppState.class).setActiveUnit(carrier);
 				break;
 			case "carrierMapControls":
@@ -377,6 +377,11 @@ public class HudScreenControl extends AbstractAppState implements ScreenControll
 				control.setRudder(0);
 				break;
 		}
+	}
+
+	public void toggleRearView() {
+		PlayerUnit activeUnit = playerAppState.getActiveUnit();
+		activeUnit.toggleRearView();
 	}
 
 	public void selectManta(String id) {

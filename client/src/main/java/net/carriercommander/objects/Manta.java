@@ -34,6 +34,7 @@ package net.carriercommander.objects;
 import com.jme3.asset.AssetManager;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.collision.shapes.BoxCollisionShape;
+import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.math.FastMath;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.CameraNode;
@@ -50,29 +51,36 @@ import org.slf4j.LoggerFactory;
  * @author Michael Neuweiler
  */
 public class Manta extends PlayerUnit {
-	private static final float width = 4.8f, length = 5.4f, height = 2f, mass = 5000f;
-	Logger logger = LoggerFactory.getLogger(PlayerUnit.class);
-	private Node camHookFront = null;
-	private Node camHookRear = null;
+	private final Logger logger = LoggerFactory.getLogger(PlayerUnit.class);
+	private final float WIDTH = 4.8f, LENGTH = 5.4f, HEIGHT = 2f, MASS = 3f;
 
 	public Manta(String name, AssetManager assetManager, BulletAppState phsyicsState, WaterFilter water, CameraNode camNode) {
 		super(name, assetManager, phsyicsState, water, camNode);
 
+		loadModel(assetManager);
+		createCameraHooks();
+		CollisionShape collisionShape = createCollisionShape();
+
+		createPlaneControl(phsyicsState, collisionShape);
+	}
+
+	private void loadModel(AssetManager assetManager) {
 		Spatial model = assetManager.loadModel("Models/HoverTank/tankFinalExport.blend");
 		model.rotate(0, FastMath.DEG_TO_RAD * 180, 0);
 		attachChild(model);
 		logger.debug("vertices: {} triangles: {}", model.getVertexCount(), model.getTriangleCount());
 		setLocalTranslation(-400, 100, 300);
+	}
 
-		createCameraHooks();
+	private CollisionShape createCollisionShape() {
+		return new BoxCollisionShape(new Vector3f(WIDTH, HEIGHT, LENGTH));
+	}
 
-		BoxCollisionShape collisionShape = new BoxCollisionShape(new Vector3f(width, height, length));
-		shipControl = new PlaneControl(collisionShape, mass);
+	private void createPlaneControl(BulletAppState phsyicsState, CollisionShape collisionShape) {
+		shipControl = new PlaneControl(collisionShape, MASS);
 		addControl(shipControl);
 		shipControl.setDamping(0.1f, 0.5f);
 		phsyicsState.getPhysicsSpace().add(shipControl);
-
-		shipControl.setGravity(Vector3f.ZERO);
 	}
 
 	private void createCameraHooks() {
@@ -85,13 +93,5 @@ public class Manta extends PlayerUnit {
 		attachChild(camHookRear);
 		camHookRear.setLocalTranslation(0, 3, 5);
 //		camHookRear.rotate(0, FastMath.DEG_TO_RAD * 90, 0);
-	}
-
-	public void setCameraToFront() {
-		setCameraNode(camHookFront);
-	}
-
-	public void setCameraToRear() {
-		setCameraNode(camHookRear);
 	}
 }
