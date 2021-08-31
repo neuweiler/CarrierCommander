@@ -17,9 +17,9 @@ public class PlayerData {
 	private static final int NUM_MANTA = 4;
 
 	private int id;
-	private final CarrierData carrier;
-	private final List<WalrusData> walrus;
-	private final List<MantaData> manta;
+	private CarrierData carrier;
+	private List<WalrusData> walrus;
+	private List<MantaData> manta;
 
 	public PlayerData() {
 		carrier = new CarrierData();
@@ -67,5 +67,13 @@ public class PlayerData {
 		return manta.get(index);
 	}
 
-
+	@Override
+	public String toString() {
+		return "PlayerData{" +
+				"id=" + id +
+				", carrier=" + carrier +
+				", walrus=" + walrus +
+				", manta=" + manta +
+				'}';
+	}
 }

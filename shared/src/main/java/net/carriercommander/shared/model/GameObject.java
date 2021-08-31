@@ -13,22 +13,24 @@ public class GameObject {
 	/**
 	 * The position of the object in the playfield
 	 */
-	private final Vector3f location;
+	private Vector3f location;
 	/**
 	 * The orientation / rotation of the object in the game world
 	 */
-	private final Quaternion rotation;
+	private Quaternion rotation;
+
 	/**
 	 * The velocity of the object
 	 */
-	private final Vector3f velocity;
+	private Vector3f velocity;
+
 	private boolean modified;
 
 	GameObject() {
 		modified = false;
-		location = new Vector3f();
-		rotation = new Quaternion();
-		velocity = new Vector3f();
+//		location = new Vector3f();
+//		rotation = new Quaternion();
+//		velocity = new Vector3f();
 	}
 
 	boolean isModified() {
@@ -46,8 +48,8 @@ public class GameObject {
 	public void setLocation(Vector3f location) {
 		if (!location.equals(this.location)) {
 			modified = true;
+			this.location = location;
 		}
-		this.location.set(location);
 	}
 
 	public Quaternion getRotation() {
@@ -57,8 +59,8 @@ public class GameObject {
 	public void setRotation(Quaternion rotation) {
 		if (!rotation.equals(this.rotation)) {
 			modified = true;
+			this.rotation = rotation;
 		}
-		this.rotation.set(rotation);
 	}
 
 	public Vector3f getVelocity() {
@@ -68,7 +70,16 @@ public class GameObject {
 	public void setVelocity(Vector3f velocity) {
 		if (!velocity.equals(this.velocity)) {
 			modified = true;
+			this.velocity = velocity;
 		}
-		this.velocity.set(velocity);
+	}
+
+	@Override
+	public String toString() {
+		return this.getClass().getSimpleName() + "{" +
+				"location=" + location +
+				", rotation=" + rotation +
+				", modified=" + modified +
+				'}';
 	}
 }

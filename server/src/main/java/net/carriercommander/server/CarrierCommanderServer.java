@@ -17,7 +17,7 @@ import java.io.IOException;
 
 public class CarrierCommanderServer extends SimpleApplication implements ConnectionListener {
 	private static final int SERVER_PORT = 6000;
-	Logger logger = LoggerFactory.getLogger(CarrierCommanderServer.class);
+	private final Logger logger = LoggerFactory.getLogger(CarrierCommanderServer.class);
 	private PlayerManager playerManager;
 
 	public static void main(String[] args) {
@@ -29,10 +29,6 @@ public class CarrierCommanderServer extends SimpleApplication implements Connect
 	@Override
 	public void simpleInitApp() {
 		playerManager = new PlayerManager();
-		initServer();
-	}
-
-	private void initServer() {
 		try {
 			Server server = Network.createServer(SERVER_PORT);
 			server.addConnectionListener(this);
@@ -45,7 +41,7 @@ public class CarrierCommanderServer extends SimpleApplication implements Connect
 
 			logger.info("Server started...");
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.error("failed to start the server", e);
 		}
 	}
 
