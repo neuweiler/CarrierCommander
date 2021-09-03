@@ -45,7 +45,7 @@ import net.carriercommander.control.ShipControl;
 public abstract class PlayerUnit extends Node {
 
 	protected ShipControl shipControl = null;
-	protected CameraNode camNode = null;
+	protected CameraNode camNode;
 	private float fuel;
 	private boolean rearView = false;
 	protected AudioNode audio = null;

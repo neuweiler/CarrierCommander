@@ -39,7 +39,6 @@ import com.jme3.light.DirectionalLight;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
-import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.network.Client;
 import com.jme3.network.ClientStateListener;
@@ -47,11 +46,8 @@ import com.jme3.network.Network;
 import com.jme3.niftygui.NiftyJmeDisplay;
 import com.jme3.post.FilterPostProcessor;
 import com.jme3.post.filters.BloomFilter;
-import com.jme3.post.filters.DepthOfFieldFilter;
 import com.jme3.post.filters.LightScatteringFilter;
 import com.jme3.post.filters.TranslucentBucketFilter;
-import com.jme3.renderer.Camera;
-import com.jme3.renderer.ViewPort;
 import com.jme3.renderer.queue.RenderQueue.ShadowMode;
 import com.jme3.scene.CameraNode;
 import com.jme3.scene.Spatial;
@@ -91,7 +87,6 @@ import java.io.IOException;
 public class CarrierCommander extends SimpleApplication implements ClientStateListener {
 	Logger logger = LoggerFactory.getLogger(CarrierCommander.class);
 
-	private PlayerAppState playerAppState;
 	private BulletAppState physicsState;
 	private Nifty nifty;
 	private final Vector3f lightDir = new Vector3f(-4.9236743f, -1.27054665f, 5.896916f);
@@ -170,7 +165,7 @@ public class CarrierCommander extends SimpleApplication implements ClientStateLi
 				break;
 			case 7:
 				setProgress(0.7f, "creating objects");
-				playerAppState = new PlayerAppState(physicsState, rootNode, playerData, camNode, water);
+				PlayerAppState playerAppState = new PlayerAppState(physicsState, rootNode, playerData, camNode, water);
 				stateManager.attach(playerAppState);
 				break;
 			case 10:
@@ -333,7 +328,7 @@ public class CarrierCommander extends SimpleApplication implements ClientStateLi
 		final AbstractHeightMap heightmap = new ImageBasedHeightMap(heightMapImage.getImage(), 0.25f);
 		heightmap.load();
 
-		IslandMap.getInstance().getIslands().stream().forEach(island -> {
+		IslandMap.getInstance().getIslands().forEach(island -> {
 			logger.debug("creating island {}", island.getName());
 			TerrainQuad terrain = new TerrainQuad("terrain", 65, 513, heightmap.getHeightMap());
 			terrain.setName(island.getName());
@@ -391,5 +386,13 @@ public class CarrierCommander extends SimpleApplication implements ClientStateLi
 			networkClient.send(new PlayerDataMessage(playerData));
 			playerData.clean();
 		}
+	}
+
+	@Override
+	public void destroy() {
+		if (networkClient != null) {
+			networkClient.close();
+		}
+		super.destroy();
 	}
 }

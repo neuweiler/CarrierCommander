@@ -6,10 +6,10 @@ import net.carriercommander.Constants;
 public class Island {
 	enum IslandType { free, factory, resource, defense };
 
-	private String name;
-	private Vector3f position;
-	private IslandType type;
-	private float area; // in square km
+	private final String name;
+	private final Vector3f position;
+	private final IslandType type;
+	private final float area; // in square km
 
 	Island(String name, Vector3f position, float area, IslandType type) {
 		this.name = name;

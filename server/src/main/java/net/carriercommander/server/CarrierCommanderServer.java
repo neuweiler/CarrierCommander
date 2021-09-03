@@ -19,6 +19,7 @@ public class CarrierCommanderServer extends SimpleApplication implements Connect
 	private static final int SERVER_PORT = 6000;
 	private final Logger logger = LoggerFactory.getLogger(CarrierCommanderServer.class);
 	private PlayerManager playerManager;
+	private Server server;
 
 	public static void main(String[] args) {
 		Utils.initSerializers();
@@ -30,7 +31,7 @@ public class CarrierCommanderServer extends SimpleApplication implements Connect
 	public void simpleInitApp() {
 		playerManager = new PlayerManager();
 		try {
-			Server server = Network.createServer(SERVER_PORT);
+			server = Network.createServer(SERVER_PORT);
 			server.addConnectionListener(this);
 
 			ClientUpdater updater = new ClientUpdater(server);
@@ -54,5 +55,13 @@ public class CarrierCommanderServer extends SimpleApplication implements Connect
 	public void connectionRemoved(Server server, HostedConnection hostedConnection) {
 		logger.info("client disconnected, id: {}", hostedConnection.getId());
 		playerManager.removePlayer(hostedConnection.getId());
+	}
+
+	@Override
+	public void destroy() {
+		if (server != null) {
+			server.close();
+		}
+		super.destroy();
 	}
 }

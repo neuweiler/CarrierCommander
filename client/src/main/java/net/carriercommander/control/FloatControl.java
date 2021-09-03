@@ -49,7 +49,6 @@ public class FloatControl extends AbstractControl {
 	private final Vector3f rotationOffset = new Vector3f();
 	private final Vector3f waterForce = new Vector3f();
 	private final Vector3f waterOffset = new Vector3f();
-	private float meterBelowWater, percentageDisplacement, force;
 	private RigidBodyControl rbc = null;
 
 	private float width = 5, length = 10, height = 2.5f; // TODO read dimensions from spatial instead
@@ -61,7 +60,7 @@ public class FloatControl extends AbstractControl {
 		if (rbc == null) {
 			rbc = spatial.getControl(RigidBodyControl.class);
 		} else {
-			meterBelowWater = verticalOffset - rbc.getPhysicsLocation().getY();
+			float meterBelowWater = verticalOffset - rbc.getPhysicsLocation().getY();
 			if (water != null) {
 				meterBelowWater += water.getWaterHeight();
 			}
@@ -69,8 +68,8 @@ public class FloatControl extends AbstractControl {
 				meterBelowWater = height;
 			if (meterBelowWater < -height)
 				meterBelowWater = -height;
-			percentageDisplacement = meterBelowWater / height;
-			force = (rbc.getMass() + percentageDisplacement * rbc.getMass()) * 9.81f;
+			float percentageDisplacement = meterBelowWater / height;
+			float force = (rbc.getMass() + percentageDisplacement * rbc.getMass()) * 9.81f;
 			waterForce.setY(force);
 
 			rbc.getPhysicsRotation(currentRotation);
@@ -87,40 +86,20 @@ public class FloatControl extends AbstractControl {
 	protected void controlRender(RenderManager rm, ViewPort vp) {
 	}
 
-	public float getVerticalOffset() {
-		return verticalOffset;
-	}
-
 	public void setVerticalOffset(float verticalOffset) {
 		this.verticalOffset = verticalOffset;
-	}
-
-	public WaterFilter getWater() {
-		return water;
 	}
 
 	public void setWater(WaterFilter water) {
 		this.water = water;
 	}
 
-	public float getWidth() {
-		return width;
-	}
-
 	public void setWidth(float width) {
 		this.width = width;
 	}
 
-	public float getLength() {
-		return length;
-	}
-
 	public void setLength(float length) {
 		this.length = length;
-	}
-
-	public float getHeight() {
-		return height;
 	}
 
 	public void setHeight(float height) {

@@ -53,14 +53,6 @@ public class PlaneControl extends ShipControl implements PhysicsCollisionListene
 	private final Quaternion rotation = new Quaternion();
 
 	private float attitude = 0; // aka pitch of airplane
-	private float bank = 0; // aka roll of airplane
-
-	public PlaneControl() {
-	}
-
-	public PlaneControl(CollisionShape shape) {
-		super(shape);
-	}
 
 	public PlaneControl(CollisionShape shape, float mass) {
 		super(shape, mass);
@@ -68,10 +60,9 @@ public class PlaneControl extends ShipControl implements PhysicsCollisionListene
 
 	@Override
 	public void prePhysicsTick(PhysicsSpace arg0, float arg1) {
-		bank = rudder;
-		heading += bank / 100;
+		heading += rudder / 100;
 		setLinearVelocity(new Vector3f(FastMath.sin(heading) * throttle * -100, attitude * throttle * 100, FastMath.cos(heading) * throttle * -100));
-		setPhysicsRotation(rotation.fromAngles(attitude, heading, bank));
+		setPhysicsRotation(rotation.fromAngles(attitude, heading, rudder));
 	}
 
 	@Override
