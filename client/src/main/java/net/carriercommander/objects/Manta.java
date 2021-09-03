@@ -51,28 +51,29 @@ import org.slf4j.LoggerFactory;
  * @author Michael Neuweiler
  */
 public class Manta extends PlayerUnit {
-	private final Logger logger = LoggerFactory.getLogger(PlayerUnit.class);
-	private final float WIDTH = 4.8f, LENGTH = 5.4f, HEIGHT = 2f, MASS = 3f;
+	private static final Logger logger = LoggerFactory.getLogger(PlayerUnit.class);
+	public static final float WIDTH = 4.8f, LENGTH = 5.4f, HEIGHT = 2f, MASS = 3f;
 
 	public Manta(String name, AssetManager assetManager, BulletAppState phsyicsState, WaterFilter water, CameraNode camNode) {
 		super(name, assetManager, phsyicsState, water, camNode);
 
-		loadModel(assetManager);
+		attachChild(loadModel(assetManager));
+
 		createCameraHooks();
 		CollisionShape collisionShape = createCollisionShape();
 
 		createPlaneControl(phsyicsState, collisionShape);
 	}
 
-	private void loadModel(AssetManager assetManager) {
+	public static Spatial loadModel(AssetManager assetManager) {
 		Spatial model = assetManager.loadModel("Models/HoverTank/tankFinalExport.blend");
+		model.move(0, -1, 0);
 		model.rotate(0, FastMath.DEG_TO_RAD * 180, 0);
-		attachChild(model);
 		logger.debug("vertices: {} triangles: {}", model.getVertexCount(), model.getTriangleCount());
-		setLocalTranslation(-400, 100, 300);
+		return model;
 	}
 
-	private CollisionShape createCollisionShape() {
+	public static CollisionShape createCollisionShape() {
 		return new BoxCollisionShape(new Vector3f(WIDTH, HEIGHT, LENGTH));
 	}
 
@@ -91,7 +92,6 @@ public class Manta extends PlayerUnit {
 
 		camHookRear = new Node();
 		attachChild(camHookRear);
-		camHookRear.setLocalTranslation(0, 3, 5);
-//		camHookRear.rotate(0, FastMath.DEG_TO_RAD * 90, 0);
+		camHookRear.setLocalTranslation(0, 3, 1);
 	}
 }

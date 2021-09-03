@@ -13,8 +13,8 @@ import java.util.List;
 @Serializable
 public class PlayerData {
 
-	private static final int NUM_WALRUS = 4;
-	private static final int NUM_MANTA = 4;
+	public static final int NUM_WALRUS = 4;
+	public static final int NUM_MANTA = 4;
 
 	private int id;
 	private CarrierData carrier;

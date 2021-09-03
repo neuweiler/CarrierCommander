@@ -21,13 +21,16 @@ import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.shape.Sphere;
 import com.jme3.water.WaterFilter;
+import net.carriercommander.control.PlaneControl;
 import net.carriercommander.control.ShipControl;
 import net.carriercommander.objects.Carrier;
 import net.carriercommander.objects.Manta;
 import net.carriercommander.objects.PlayerUnit;
 import net.carriercommander.objects.Walrus;
-import net.carriercommander.shared.model.GameObject;
+import net.carriercommander.shared.model.CarrierData;
+import net.carriercommander.shared.model.MantaData;
 import net.carriercommander.shared.model.PlayerData;
+import net.carriercommander.shared.model.WalrusData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,8 +51,11 @@ public class PlayerAppState extends AbstractAppState {
 	private Geometry mark;
 	private PlayerUnit activeUnit;
 	private Carrier carrier;
+	private ShipControl carrierControl;
 	private final List<Walrus> walrus = new ArrayList<>();
+	private final List<ShipControl> walrusControl = new ArrayList<>();
 	private final List<Manta> manta = new ArrayList<>();
+	private final List<PlaneControl> mantaControl = new ArrayList<>();
 
 	PlayerAppState(BulletAppState physicsState, Node rootNode, PlayerData playerData, CameraNode camNode, WaterFilter water) {
 		this.physicsState = physicsState;
@@ -82,60 +88,60 @@ public class PlayerAppState extends AbstractAppState {
 
 	private void createCarrier() {
 		carrier = new Carrier(Constants.CARRIER_PLAYER, assetManager, physicsState, water, camNode);
-		ShipControl control = carrier.getControl(ShipControl.class);
-		control.setPhysicsLocation(new Vector3f(-1800, (water != null ? water.getWaterHeight() : 0) + 5, 800));
+		carrierControl = carrier.getControl(ShipControl.class);
+		carrierControl.setPhysicsLocation(new Vector3f(-1800, (water != null ? water.getWaterHeight() : 0) + 5, 800));
 		rootNode.attachChild(carrier);
-//		bulletAppState.getPhysicsSpace().addAll(player);
+		//		bulletAppState.getPhysicsSpace().addAll(player);
 	}
 
 	private void createWalrus() {
 		Walrus unit = new Walrus(Constants.WALRUS_1, assetManager, physicsState, water, camNode);
-		ShipControl control = unit.getControl(ShipControl.class);
-		control.setPhysicsLocation(new Vector3f(-1450,  0, 500));
+		walrusControl.add(unit.getControl(ShipControl.class));
+		walrusControl.get(0).setPhysicsLocation(new Vector3f(-1450,  0, 500));
 		rootNode.attachChild(unit);
 		walrus.add(unit);
 
 		unit = new Walrus(Constants.WALRUS_2, assetManager, physicsState, water, camNode);
-		control = unit.getControl(ShipControl.class);
-		control.setPhysicsLocation(new Vector3f(-1400, 0, 500));
+		walrusControl.add(unit.getControl(ShipControl.class));
+		walrusControl.get(1).setPhysicsLocation(new Vector3f(-1400, 0, 500));
 		rootNode.attachChild(unit);
 		walrus.add(unit);
 
 		unit = new Walrus(Constants.WALRUS_3, assetManager, physicsState, water, camNode);
-		control = unit.getControl(ShipControl.class);
-		control.setPhysicsLocation(new Vector3f(-1350, 0, 500));
+		walrusControl.add(unit.getControl(ShipControl.class));
+		walrusControl.get(2).setPhysicsLocation(new Vector3f(-1350, 0, 500));
 		rootNode.attachChild(unit);
 		walrus.add(unit);
 
 		unit = new Walrus(Constants.WALRUS_4, assetManager, physicsState, water, camNode);
-		control = unit.getControl(ShipControl.class);
-		control.setPhysicsLocation(new Vector3f(-1300, 0, 500));
+		walrusControl.add(unit.getControl(ShipControl.class));
+		walrusControl.get(3).setPhysicsLocation(new Vector3f(-1300, 0, 500));
 		rootNode.attachChild(unit);
 		walrus.add(unit);
 	}
 
 	private void createManta() {
 		Manta unit = new Manta(Constants.MANTA_1, assetManager, physicsState, water, camNode);
-		ShipControl control = unit.getControl(ShipControl.class);
-		control.setPhysicsLocation(new Vector3f(-1450, 20, 400));
+		mantaControl.add(unit.getControl(PlaneControl.class));
+		mantaControl.get(0).setPhysicsLocation(new Vector3f(-1450, 20, 400));
 		rootNode.attachChild(unit);
 		manta.add(unit);
 
 		unit = new Manta(Constants.MANTA_2, assetManager, physicsState, water, camNode);
-		control = unit.getControl(ShipControl.class);
-		control.setPhysicsLocation(new Vector3f(-1400, 20, 400));
+		mantaControl.add(unit.getControl(PlaneControl.class));
+		mantaControl.get(1).setPhysicsLocation(new Vector3f(-1400, 20, 400));
 		rootNode.attachChild(unit);
 		manta.add(unit);
 
 		unit = new Manta(Constants.MANTA_3, assetManager, physicsState, water, camNode);
-		control = unit.getControl(ShipControl.class);
-		control.setPhysicsLocation(new Vector3f(-1350, 20, 400));
+		mantaControl.add(unit.getControl(PlaneControl.class));
+		mantaControl.get(2).setPhysicsLocation(new Vector3f(-1350, 20, 400));
 		rootNode.attachChild(unit);
 		manta.add(unit);
 
 		unit = new Manta(Constants.MANTA_4, assetManager, physicsState, water, camNode);
-		control = unit.getControl(ShipControl.class);
-		control.setPhysicsLocation(new Vector3f(-1300, 20, 400));
+		mantaControl.add(unit.getControl(PlaneControl.class));
+		mantaControl.get(3).setPhysicsLocation(new Vector3f(-1300, 20, 400));
 		rootNode.attachChild(unit);
 		manta.add(unit);
 	}
@@ -211,10 +217,22 @@ public class PlayerAppState extends AbstractAppState {
 
 	@Override
 	public void update(float tpf) {
-		GameObject carrierData = playerData.getCarrier();
-		carrierData.setLocation(carrier.getLocalTranslation());
-		carrierData.setRotation(carrier.getLocalRotation());
-//		carrierData.setVelocity(carrier.getVelocity());
+		CarrierData carrierData = playerData.getCarrier();
+		carrierData.setLocation(carrierControl.getPhysicsLocation());
+		carrierData.setRotation(carrierControl.getPhysicsRotation());
+		carrierData.setVelocity(carrierControl.getLinearVelocity());
+
+		for (int i = 0; i < 4; i++) {
+			MantaData mantaData = playerData.getManta(i);
+			mantaData.setLocation(mantaControl.get(i).getPhysicsLocation());
+			mantaData.setRotation(mantaControl.get(i).getPhysicsRotation());
+			mantaData.setVelocity(mantaControl.get(i).getLinearVelocity());
+
+			WalrusData walrusData = playerData.getWalrus(i);
+			walrusData.setLocation(walrusControl.get(i).getPhysicsLocation());
+			walrusData.setRotation(walrusControl.get(i).getPhysicsRotation());
+			walrusData.setVelocity(walrusControl.get(i).getLinearVelocity());
+		}
 	}
 
 	private void initMark() {

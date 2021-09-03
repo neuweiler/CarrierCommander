@@ -53,13 +53,13 @@ import org.slf4j.LoggerFactory;
  * @author Michael Neuweiler
  */
 public class Walrus extends PlayerUnit {
-	private final Logger logger = LoggerFactory.getLogger(Walrus.class);
-	private final float WIDTH = 3.8f, LENGTH = 10f, HEIGHT = 3.2f, MASS = 5f;
+	private static final Logger logger = LoggerFactory.getLogger(Walrus.class);
+	public static final float WIDTH = 3.8f, LENGTH = 10f, HEIGHT = 3.2f, MASS = 5f;
 
 	public Walrus(String name, AssetManager assetManager, BulletAppState phsyicsState, WaterFilter water, CameraNode camNode) {
 		super(name, assetManager, phsyicsState, water, camNode);
 
-		loadModel(assetManager);
+		attachChild(loadModel(assetManager));
 		createCameraHooks();
 		CollisionShape collisionShape = createCollisionShape();
 
@@ -67,15 +67,15 @@ public class Walrus extends PlayerUnit {
 		createFloatControl(water);
 	}
 
-	private void loadModel(AssetManager assetManager) {
+	public static Spatial loadModel(AssetManager assetManager) {
 		Spatial model = assetManager.loadModel("Models/BTR80/br01.fbx");
 		model.scale(0.05f);
 		model.move(0,6.8f,0);
-		attachChild(model);
-		logger.debug("vertices: {} triangles: {}", getVertexCount(), getTriangleCount());
+		logger.debug("vertices: {} triangles: {}", model.getVertexCount(), model.getTriangleCount());
+		return model;
 	}
 
-	private CollisionShape createCollisionShape() {
+	public static CollisionShape createCollisionShape() {
 		CompoundCollisionShape comp = new CompoundCollisionShape();
 		comp.addChildShape(new BoxCollisionShape(new Vector3f(WIDTH, HEIGHT, LENGTH)), new Vector3f(0, 3.3f, 0));
 		return comp;

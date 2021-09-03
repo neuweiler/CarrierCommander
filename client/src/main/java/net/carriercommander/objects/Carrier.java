@@ -55,8 +55,8 @@ import org.slf4j.LoggerFactory;
  * @author Michael Neuweiler
  */
 public class Carrier extends PlayerUnit {
-	private final Logger logger = LoggerFactory.getLogger(Carrier.class);
-	private final float MASS = 100000; // a carrier weighs 100'000 tons
+	private static final Logger logger = LoggerFactory.getLogger(Carrier.class);
+	public static final float MASS = 100000; // a carrier weighs 100'000 tons
 	private Node camHookFlightDeck = null;
 	private Node camHookLaser = null;
 	private Node camHookFlareLauncher = null;
@@ -65,7 +65,7 @@ public class Carrier extends PlayerUnit {
 	public Carrier(String name, AssetManager assetManager, BulletAppState phsyicsState, WaterFilter water, CameraNode camNode) {
 		super(name, assetManager, phsyicsState, water, camNode);
 
-		loadModel(assetManager);
+		attachChild(loadModel(assetManager));
 		createCameraHooks();
 		CollisionShape collisionShape = createCollisionShape();
 
@@ -75,10 +75,10 @@ public class Carrier extends PlayerUnit {
 		createAudio(assetManager);
 	}
 
-	private void loadModel(AssetManager assetManager) {
+	public static Spatial loadModel(AssetManager assetManager) {
 		Spatial model = assetManager.loadModel("Models/AdmiralKuznetsovClasscarrier/carrier.obj");
-		attachChild(model);
 		logger.debug("vertices: {} triangles: {}", model.getVertexCount(), model.getTriangleCount());
+		return model;
 	}
 
 	private void createCameraHooks() {
@@ -113,7 +113,7 @@ public class Carrier extends PlayerUnit {
 		camHookSurfaceMissile.rotate(0, FastMath.DEG_TO_RAD * 0, 0);
 	}
 
-	private CompoundCollisionShape createCollisionShape() {
+	public static CompoundCollisionShape createCollisionShape() {
 		CompoundCollisionShape comp = new CompoundCollisionShape(); // use a simple compound shape to improve performance drastically!
 		comp.addChildShape(new BoxCollisionShape(new Vector3f(20, 13, 149)), new Vector3f(0f, -1f, -25f));
 		comp.addChildShape(new BoxCollisionShape(new Vector3f(7, 19, 30)), new Vector3f(30f, 30f, 5f));
