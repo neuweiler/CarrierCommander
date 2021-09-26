@@ -54,10 +54,10 @@ import org.slf4j.LoggerFactory;
  */
 public class Walrus extends PlayerUnit {
 	private static final Logger logger = LoggerFactory.getLogger(Walrus.class);
-	public static final float WIDTH = 3.8f, LENGTH = 10f, HEIGHT = 3.2f, MASS = 5f;
+	public static final float WIDTH = 3.8f, LENGTH = 10.5f, HEIGHT = 3.2f, MASS = 5f;
 
 	public Walrus(String name, AssetManager assetManager, BulletAppState phsyicsState, WaterFilter water, CameraNode camNode) {
-		super(name, assetManager, phsyicsState, water, camNode);
+		super(name, camNode);
 
 		attachChild(loadModel(assetManager));
 		createCameraHooks();
@@ -68,9 +68,10 @@ public class Walrus extends PlayerUnit {
 	}
 
 	public static Spatial loadModel(AssetManager assetManager) {
-		Spatial model = assetManager.loadModel("Models/BTR80/br01.fbx");
+		Spatial model = assetManager.loadModel("Models/Walrus/walrus.fbx");
 		model.scale(0.05f);
 		model.move(0,6.8f,0);
+		model.rotate(0, FastMath.PI, 0);
 		logger.debug("vertices: {} triangles: {}", model.getVertexCount(), model.getTriangleCount());
 		return model;
 	}
@@ -82,11 +83,11 @@ public class Walrus extends PlayerUnit {
 	}
 
 	private void createShipControl(BulletAppState phsyicsState, CollisionShape comp) {
-		shipControl = new ShipControl(comp, MASS);
-		shipControl.setRudderPositionZ(LENGTH / 2);
-		addControl(shipControl);
-		shipControl.setDamping(0.2f, 0.3f);
-		phsyicsState.getPhysicsSpace().add(shipControl);
+		control = new ShipControl(comp, MASS);
+		control.setRudderPositionZ(LENGTH / 2);
+		addControl(control);
+		control.setDamping(0.2f, 0.3f);
+		phsyicsState.getPhysicsSpace().add(control);
 	}
 
 	private void createFloatControl(WaterFilter water) {
@@ -102,12 +103,11 @@ public class Walrus extends PlayerUnit {
 	private void createCameraHooks() {
 		camHookFront = new Node();
 		attachChild(camHookFront);
-		camHookFront.setLocalTranslation(0, 8, 3);
-		camHookFront.rotate(0, FastMath.DEG_TO_RAD * 180, 0);
+		camHookFront.setLocalTranslation(0, 7, 2.7f);
 
 		camHookRear = new Node();
 		attachChild(camHookRear);
-		camHookRear.setLocalTranslation(0, 7, 5);
-//		camHookRear.rotate(0, FastMath.DEG_TO_RAD * 90, 0);
+		camHookRear.setLocalTranslation(0, 7, 2.7f);
+		camHookRear.rotate(0, FastMath.PI, 0);
 	}
 }

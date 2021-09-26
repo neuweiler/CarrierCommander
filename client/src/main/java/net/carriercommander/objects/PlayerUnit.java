@@ -31,12 +31,9 @@
 
 package net.carriercommander.objects;
 
-import com.jme3.asset.AssetManager;
 import com.jme3.audio.AudioNode;
-import com.jme3.bullet.BulletAppState;
 import com.jme3.scene.CameraNode;
 import com.jme3.scene.Node;
-import com.jme3.water.WaterFilter;
 import net.carriercommander.control.ShipControl;
 
 /**
@@ -44,7 +41,7 @@ import net.carriercommander.control.ShipControl;
  */
 public abstract class PlayerUnit extends Node {
 
-	protected ShipControl shipControl = null;
+	protected ShipControl control = null;
 	protected CameraNode camNode;
 	private float fuel;
 	private boolean rearView = false;
@@ -52,38 +49,38 @@ public abstract class PlayerUnit extends Node {
 	protected Node camHookFront = null;
 	protected Node camHookRear = null;
 
-	PlayerUnit(String name, AssetManager assetManager, BulletAppState phsyicsState, WaterFilter water, CameraNode camNode) {
+	PlayerUnit(String name, CameraNode camNode) {
 		super(name);
 		this.camNode = camNode;
 	}
 
 	public void steerLeft(float tpf) {
-		shipControl.setRudder(shipControl.getRudder() + 0.5f * tpf);
+		control.setRudder(control.getRudder() + 0.5f * tpf);
 	}
 
 	public void steerRight(float tpf) {
-		shipControl.setRudder(shipControl.getRudder() - 0.5f * tpf);
+		control.setRudder(control.getRudder() - 0.5f * tpf);
 	}
 
 	public void steerUp(float tpf) {
-		shipControl.setAttitude(shipControl.getAttitude() - 0.5f * tpf);
+		control.setAttitude(control.getAttitude() - 0.5f * tpf);
 	}
 
 	public void steerDown(float tpf) {
-		shipControl.setAttitude(shipControl.getAttitude() + 0.5f * tpf);
+		control.setAttitude(control.getAttitude() + 0.5f * tpf);
 	}
 
 	public void increaseSpeed(float tpf) {
-		shipControl.setThrottle(shipControl.getThrottle() + 0.5f * tpf);
+		control.setThrottle(control.getThrottle() + 0.5f * tpf);
 		if (audio != null) {
-			audio.setPitch(1.0f + shipControl.getThrottle());
+			audio.setPitch(1.0f + control.getThrottle());
 		}
 	}
 
 	public void decreaseSpeed(float tpf) {
-		shipControl.setThrottle(shipControl.getThrottle() - 0.5f * tpf);
+		control.setThrottle(control.getThrottle() - 0.5f * tpf);
 		if (audio != null) {
-			audio.setPitch(1.0f + shipControl.getThrottle());
+			audio.setPitch(1.0f + control.getThrottle());
 		}
 	}
 

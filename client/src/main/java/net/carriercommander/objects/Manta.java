@@ -40,7 +40,6 @@ import com.jme3.math.Vector3f;
 import com.jme3.scene.CameraNode;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
-import com.jme3.water.WaterFilter;
 import net.carriercommander.control.PlaneControl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,8 +53,8 @@ public class Manta extends PlayerUnit {
 	private static final Logger logger = LoggerFactory.getLogger(PlayerUnit.class);
 	public static final float WIDTH = 4.8f, LENGTH = 5.4f, HEIGHT = 2f, MASS = 3f;
 
-	public Manta(String name, AssetManager assetManager, BulletAppState phsyicsState, WaterFilter water, CameraNode camNode) {
-		super(name, assetManager, phsyicsState, water, camNode);
+	public Manta(String name, AssetManager assetManager, BulletAppState phsyicsState, CameraNode camNode) {
+		super(name, camNode);
 
 		attachChild(loadModel(assetManager));
 
@@ -66,9 +65,8 @@ public class Manta extends PlayerUnit {
 	}
 
 	public static Spatial loadModel(AssetManager assetManager) {
-		Spatial model = assetManager.loadModel("Models/HoverTank/tankFinalExport.blend");
+		Spatial model = assetManager.loadModel("Models/Manta/manta.mesh.xml");
 		model.move(0, -1, 0);
-		model.rotate(0, FastMath.DEG_TO_RAD * 180, 0);
 		logger.debug("vertices: {} triangles: {}", model.getVertexCount(), model.getTriangleCount());
 		return model;
 	}
@@ -78,20 +76,20 @@ public class Manta extends PlayerUnit {
 	}
 
 	private void createPlaneControl(BulletAppState phsyicsState, CollisionShape collisionShape) {
-		shipControl = new PlaneControl(collisionShape, MASS);
-		addControl(shipControl);
-		shipControl.setDamping(0.1f, 0.5f);
-		phsyicsState.getPhysicsSpace().add(shipControl);
+		control = new PlaneControl(collisionShape, MASS);
+		addControl(control);
+		control.setDamping(0.1f, 0.5f);
+		phsyicsState.getPhysicsSpace().add(control);
 	}
 
 	private void createCameraHooks() {
 		camHookFront = new Node();
 		attachChild(camHookFront);
-		camHookFront.setLocalTranslation(0, 3, -5);
-		camHookFront.rotate(0, FastMath.DEG_TO_RAD * 180, 0);
+		camHookFront.setLocalTranslation(0, 2.5f, -2);
 
 		camHookRear = new Node();
 		attachChild(camHookRear);
-		camHookRear.setLocalTranslation(0, 3, 1);
+		camHookRear.setLocalTranslation(0, 2.5f, -2);
+		camHookRear.rotate(0, FastMath.PI, 0);
 	}
 }

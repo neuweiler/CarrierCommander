@@ -38,11 +38,15 @@ import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.collision.shapes.BoxCollisionShape;
 import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.collision.shapes.CompoundCollisionShape;
+import com.jme3.material.Material;
+import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.CameraNode;
+import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
+import com.jme3.scene.debug.Arrow;
 import com.jme3.water.WaterFilter;
 import net.carriercommander.control.FloatControl;
 import net.carriercommander.control.ShipControl;
@@ -56,19 +60,20 @@ import org.slf4j.LoggerFactory;
  */
 public class Carrier extends PlayerUnit {
 	private static final Logger logger = LoggerFactory.getLogger(Carrier.class);
-	public static final float MASS = 100000; // a carrier weighs 100'000 tons
+	public static final float WIDTH = 30f, LENGTH = 160f, HEIGHT = 14f, MASS = 100000; // a carrier weighs 100'000 tons
+	public static final float WIDTH_TOWER = 10, LENGTH_TOWER = 30, HEIGHT_TOWER = 19f;
 	private Node camHookFlightDeck = null;
 	private Node camHookLaser = null;
 	private Node camHookFlareLauncher = null;
 	private Node camHookSurfaceMissile = null;
 
 	public Carrier(String name, AssetManager assetManager, BulletAppState phsyicsState, WaterFilter water, CameraNode camNode) {
-		super(name, assetManager, phsyicsState, water, camNode);
+		super(name, camNode);
 
 		attachChild(loadModel(assetManager));
 		createCameraHooks();
-		CollisionShape collisionShape = createCollisionShape();
 
+		CollisionShape collisionShape = createCollisionShape();
 		createShipControl(phsyicsState, collisionShape);
 		createFloatControl(water);
 
@@ -76,7 +81,9 @@ public class Carrier extends PlayerUnit {
 	}
 
 	public static Spatial loadModel(AssetManager assetManager) {
-		Spatial model = assetManager.loadModel("Models/AdmiralKuznetsovClasscarrier/carrier.obj");
+		Spatial model = assetManager.loadModel("Models/CarrierPlayer/carrier.obj");
+		model.move(0, 0, -WIDTH);
+		model.rotate(0, FastMath.PI, 0);
 		logger.debug("vertices: {} triangles: {}", model.getVertexCount(), model.getTriangleCount());
 		return model;
 	}
@@ -84,58 +91,55 @@ public class Carrier extends PlayerUnit {
 	private void createCameraHooks() {
 		camHookFront = new Node();
 		attachChild(camHookFront);
-		camHookFront.setLocalTranslation(0, 40, 0);
-		camHookFront.rotate(0, FastMath.DEG_TO_RAD * 180, 0);
+//		camHookFront.setLocalTranslation(0, 40, 0);
+		camHookFront.setLocalTranslation(0, 40, -280);
 
 		camHookRear = new Node();
 		attachChild(camHookRear);
 		camHookRear.setLocalTranslation(-40, 10, 170);
-		camHookRear.rotate(0, FastMath.DEG_TO_RAD * 130, 0);
+		camHookRear.rotate(0, FastMath.DEG_TO_RAD * 310, 0);
 
 		camHookFlightDeck = new Node();
 		attachChild(camHookFlightDeck);
 		camHookFlightDeck.setLocalTranslation(0, 15, 0);
-		camHookFlightDeck.rotate(0, FastMath.DEG_TO_RAD * 180, 0);
 
 		camHookLaser = new Node();
 		attachChild(camHookLaser);
 		camHookLaser.setLocalTranslation(0, 20, 20);
-		camHookLaser.rotate(0, FastMath.DEG_TO_RAD * 180, 0);
 
 		camHookFlareLauncher = new Node();
 		attachChild(camHookFlareLauncher);
 		camHookFlareLauncher.setLocalTranslation(0, 15, 10);
-		camHookFlareLauncher.rotate(0, FastMath.DEG_TO_RAD * 180, 0);
 
 		camHookSurfaceMissile = new Node();
 		attachChild(camHookSurfaceMissile);
 		camHookSurfaceMissile.setLocalTranslation(0, 15, 10);
-		camHookSurfaceMissile.rotate(0, FastMath.DEG_TO_RAD * 0, 0);
+		camHookSurfaceMissile.rotate(0, FastMath.PI, 0);
 	}
 
 	public static CompoundCollisionShape createCollisionShape() {
 		CompoundCollisionShape comp = new CompoundCollisionShape(); // use a simple compound shape to improve performance drastically!
-		comp.addChildShape(new BoxCollisionShape(new Vector3f(20, 13, 149)), new Vector3f(0f, -1f, -25f));
-		comp.addChildShape(new BoxCollisionShape(new Vector3f(7, 19, 30)), new Vector3f(30f, 30f, 5f));
+		comp.addChildShape(new BoxCollisionShape(new Vector3f(WIDTH, HEIGHT, LENGTH)), new Vector3f(0, 0, 0));
+		comp.addChildShape(new BoxCollisionShape(new Vector3f(WIDTH_TOWER, HEIGHT_TOWER, LENGTH_TOWER)), new Vector3f(WIDTH_TOWER * -3, HEIGHT + HEIGHT_TOWER, -LENGTH_TOWER - 10));
 		return comp;
 	}
 
 	private void createShipControl(BulletAppState phsyicsState, CollisionShape collisionShape) {
-		shipControl = new ShipControl(collisionShape, MASS);
-		shipControl.setRudderPositionZ(100);
-		addControl(shipControl);
-		shipControl.setFriction(0.5f);
-		shipControl.setDamping(0.2f, 0.3f);
-		phsyicsState.getPhysicsSpace().add(shipControl);
+		control = new ShipControl(collisionShape, MASS);
+		control.setRudderPositionZ(LENGTH);
+		addControl(control);
+		control.setFriction(0.5f);
+		control.setDamping(0.2f, 0.3f);
+		phsyicsState.getPhysicsSpace().add(control);
 	}
 
 	private void createFloatControl(WaterFilter water) {
 		FloatControl floatControl = new FloatControl();
 		floatControl.setWater(water);
 		floatControl.setVerticalOffset(3.7f);
-		floatControl.setWidth(50);
-		floatControl.setLength(100);
-		floatControl.setHeight(20);
+		floatControl.setWidth(WIDTH);
+		floatControl.setLength(LENGTH);
+		floatControl.setHeight(HEIGHT);
 		addControl(floatControl);
 	}
 

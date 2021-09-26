@@ -230,9 +230,12 @@ public class CarrierCommander extends SimpleApplication implements ClientStateLi
 		physicsState = new BulletAppState();
 		physicsState.setThreadingType(BulletAppState.ThreadingType.PARALLEL); // do not set while enabling debug !
 		physicsState.setBroadphaseType(BroadphaseType.SIMPLE);
-		stateManager.attach(physicsState);
 
-//		physicsState.setDebugEnabled(true);
+/*		physicsState.setDebugEnabled(true);
+		physicsState.setDebugAxisLength(1f);
+		physicsState.setDebugAxisLineWidth(3f);
+*/
+		stateManager.attach(physicsState);
 	}
 
 

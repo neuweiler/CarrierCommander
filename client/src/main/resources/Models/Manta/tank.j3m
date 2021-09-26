@@ -1,0 +1,13 @@
+Material My Material : Common/MatDefs/Light/Lighting.j3md {
+     MaterialParameters {
+        SpecularMap : Models/Manta/tank_specular.jpg
+        Shininess : 8
+        NormalMap : Models/Manta/tank_normals.png
+        DiffuseMap : Models/Manta/tank_diffuse.jpg
+	   GlowMap : Models/Manta/tank_glow_map.jpg
+        UseMaterialColors : true
+        Ambient  : 0.0 0.0 0.0 1.0
+        Diffuse  : 1.0 1.0 1.0 1.0
+        Specular : 1.0 1.0 1.0 1.0
+     }
+}

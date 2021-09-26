@@ -47,22 +47,22 @@ import org.slf4j.LoggerFactory;
  *
  * @author Michael Neuweiler
  */
-public class PlaneControl extends ShipControl implements PhysicsCollisionListener, PhysicsTickListener {
+public class PlaneControl extends ShipControl {
 	Logger logger = LoggerFactory.getLogger(PlaneControl.class);
 
 	private final Quaternion rotation = new Quaternion();
 
-	private float attitude = 0; // aka pitch of airplane
+	protected float attitude = 0; // aka pitch of airplane
 
 	public PlaneControl(CollisionShape shape, float mass) {
 		super(shape, mass);
 	}
 
 	@Override
-	public void prePhysicsTick(PhysicsSpace arg0, float arg1) {
+	public void prePhysicsTick(PhysicsSpace arg0, float tpf) {
 		heading += rudder / 100;
-		setLinearVelocity(new Vector3f(FastMath.sin(heading) * throttle * -100, attitude * throttle * 100, FastMath.cos(heading) * throttle * -100));
-		setPhysicsRotation(rotation.fromAngles(attitude, heading, rudder));
+		setLinearVelocity(new Vector3f(FastMath.sin(heading) * throttle * 100, attitude * throttle * -100, FastMath.cos(heading) * throttle * 100));
+		setPhysicsRotation(rotation.fromAngles(attitude, heading, -rudder));
 	}
 
 	@Override
