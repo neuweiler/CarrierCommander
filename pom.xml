@@ -13,7 +13,7 @@
 	</modules>
 
 	<properties>
-		<version.jmonkeyengine>3.3.2-stable</version.jmonkeyengine>
+		<version.jmonkeyengine>3.4.0-stable</version.jmonkeyengine>
 	</properties>
 
 	<dependencies>
