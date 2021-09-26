@@ -9,9 +9,7 @@ import com.jme3.input.InputManager;
 import com.jme3.input.KeyInput;
 import com.jme3.input.MouseInput;
 import com.jme3.input.RawInputListener;
-import com.jme3.input.controls.AnalogListener;
-import com.jme3.input.controls.KeyTrigger;
-import com.jme3.input.controls.MouseAxisTrigger;
+import com.jme3.input.controls.*;
 import com.jme3.input.event.*;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
@@ -21,12 +19,10 @@ import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.shape.Sphere;
 import com.jme3.water.WaterFilter;
+import net.carriercommander.control.MissileControl;
 import net.carriercommander.control.PlaneControl;
 import net.carriercommander.control.ShipControl;
-import net.carriercommander.objects.Carrier;
-import net.carriercommander.objects.Manta;
-import net.carriercommander.objects.PlayerUnit;
-import net.carriercommander.objects.Walrus;
+import net.carriercommander.objects.*;
 import net.carriercommander.shared.model.CarrierData;
 import net.carriercommander.shared.model.MantaData;
 import net.carriercommander.shared.model.PlayerData;
@@ -76,28 +72,25 @@ public class PlayerAppState extends AbstractAppState {
 		initMark();
 
 		activeUnit = (PlayerUnit) rootNode.getChild(Constants.CARRIER_PLAYER);
-		// carrier.setCameraToBridge(camNode);
-		// camNode.lookAt(target.getLocalTranslation(), Vector3f.UNIT_Y);
 	}
 
 	private void initPlayer() {
 		createCarrier();
 		createWalrus();
 		createManta();
-	}
+ 	}
 
 	private void createCarrier() {
 		carrier = new Carrier(Constants.CARRIER_PLAYER, assetManager, physicsState, water, camNode);
 		carrierControl = carrier.getControl(ShipControl.class);
 		carrierControl.setPhysicsLocation(new Vector3f(-1800, (water != null ? water.getWaterHeight() : 0) + 5, 800));
 		rootNode.attachChild(carrier);
-		//		bulletAppState.getPhysicsSpace().addAll(player);
 	}
 
 	private void createWalrus() {
 		Walrus unit = new Walrus(Constants.WALRUS_1, assetManager, physicsState, water, camNode);
 		walrusControl.add(unit.getControl(ShipControl.class));
-		walrusControl.get(0).setPhysicsLocation(new Vector3f(-1450,  0, 500));
+		walrusControl.get(0).setPhysicsLocation(new Vector3f(-1450, 0, 500));
 		rootNode.attachChild(unit);
 		walrus.add(unit);
 
@@ -121,25 +114,26 @@ public class PlayerAppState extends AbstractAppState {
 	}
 
 	private void createManta() {
-		Manta unit = new Manta(Constants.MANTA_1, assetManager, physicsState, water, camNode);
+		Manta unit = new Manta(Constants.MANTA_1, assetManager, physicsState, camNode);
 		mantaControl.add(unit.getControl(PlaneControl.class));
-		mantaControl.get(0).setPhysicsLocation(new Vector3f(-1450, 20, 400));
+//		mantaControl.get(0).setPhysicsLocation(new Vector3f(-1450, 20, 400));
+		mantaControl.get(0).setPhysicsLocation(new Vector3f(-1800, (water != null ? water.getWaterHeight() : 0) + 5, 400));
 		rootNode.attachChild(unit);
 		manta.add(unit);
 
-		unit = new Manta(Constants.MANTA_2, assetManager, physicsState, water, camNode);
+		unit = new Manta(Constants.MANTA_2, assetManager, physicsState, camNode);
 		mantaControl.add(unit.getControl(PlaneControl.class));
 		mantaControl.get(1).setPhysicsLocation(new Vector3f(-1400, 20, 400));
 		rootNode.attachChild(unit);
 		manta.add(unit);
 
-		unit = new Manta(Constants.MANTA_3, assetManager, physicsState, water, camNode);
+		unit = new Manta(Constants.MANTA_3, assetManager, physicsState, camNode);
 		mantaControl.add(unit.getControl(PlaneControl.class));
 		mantaControl.get(2).setPhysicsLocation(new Vector3f(-1350, 20, 400));
 		rootNode.attachChild(unit);
 		manta.add(unit);
 
-		unit = new Manta(Constants.MANTA_4, assetManager, physicsState, water, camNode);
+		unit = new Manta(Constants.MANTA_4, assetManager, physicsState, camNode);
 		mantaControl.add(unit.getControl(PlaneControl.class));
 		mantaControl.get(3).setPhysicsLocation(new Vector3f(-1300, 20, 400));
 		rootNode.attachChild(unit);
@@ -155,6 +149,7 @@ public class PlayerAppState extends AbstractAppState {
 				new MouseAxisTrigger(MouseInput.AXIS_WHEEL, false));
 		inputManager.addMapping(Constants.INPUT_DECELERATE, new KeyTrigger(KeyInput.KEY_PGDN),
 				new MouseAxisTrigger(MouseInput.AXIS_WHEEL, true));
+		inputManager.addMapping(Constants.INPUT_FIRE, new KeyTrigger(KeyInput.KEY_SPACE), new MouseButtonTrigger(MouseInput.BUTTON_LEFT));
 		inputManager.addListener((AnalogListener) (name, value, tpf) -> {
 					switch (name) {
 						case Constants.INPUT_LEFT:
@@ -164,10 +159,10 @@ public class PlayerAppState extends AbstractAppState {
 							activeUnit.steerRight(tpf);
 							break;
 						case Constants.INPUT_UP:
-							activeUnit.steerUp(tpf);
+							activeUnit.steerDown(tpf);
 							break;
 						case Constants.INPUT_DOWN:
-							activeUnit.steerDown(tpf);
+							activeUnit.steerUp(tpf);
 							break;
 						case Constants.INPUT_ACCELERATE:
 							activeUnit.increaseSpeed(tpf);
@@ -178,6 +173,15 @@ public class PlayerAppState extends AbstractAppState {
 					}
 				}, Constants.INPUT_LEFT, Constants.INPUT_RIGHT, Constants.INPUT_UP, Constants.INPUT_DOWN,
 				Constants.INPUT_ACCELERATE, Constants.INPUT_DECELERATE);
+		inputManager.addListener((ActionListener) (name, keyPressed, tpf) -> {
+			switch (name) {
+				case Constants.INPUT_FIRE:
+					if (keyPressed) {
+						fire();
+					}
+					break;
+			}
+		}, Constants.INPUT_FIRE);
 
 		inputManager.addRawInputListener(new RawInputListener() {
 			public void onJoyAxisEvent(JoyAxisEvent evt) {
@@ -205,6 +209,19 @@ public class PlayerAppState extends AbstractAppState {
 			public void onTouchEvent(TouchEvent evt) {
 			}
 		});
+	}
+
+	private void fire() {
+		logger.info("spawn missile at {}", activeUnit.getControl(ShipControl.class).getPhysicsLocation());
+
+		Missile missile = new Missile(Constants.MISSILE + System.currentTimeMillis(), assetManager, physicsState, camNode, carrier);
+		MissileControl control = missile.getControl(MissileControl.class);
+		Vector3f location = activeUnit.getControl(ShipControl.class).getPhysicsLocation();
+		location.y -= 3; // TODO respect the attitude and angle
+		control.setPhysicsLocation(location);
+		control.setPhysicsRotation(activeUnit.getWorldRotation());
+		rootNode.attachChild(missile);
+		missile.setCameraToFront();
 	}
 
 	public void setActiveUnit(PlayerUnit unit) {

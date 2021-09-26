@@ -49,6 +49,7 @@ public interface Constants {
 	String MANTA_2 = "manta-2";
 	String MANTA_3 = "manta-3";
 	String MANTA_4 = "manta-4";
+	String MISSILE = "missile";
 	// key input
 	String INPUT_LEFT = "left";
 	String INPUT_RIGHT = "right";
@@ -56,6 +57,7 @@ public interface Constants {
 	String INPUT_DOWN = "down";
 	String INPUT_ACCELERATE = "accelerate";
 	String INPUT_DECELERATE = "decelerate";
+	String INPUT_FIRE = "fire";
 	// name of menu's and controls (nifty)
 	String SCREEN_START = "start";
 	String SCREEN_HUD = "hud";
