@@ -1,5 +1,6 @@
 package net.carriercommander.screen;
 
+import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
@@ -20,10 +21,11 @@ public class PaintedRadar extends PaintableImage {
 	private final Node rootNode;
 	private PlayerUnit activeUnit = null;
 	private int range = 3000;
+	private static final Quaternion rot180Y = new Quaternion().fromAngles(0, FastMath.PI, 0);
 
-	private final Color colorBackground = new Color(0f, 0f, 0f, 0f);
-	private final Color colorCircle = Color.BLACK;
-	private final Color colorPlayer = new Color(0f, 0.51f, 1f, 1f); // cyan for CC
+	private static final Color colorBackground = new Color(0f, 0f, 0f, 0f);
+	private static final Color colorCircle = Color.BLACK;
+	private static final Color colorPlayer = new Color(0f, 0.51f, 1f, 1f); // cyan for CC
 
 	/**
 	 * A 2D painted radar which can be inserted into a nifty gui image. Make sure that where the radar should appear
@@ -79,7 +81,7 @@ public class PaintedRadar extends PaintableImage {
 					if (activeUnit.getWorldTranslation().distance(node.getWorldTranslation()) <= range) {
 						Vector3f radarCoordinates = node.getWorldTranslation().subtract(activeUnit.getWorldTranslation());
 
-						Quaternion radarRotation = activeUnit.getWorldRotation().inverse();
+						Quaternion radarRotation = activeUnit.getWorldRotation().inverse().mult(rot180Y);
 						radarCoordinates = radarRotation.mult(radarCoordinates);
 						g.setColor(colorPlayer);
 						g.fillRect((int) (offsetX + radius * radarCoordinates.x / range), height - (int) (offsetY + radius * radarCoordinates.z / range), 2, 2);
