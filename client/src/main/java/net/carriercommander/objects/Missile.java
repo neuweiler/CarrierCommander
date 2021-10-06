@@ -39,12 +39,14 @@ import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
 import com.jme3.math.Vector3f;
+import com.jme3.renderer.RenderManager;
 import com.jme3.scene.CameraNode;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.shape.Box;
 import net.carriercommander.control.MissileControl;
+import net.carriercommander.effects.ExplosionSmall;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -55,9 +57,9 @@ import org.slf4j.LoggerFactory;
  */
 public class Missile extends PlayerUnit {
 	private static final Logger logger = LoggerFactory.getLogger(PlayerUnit.class);
-	public static final float WIDTH = .3f, LENGTH = 1.5f, HEIGHT = .3f, MASS = .1f;
+	public static final float WIDTH = .2f, LENGTH = 1.5f, HEIGHT = .2f, MASS = .1f;
 
-	public Missile(String name, AssetManager assetManager, BulletAppState phsyicsState, CameraNode camNode, Node target) {
+	public Missile(String name, AssetManager assetManager, BulletAppState phsyicsState, CameraNode camNode, RenderManager renderManager, Node target) {
 		super(name, camNode);
 
 		attachChild(loadModel(assetManager));
@@ -65,7 +67,8 @@ public class Missile extends PlayerUnit {
 		createCameraHooks();
 		CollisionShape collisionShape = createCollisionShape();
 
-		createMissileControl(phsyicsState, collisionShape, target);
+		ExplosionSmall explosion = new ExplosionSmall(assetManager, renderManager, target.getParent());
+		createMissileControl(phsyicsState, collisionShape, target, explosion);
 	}
 
 	public static Spatial loadModel(AssetManager assetManager) {
@@ -89,8 +92,8 @@ public class Missile extends PlayerUnit {
 		return new BoxCollisionShape(new Vector3f(WIDTH, HEIGHT, LENGTH));
 	}
 
-	private void createMissileControl(BulletAppState phsyicsState, CollisionShape collisionShape, Node target) {
-		control = new MissileControl(collisionShape, target, MASS);
+	private void createMissileControl(BulletAppState phsyicsState, CollisionShape collisionShape, Node target, ExplosionSmall explosion) {
+		control = new MissileControl(collisionShape, target, MASS, explosion);
 		control.setRudderPositionZ(LENGTH / 2);
 		addControl(control);
 		control.setDamping(0.7f, 0.7f);

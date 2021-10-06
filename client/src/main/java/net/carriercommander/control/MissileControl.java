@@ -35,9 +35,11 @@ import com.jme3.bullet.PhysicsSpace;
 import com.jme3.bullet.collision.PhysicsCollisionEvent;
 import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.math.FastMath;
-import com.jme3.math.Quaternion;
+import com.jme3.math.Matrix3f;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
+import jme3utilities.math.MyVector3f;
+import net.carriercommander.effects.ExplosionSmall;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,57 +49,126 @@ import org.slf4j.LoggerFactory;
  * @author Michael Neuweiler
  */
 public class MissileControl extends ShipControl {
-	Logger logger = LoggerFactory.getLogger(MissileControl.class);
+	private static final Logger logger = LoggerFactory.getLogger(MissileControl.class);
+	private final Node target;
+	private final ExplosionSmall explosion;
 
-	private Node target;
+	private static final float deltaGainFactor = 0.1f;
+	private static final float errorGainFactor = 0.1f;
+	private static final Vector3f missileOrientation = new Vector3f(0,0,-1);
 
-	public MissileControl(CollisionShape shape, Node target, float mass) {
+	// some re-usable variables to reduce unnecessary allocation/gc
+	private static final Vector3f gravity = Vector3f.ZERO;
+	private final Vector3f actualDirection = new Vector3f();
+	private final Vector3f error = new Vector3f();
+	private final Vector3f previousError = new Vector3f();
+	private final Vector3f delta = new Vector3f();
+	private final Vector3f sum = new Vector3f();
+	private final Matrix3f rotationalInertia = new Matrix3f();
+	private final Vector3f thrustForce = new Vector3f();
+
+	public MissileControl(CollisionShape shape, Node target, float mass, ExplosionSmall explosion) {
 		super(shape, mass);
+		this.explosion = explosion;
 		this.target = target;
 		this.throttle = 1;
 	}
 
 	@Override
 	public void prePhysicsTick(PhysicsSpace arg0, float tpf) {
-		setGravity(Vector3f.ZERO);
+		setGravity(gravity);
 
-		Vector3f delta = target.getWorldTranslation().subtract(getPhysicsLocation());
-		Vector3f localDelta = getPhysicsRotation().inverse().mult(delta).normalize();
-		Vector3f torque = new Vector3f(localDelta.y, -localDelta.x, 0);
-		torque.multLocal(10 * tpf);
-		applyTorque(torque);
-
-		Quaternion q = getPhysicsRotation();
-		Quaternion t = new Quaternion(q.getX(), q.getY(), 0, q.getW());
-		setPhysicsRotation(t);
+		Vector3f desiredDirection = calculateDesiredDirection();
+		if (calculateError(desiredDirection)) {
+			Vector3f impulse = calculateTorqueImpulse();
+			applyTorqueImpulse(impulse);
+		}
 
 		float currentSpeed = -1 * getLinearVelocity().dot(getPhysicsRotation().getRotationColumn(2));
 		float thrust = 150 - currentSpeed;
 		if (Math.round(thrust) > 0) {
-			applyForce(new Vector3f(getPhysicsRotation().getRotationColumn(2).mult(-thrust)), rudderOffset);
+			getPhysicsRotation().getRotationColumn(2, thrustForce);
+			thrustForce.multLocal(thrust * tpf * -10);
+			applyForce(thrustForce, rudderOffset);
+			fuel -= FastMath.abs(thrust) * 0.0001f * tpf; //TODO find correct factor
 		}
-		if (fuel > 0) {
-			fuel -= FastMath.abs(thrust) * 0.001f * tpf; //TODO find correct factor
-			logger.info("thrust: {} fuel: {}", thrust, fuel);
-		} else {
-			removeMissile();
+	}
+
+	private Vector3f calculateDesiredDirection() {
+		getPhysicsRotation().mult(missileOrientation, actualDirection);
+		Vector3f desiredDirection = target.getWorldTranslation().subtract(getPhysicsLocation());
+		MyVector3f.normalizeLocal(desiredDirection);
+		return desiredDirection;
+	}
+
+	private boolean calculateError(Vector3f desiredDirection) {
+		actualDirection.cross(desiredDirection, error);
+		/* Return early if the error angle is 0. Magnify the error if the angle exceeds 90 degrees.*/
+		double cosErrorAngle = MyVector3f.dot(actualDirection, desiredDirection);
+		float absSinErrorAngle = error.length();
+		if (absSinErrorAngle == 0f) {
+			if (cosErrorAngle >= 0.0) { // No error at all!
+				previousError.set(error);
+				return false;
+			}
+			// Error angle is 180 degrees!
+			Vector3f ortho = new Vector3f();
+			MyVector3f.generateBasis(desiredDirection, ortho, new Vector3f());
+			actualDirection.cross(ortho, error);
+			cosErrorAngle = MyVector3f.dot(actualDirection, ortho);
+			absSinErrorAngle = error.length();
 		}
+		Vector3f errorAxis = error.divide(absSinErrorAngle);
+		float errorMagnitude = (cosErrorAngle >= 0.0) ? absSinErrorAngle : 1f;
+		errorAxis.mult(errorMagnitude, error);
+
+		/* Calculate delta: the change in the error vector.*/
+		error.subtract(previousError, delta);
+		previousError.set(error);
+		return true;
+	}
+
+	private Vector3f calculateTorqueImpulse() {
+		sum.zero();
+		MyVector3f.accumulateScaled(sum, delta, deltaGainFactor); // delta term
+		MyVector3f.accumulateScaled(sum, error, errorGainFactor); // proportional term
+
+		/* Scale by the missile's rotational inertia.*/
+		getInverseInertiaWorld(rotationalInertia);
+		rotationalInertia.invertLocal();
+		rotationalInertia.mult(sum, sum);
+
+		return sum;
 	}
 
 	@Override
 	public void collision(PhysicsCollisionEvent event) {
 		if (event.getObjectA() == this || event.getObjectB() == this) {
+			if (explosion != null && getSpatial().getParent() != null) {
+				explosion.play(getSpatial().getLocalTranslation());
+			}
+			removeMissile();
+		}
+	}
+
+	@Override
+	public void update(float tpf) {
+		super.update(tpf);
+		if (fuel < 0) {
 			removeMissile();
 		}
 	}
 
 	private void removeMissile() {
 		if (getPhysicsSpace() != null) {
+			getPhysicsSpace().removeCollisionListener(this);
 			getPhysicsSpace().removeTickListener(this);
+			getPhysicsSpace().remove(this);
 		}
-		getSpatial().removeFromParent();
-		getSpatial().removeControl(this);
-		getPhysicsSpace().remove(this);
+		if (getSpatial() != null) {
+			getSpatial().removeFromParent();
+//			getSpatial().removeControl(this);
+		}
 	}
 
 }

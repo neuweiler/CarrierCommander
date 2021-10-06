@@ -13,7 +13,10 @@ import com.jme3.input.controls.*;
 import com.jme3.input.event.*;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
+import com.jme3.math.FastMath;
+import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
+import com.jme3.renderer.RenderManager;
 import com.jme3.scene.CameraNode;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
@@ -36,6 +39,7 @@ import java.util.List;
 public class PlayerAppState extends AbstractAppState {
 	Logger logger = LoggerFactory.getLogger(PlayerAppState.class);
 
+	private final RenderManager renderManager;
 	private final BulletAppState physicsState;
 	private final Node rootNode;
 	private final PlayerData playerData;
@@ -53,7 +57,8 @@ public class PlayerAppState extends AbstractAppState {
 	private final List<Manta> manta = new ArrayList<>();
 	private final List<PlaneControl> mantaControl = new ArrayList<>();
 
-	PlayerAppState(BulletAppState physicsState, Node rootNode, PlayerData playerData, CameraNode camNode, WaterFilter water) {
+	PlayerAppState(RenderManager renderManager, BulletAppState physicsState, Node rootNode, PlayerData playerData, CameraNode camNode, WaterFilter water) {
+		this.renderManager = renderManager;
 		this.physicsState = physicsState;
 		this.playerData = playerData;
 		this.rootNode = rootNode;
@@ -214,12 +219,12 @@ public class PlayerAppState extends AbstractAppState {
 	private void fire() {
 		logger.info("spawn missile at {}", activeUnit.getControl(ShipControl.class).getPhysicsLocation());
 
-		Missile missile = new Missile(Constants.MISSILE + System.currentTimeMillis(), assetManager, physicsState, camNode, carrier);
+		Missile missile = new Missile(Constants.MISSILE + System.currentTimeMillis(), assetManager, physicsState, camNode, renderManager, carrier);
 		MissileControl control = missile.getControl(MissileControl.class);
 		Vector3f location = activeUnit.getControl(ShipControl.class).getPhysicsLocation();
-		location.y -= 3; // TODO respect the attitude and angle
+		location.y -= 5; // TODO respect the attitude and angle
 		control.setPhysicsLocation(location);
-		control.setPhysicsRotation(activeUnit.getWorldRotation());
+		control.setPhysicsRotation(activeUnit.getControl(ShipControl.class).getPhysicsRotation().mult(new Quaternion().fromAngles(0, FastMath.PI,0)));
 		rootNode.attachChild(missile);
 		missile.setCameraToFront();
 	}
