@@ -165,7 +165,7 @@ public class CarrierCommander extends SimpleApplication implements ClientStateLi
 				break;
 			case 7:
 				setProgress(0.7f, "creating objects");
-				PlayerAppState playerAppState = new PlayerAppState(physicsState, rootNode, playerData, camNode, water);
+				PlayerAppState playerAppState = new PlayerAppState(renderManager, physicsState, rootNode, playerData, camNode, water);
 				stateManager.attach(playerAppState);
 				break;
 			case 10:
@@ -229,13 +229,14 @@ public class CarrierCommander extends SimpleApplication implements ClientStateLi
 	private void activatePhysics() {
 		physicsState = new BulletAppState();
 		physicsState.setThreadingType(BulletAppState.ThreadingType.PARALLEL); // do not set while enabling debug !
-		physicsState.setBroadphaseType(BroadphaseType.SIMPLE);
+//		physicsState.setBroadphaseType(BroadphaseType.SIMPLE);
 
 /*		physicsState.setDebugEnabled(true);
 		physicsState.setDebugAxisLength(1f);
 		physicsState.setDebugAxisLineWidth(3f);
 */
 		stateManager.attach(physicsState);
+		physicsState.getPhysicsSpace().setMaxSubSteps(0); // prevent stutter and sudden stops in forward motion
 	}
 
 
@@ -289,7 +290,7 @@ public class CarrierCommander extends SimpleApplication implements ClientStateLi
 
 		DirectionalLight sun = new DirectionalLight();
 		sun.setDirection(lightDir);
-		sun.setColor(ColorRGBA.White.clone().multLocal(1.7f));
+		sun.setColor(ColorRGBA.White.clone().multLocal(1.1f));
 		rootNode.addLight(sun);
 	}
 
