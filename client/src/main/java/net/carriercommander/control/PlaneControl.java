@@ -50,9 +50,12 @@ import org.slf4j.LoggerFactory;
 public class PlaneControl extends ShipControl {
 	Logger logger = LoggerFactory.getLogger(PlaneControl.class);
 
+	private static final Vector3f gravity = Vector3f.ZERO;
+
+	private final Vector3f velocity = new Vector3f();
 	private final Quaternion rotation = new Quaternion();
 
-	protected float attitude = 0; // aka pitch of airplane
+	private float attitude = 0; // aka pitch of airplane
 
 	public PlaneControl(CollisionShape shape, float mass) {
 		super(shape, mass);
@@ -60,8 +63,15 @@ public class PlaneControl extends ShipControl {
 
 	@Override
 	public void prePhysicsTick(PhysicsSpace arg0, float tpf) {
+		setGravity(gravity);
+
 		heading += rudder / 100;
-		setLinearVelocity(new Vector3f(FastMath.sin(heading) * throttle * 100, attitude * throttle * -100, FastMath.cos(heading) * throttle * 100));
+
+		velocity.setX(FastMath.sin(heading) * throttle * 100);
+		velocity.setZ(FastMath.cos(heading) * throttle * 100);
+		velocity.setY(attitude * throttle * -100);
+		setLinearVelocity(velocity);
+
 		setPhysicsRotation(rotation.fromAngles(attitude, heading, -rudder));
 	}
 
