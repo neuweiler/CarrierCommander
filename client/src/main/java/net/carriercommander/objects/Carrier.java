@@ -38,15 +38,12 @@ import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.collision.shapes.BoxCollisionShape;
 import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.collision.shapes.CompoundCollisionShape;
-import com.jme3.material.Material;
-import com.jme3.math.ColorRGBA;
+import com.jme3.renderer.queue.RenderQueue.ShadowMode;
 import com.jme3.math.FastMath;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.CameraNode;
-import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
-import com.jme3.scene.debug.Arrow;
 import com.jme3.water.WaterFilter;
 import net.carriercommander.control.FloatControl;
 import net.carriercommander.control.ShipControl;
@@ -82,6 +79,7 @@ public class Carrier extends PlayerUnit {
 
 	public static Spatial loadModel(AssetManager assetManager) {
 		Spatial model = assetManager.loadModel("Models/CarrierPlayer/carrier.obj");
+		model.setShadowMode(ShadowMode.CastAndReceive);
 		model.move(0, 0, -WIDTH);
 		model.rotate(0, FastMath.PI, 0);
 		logger.debug("vertices: {} triangles: {}", model.getVertexCount(), model.getTriangleCount());
@@ -144,12 +142,12 @@ public class Carrier extends PlayerUnit {
 	}
 
 	private void createAudio(AssetManager assetManager) {
-		audio = new AudioNode(assetManager, "Sound/carrierEngine.ogg", AudioData.DataType.Buffer);
+/*		audio = new AudioNode(assetManager, "Sound/carrierEngine.ogg", AudioData.DataType.Buffer);
 		audio.setLooping(true);
 		audio.setPositional(true);
 		audio.setVolume(3);
 		this.attachChild(audio);
-//		audio.play();
+		audio.play();*/
 	}
 
 	public void setCameraToFlightDeck() {
