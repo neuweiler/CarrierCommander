@@ -9,7 +9,7 @@ import java.util.Optional;
 
 public class IslandMap {
 
-	private List<Island> islands = new ArrayList<>();
+	private final List<Island> islands = new ArrayList<>();
 	private Island stockpileIsland = null;
 	private static final IslandMap instance = new IslandMap();
 
@@ -89,16 +89,9 @@ public class IslandMap {
 	}
 
 	public Optional<Island> getClosestIsland(Vector3f position) {
-		float distance = Float.MAX_VALUE;
-		Island closestIsland = null;
-
-		Comparator<Island> minComparator = new Comparator<Island>() {
-			@Override
-			public int compare(Island n1, Island n2) {
-				return Float.valueOf(n1.getPosition().distance(position))
+		Comparator<Island> minComparator = (n1, n2) ->
+				Float.valueOf(n1.getPosition().distance(position))
 						.compareTo(n2.getPosition().distance(position));
-			}
-		};
 		return islands.stream().min(minComparator);
 	}
 }
