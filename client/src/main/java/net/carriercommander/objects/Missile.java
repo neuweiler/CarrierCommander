@@ -57,9 +57,9 @@ import org.slf4j.LoggerFactory;
  */
 public class Missile extends PlayerUnit {
 	private static final Logger logger = LoggerFactory.getLogger(PlayerUnit.class);
-	public static final float WIDTH = .2f, LENGTH = 1.5f, HEIGHT = .2f, MASS = .1f;
+	public static final float WIDTH = .2f, LENGTH = 1.1f, HEIGHT = .2f, MASS = .1f;
 
-	public Missile(String name, AssetManager assetManager, BulletAppState phsyicsState, CameraNode camNode, RenderManager renderManager, Node target) {
+	public Missile(String name, AssetManager assetManager, BulletAppState phsyicsState, CameraNode camNode, RenderManager renderManager, Node rootNode, Node target) {
 		super(name, camNode);
 
 		attachChild(loadModel(assetManager));
@@ -67,25 +67,13 @@ public class Missile extends PlayerUnit {
 		createCameraHooks();
 		CollisionShape collisionShape = createCollisionShape();
 
-		ExplosionSmall explosion = new ExplosionSmall(assetManager, renderManager, target.getParent());
+		ExplosionSmall explosion = new ExplosionSmall(assetManager, renderManager, rootNode);
 		createMissileControl(phsyicsState, collisionShape, target, explosion);
 	}
 
 	public static Spatial loadModel(AssetManager assetManager) {
-//		Spatial model = assetManager.loadModel("Models/HoverTank/tankFinalExport.blend");
-//		model.move(0, -1, 0);
-//		model.rotate(0, FastMath.DEG_TO_RAD * 180, 0);
-//		logger.debug("vertices: {} triangles: {}", model.getVertexCount(), model.getTriangleCount());
-//		return model;
-
-		Box model = new Box(WIDTH, HEIGHT, LENGTH);
-		Geometry geometry = new Geometry("Box", model);
-		Material material = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
-		material.setColor("Color", ColorRGBA.Blue);
-//		material.setTexture("ColorMap", assetManager.loadTexture("Textures/Terrain/BrickWall/BrickWall.jpg"));
-		geometry.setMaterial(material);
-
-		return geometry;
+		Spatial missile = assetManager.loadModel("Models/Missile/Rocket.mesh.xml");
+		return missile;
 	}
 
 	public static CollisionShape createCollisionShape() {
@@ -103,7 +91,7 @@ public class Missile extends PlayerUnit {
 	private void createCameraHooks() {
 		camHookFront = new Node();
 		attachChild(camHookFront);
-		camHookFront.setLocalTranslation(0, .8f, 1.5f);
+		camHookFront.setLocalTranslation(0, .8f, 2.5f);
 		camHookFront.rotate(0, FastMath.PI, 0);
 	}
 }
