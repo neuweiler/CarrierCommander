@@ -16,15 +16,15 @@ public class ExplosionSmall extends Node {
 	private static final ParticleMesh.Type EMITTER_TYPE = POINT_SPRITE ? ParticleMesh.Type.Point : ParticleMesh.Type.Triangle;
 
 	private final AssetManager assetManager;
-	private final Node parentNode;
+	private final Node rootNode;
 	private ParticleEmitter flame, flash, spark, smoketrail, debris, shockwave;
 	final private float fxTime = 6f;
 	private float curTime = -1.0f;
 	private boolean flameStarted = false;
 
-	public ExplosionSmall(AssetManager assetManager, RenderManager renderManager, Node parentNode) {
+	public ExplosionSmall(AssetManager assetManager, RenderManager renderManager, Node rootNode) {
 		this.assetManager = assetManager;
-		this.parentNode = parentNode;
+		this.rootNode = rootNode;
 
 		createFlame();
 		createFlash();
@@ -39,7 +39,7 @@ public class ExplosionSmall extends Node {
 	public void play(Vector3f position) {
 		curTime = 0;
 		setLocalTranslation(position);
-		parentNode.attachChild(this);
+		rootNode.attachChild(this);
 
 		flash.emitAllParticles();
 		spark.emitAllParticles();
