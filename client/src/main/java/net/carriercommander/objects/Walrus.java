@@ -38,6 +38,7 @@ import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.collision.shapes.CompoundCollisionShape;
 import com.jme3.math.FastMath;
 import com.jme3.math.Vector3f;
+import com.jme3.renderer.queue.RenderQueue.ShadowMode;
 import com.jme3.scene.CameraNode;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
@@ -72,6 +73,7 @@ public class Walrus extends PlayerUnit {
 		model.scale(0.05f);
 		model.move(0,6.8f,0);
 		model.rotate(0, FastMath.PI, 0);
+		model.setShadowMode(ShadowMode.CastAndReceive);
 		logger.debug("vertices: {} triangles: {}", model.getVertexCount(), model.getTriangleCount());
 		return model;
 	}
