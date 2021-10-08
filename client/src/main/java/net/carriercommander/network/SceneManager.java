@@ -2,29 +2,21 @@ package net.carriercommander.network;
 
 import com.jme3.app.SimpleApplication;
 import com.jme3.bullet.BulletAppState;
-import com.jme3.bullet.collision.shapes.BoxCollisionShape;
 import com.jme3.bullet.collision.shapes.CollisionShape;
-import com.jme3.bullet.collision.shapes.CompoundCollisionShape;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
-import com.jme3.scene.Spatial;
-import net.carriercommander.control.ShipControl;
 import net.carriercommander.objects.Carrier;
 import net.carriercommander.objects.Manta;
 import net.carriercommander.objects.Walrus;
-import net.carriercommander.shared.model.GameObject;
-import net.carriercommander.shared.model.MantaData;
+import net.carriercommander.shared.model.GameObjectData;
 import net.carriercommander.shared.model.PlayerData;
-import net.carriercommander.shared.model.WalrusData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.concurrent.Callable;
 
 public class SceneManager {
 	private final Logger logger = LoggerFactory.getLogger(SceneManager.class);
@@ -78,7 +70,7 @@ public class SceneManager {
 		}
 	}
 
-	private void updateUnit(RigidBodyControl control, GameObject gameObject) {
+	private void updateUnit(RigidBodyControl control, GameObjectData gameObject) {
 		if (control != null && gameObject != null) {
 			control.setPhysicsLocation(gameObject.getLocation());
 			control.setPhysicsRotation(gameObject.getRotation());

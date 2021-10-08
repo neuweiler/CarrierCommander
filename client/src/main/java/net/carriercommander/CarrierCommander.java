@@ -35,6 +35,7 @@ import com.jme3.app.SimpleApplication;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.PhysicsSpace.BroadphaseType;
 import com.jme3.bullet.control.RigidBodyControl;
+import com.jme3.font.BitmapText;
 import com.jme3.light.DirectionalLight;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
@@ -52,6 +53,8 @@ import com.jme3.renderer.queue.RenderQueue.ShadowMode;
 import com.jme3.scene.CameraNode;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.control.CameraControl.ControlDirection;
+import com.jme3.shadow.DirectionalLightShadowRenderer;
+import com.jme3.shadow.EdgeFilteringMode;
 import com.jme3.terrain.geomipmap.TerrainQuad;
 import com.jme3.terrain.heightmap.AbstractHeightMap;
 import com.jme3.terrain.heightmap.ImageBasedHeightMap;
@@ -85,7 +88,8 @@ import java.io.IOException;
  * @author Michael Neuweiler
  */
 public class CarrierCommander extends SimpleApplication implements ClientStateListener {
-	Logger logger = LoggerFactory.getLogger(CarrierCommander.class);
+	private final Logger logger = LoggerFactory.getLogger(CarrierCommander.class);
+	private final boolean DEBUG = false;
 
 	private BulletAppState physicsState;
 	private Nifty nifty;
@@ -113,7 +117,7 @@ public class CarrierCommander extends SimpleApplication implements ClientStateLi
 	@Override
 	public void simpleInitApp() {
 		// setDisplayFps(false);
-		setDisplayStatView(false);
+		setDisplayStatView(DEBUG);
 		flyCam.setEnabled(false); // Disable the default flyby cam
 		createNitfyGui();
 	}
@@ -169,6 +173,7 @@ public class CarrierCommander extends SimpleApplication implements ClientStateLi
 				stateManager.attach(playerAppState);
 				break;
 			case 10:
+				addCrossHairs();
 				setProgress(1.0f, "finished");
 				nifty.gotoScreen("hud");
 				loading = false;
@@ -228,13 +233,15 @@ public class CarrierCommander extends SimpleApplication implements ClientStateLi
 
 	private void activatePhysics() {
 		physicsState = new BulletAppState();
-		physicsState.setThreadingType(BulletAppState.ThreadingType.PARALLEL); // do not set while enabling debug !
+		physicsState.setThreadingType(DEBUG ? BulletAppState.ThreadingType.SEQUENTIAL : BulletAppState.ThreadingType.PARALLEL);
 //		physicsState.setBroadphaseType(BroadphaseType.SIMPLE);
 
-/*		physicsState.setDebugEnabled(true);
-		physicsState.setDebugAxisLength(1f);
-		physicsState.setDebugAxisLineWidth(3f);
-*/
+		physicsState.setDebugEnabled(DEBUG);
+		if (DEBUG) {
+			physicsState.setDebugAxisLength(1f);
+			physicsState.setDebugAxisLineWidth(3f);
+		}
+
 		stateManager.attach(physicsState);
 		physicsState.getPhysicsSpace().setMaxSubSteps(0); // prevent stutter and sudden stops in forward motion
 	}
@@ -288,17 +295,34 @@ public class CarrierCommander extends SimpleApplication implements ClientStateLi
 		sky.setLocalScale(350);
 		rootNode.attachChild(sky);
 
+		DirectionalLightShadowRenderer dlsr	= new DirectionalLightShadowRenderer(assetManager, 2048, 3);
+		dlsr.setLambda(0.55f);
+		dlsr.setShadowIntensity(0.6f);
+		dlsr.setEdgeFilteringMode(EdgeFilteringMode.Bilinear);
+		viewPort.addProcessor(dlsr);
+
 		DirectionalLight sun = new DirectionalLight();
 		sun.setDirection(lightDir);
 		sun.setColor(ColorRGBA.White.clone().multLocal(1.1f));
+		dlsr.setLight(sun);
 		rootNode.addLight(sun);
 	}
 
 	private void configureCamera() {
 		camNode = new CameraNode("Camera Node", cam);
 		camNode.setControlDir(ControlDirection.SpatialToCamera);
-
 		cam.setFrustumFar(20000);
+	}
+
+	private void addCrossHairs() {
+		BitmapText ch = new BitmapText(guiFont, false);
+		ch.setSize(guiFont.getCharSet().getRenderedSize() + 20);
+		ch.setText("+");
+		ch.setColor(ColorRGBA.Black);
+		ch.setLocalTranslation(
+				settings.getWidth() / 2 - ch.getLineWidth() / 2,
+				settings.getHeight() / 2 + ch.getLineHeight() / 2, 0);
+		guiNode.attachChild(ch);
 	}
 
 	private void createTerrain() {

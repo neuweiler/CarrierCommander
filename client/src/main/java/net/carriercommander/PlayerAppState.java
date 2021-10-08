@@ -5,31 +5,24 @@ import com.jme3.app.state.AbstractAppState;
 import com.jme3.app.state.AppStateManager;
 import com.jme3.asset.AssetManager;
 import com.jme3.bullet.BulletAppState;
+import com.jme3.collision.CollisionResults;
 import com.jme3.input.InputManager;
 import com.jme3.input.KeyInput;
 import com.jme3.input.MouseInput;
 import com.jme3.input.RawInputListener;
 import com.jme3.input.controls.*;
 import com.jme3.input.event.*;
-import com.jme3.material.Material;
-import com.jme3.math.ColorRGBA;
-import com.jme3.math.FastMath;
-import com.jme3.math.Quaternion;
-import com.jme3.math.Vector3f;
+import com.jme3.math.*;
 import com.jme3.renderer.RenderManager;
 import com.jme3.scene.CameraNode;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
-import com.jme3.scene.shape.Sphere;
 import com.jme3.water.WaterFilter;
 import net.carriercommander.control.MissileControl;
 import net.carriercommander.control.PlaneControl;
 import net.carriercommander.control.ShipControl;
 import net.carriercommander.objects.*;
-import net.carriercommander.shared.model.CarrierData;
-import net.carriercommander.shared.model.MantaData;
-import net.carriercommander.shared.model.PlayerData;
-import net.carriercommander.shared.model.WalrusData;
+import net.carriercommander.shared.model.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -74,7 +67,6 @@ public class PlayerAppState extends AbstractAppState {
 
 		initPlayer();
 		initInput();
-		initMark();
 
 		activeUnit = (PlayerUnit) rootNode.getChild(Constants.CARRIER_PLAYER);
 	}
@@ -83,7 +75,7 @@ public class PlayerAppState extends AbstractAppState {
 		createCarrier();
 		createWalrus();
 		createManta();
- 	}
+	}
 
 	private void createCarrier() {
 		carrier = new Carrier(Constants.CARRIER_PLAYER, assetManager, physicsState, water, camNode);
@@ -217,16 +209,35 @@ public class PlayerAppState extends AbstractAppState {
 	}
 
 	private void fire() {
-		logger.info("spawn missile at {}", activeUnit.getControl(ShipControl.class).getPhysicsLocation());
+		GameObject target = findTarget();
+		if (target != null) {
+			logger.info("fire at {}", target.getName());
+			Missile missile = new Missile(Constants.MISSILE + System.currentTimeMillis(), assetManager, physicsState, camNode, renderManager, rootNode, target);
+			MissileControl control = missile.getControl(MissileControl.class);
+			Vector3f location = activeUnit.getControl(ShipControl.class).getPhysicsLocation();
+			location.y -= 5; // TODO respect the attitude and angle
+			control.setPhysicsLocation(location);
+			control.setPhysicsRotation(activeUnit.getControl(ShipControl.class).getPhysicsRotation().mult(new Quaternion().fromAngles(0, FastMath.PI, 0)));
+			rootNode.attachChild(missile);
+//			missile.setCameraToFront();
+		}
+	}
 
-		Missile missile = new Missile(Constants.MISSILE + System.currentTimeMillis(), assetManager, physicsState, camNode, renderManager, carrier);
-		MissileControl control = missile.getControl(MissileControl.class);
-		Vector3f location = activeUnit.getControl(ShipControl.class).getPhysicsLocation();
-		location.y -= 5; // TODO respect the attitude and angle
-		control.setPhysicsLocation(location);
-		control.setPhysicsRotation(activeUnit.getControl(ShipControl.class).getPhysicsRotation().mult(new Quaternion().fromAngles(0, FastMath.PI,0)));
-		rootNode.attachChild(missile);
-		missile.setCameraToFront();
+	private GameObject findTarget() {
+		CollisionResults results = new CollisionResults();
+		Ray ray = new Ray(camNode.getWorldTranslation(), camNode.getWorldRotation().mult(Vector3f.UNIT_Z));
+		rootNode.collideWith(ray, results);
+
+		if (results.size() > 0 && results.getClosestCollision().getGeometry() != null) {
+			Node node = results.getClosestCollision().getGeometry().getParent();
+			while (node != null) {
+				if (node instanceof GameObject) {
+					return (GameObject) node;
+				}
+				node = node.getParent();
+			}
+		}
+		return null;
 	}
 
 	public void setActiveUnit(PlayerUnit unit) {
@@ -255,13 +266,5 @@ public class PlayerAppState extends AbstractAppState {
 			walrusData.setRotation(walrusControl.get(i).getPhysicsRotation());
 			walrusData.setVelocity(walrusControl.get(i).getLinearVelocity());
 		}
-	}
-
-	private void initMark() {
-		Sphere sphere = new Sphere(30, 30, 0.2f);
-		mark = new Geometry("BOOM!", sphere);
-		Material mark_mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
-		mark_mat.setColor("Color", ColorRGBA.Red);
-		mark.setMaterial(mark_mat);
 	}
 }

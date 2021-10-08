@@ -39,7 +39,7 @@ import net.carriercommander.control.ShipControl;
 /**
  * @author Michael Neuweiler
  */
-public abstract class PlayerUnit extends Node {
+public abstract class PlayerUnit extends GameObject {
 
 	protected ShipControl control = null;
 	protected CameraNode camNode;
