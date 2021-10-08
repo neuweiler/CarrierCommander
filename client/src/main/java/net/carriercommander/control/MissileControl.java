@@ -34,6 +34,7 @@ package net.carriercommander.control;
 import com.jme3.bullet.PhysicsSpace;
 import com.jme3.bullet.collision.PhysicsCollisionEvent;
 import com.jme3.bullet.collision.shapes.CollisionShape;
+import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.math.FastMath;
 import com.jme3.math.Matrix3f;
 import com.jme3.math.Vector3f;
@@ -144,9 +145,23 @@ public class MissileControl extends ShipControl {
 	@Override
 	public void collision(PhysicsCollisionEvent event) {
 		if (event.getObjectA() == this || event.getObjectB() == this) {
+			logger.info("collision between {} and {}", event.getObjectA(), event.getObjectB());
 			if (explosion != null && getSpatial().getParent() != null) {
-				explosion.play(getSpatial().getLocalTranslation());
+				explosion.play(getSpatial().getWorldTranslation());
 			}
+
+			// add impulse from explosion
+			if (event.getObjectA() instanceof RigidBodyControl) {
+				RigidBodyControl rbc = (RigidBodyControl) event.getObjectA();
+				rbc.applyImpulse(event.getLateralFrictionDir1(null).mult(-100),
+						event.getLocalPointA(null));
+			}
+			if (event.getObjectB() instanceof RigidBodyControl) {
+				RigidBodyControl rbc = (RigidBodyControl) event.getObjectB();
+				rbc.applyImpulse(event.getLateralFrictionDir2(null).mult(-100),
+						event.getLocalPointB(null));
+			}
+
 			removeMissile();
 		}
 	}
