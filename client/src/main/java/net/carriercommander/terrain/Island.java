@@ -1,4 +1,4 @@
-package net.carriercommander.objects;
+package net.carriercommander.terrain;
 
 import com.jme3.math.Vector3f;
 import net.carriercommander.Constants;

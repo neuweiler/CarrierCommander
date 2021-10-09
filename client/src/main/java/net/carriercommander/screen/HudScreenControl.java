@@ -17,8 +17,11 @@ import net.carriercommander.CarrierCommander;
 import net.carriercommander.Constants;
 import net.carriercommander.PlayerAppState;
 import net.carriercommander.control.PlaneControl;
+import net.carriercommander.control.PlayerControl;
 import net.carriercommander.control.ShipControl;
 import net.carriercommander.objects.*;
+import net.carriercommander.terrain.Island;
+import net.carriercommander.terrain.IslandMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -135,7 +138,7 @@ public class HudScreenControl extends AbstractAppState implements ScreenControll
 	}
 
 	private void updateInfoBox() {
-		PlayerUnit activeUnit = playerAppState.getActiveUnit();
+		PlayerItem activeUnit = playerAppState.getActiveUnit();
 		if (positionTextRenderer != null) {
 			positionTextRenderer.setText("Position: "
 					+ String.format("%.02f", activeUnit.getLocalTranslation().getX() / Constants.MAP_SCENE_FACTOR) + " "
@@ -163,8 +166,8 @@ public class HudScreenControl extends AbstractAppState implements ScreenControll
 	}
 
 	private void updateGauges() {
-		PlayerUnit activeUnit = playerAppState.getActiveUnit();
-		ShipControl control = activeUnit.getControl(ShipControl.class);
+		PlayerItem activeUnit = playerAppState.getActiveUnit();
+		PlayerControl control = activeUnit.getControl(PlayerControl.class);
 
 		if (fuelGaugeRenderer != null) {
 			fuelGauge.setValue(control.getFuel());
@@ -349,9 +352,9 @@ public class HudScreenControl extends AbstractAppState implements ScreenControll
 	public void carrierSpeed(String command) {
 		ShipControl control = app.getRootNode().getChild(Constants.CARRIER_PLAYER).getControl(ShipControl.class);
 		if ("increase".equals(command)) {
-			control.setThrottle(control.getThrottle() + 0.05f);
+			control.increaseSpeed(0.05f);
 		} else {
-			control.setThrottle(control.getThrottle() - 0.05f);
+			control.decreaseSpeed(0.05f);
 		}
 	}
 
@@ -380,7 +383,7 @@ public class HudScreenControl extends AbstractAppState implements ScreenControll
 	}
 
 	public void toggleRearView() {
-		PlayerUnit activeUnit = playerAppState.getActiveUnit();
+		PlayerItem activeUnit = playerAppState.getActiveUnit();
 		activeUnit.toggleRearView();
 	}
 

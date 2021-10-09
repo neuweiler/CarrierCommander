@@ -49,7 +49,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author Michael Neuweiler
  */
-public class MissileControl extends ShipControl {
+public class MissileControl extends BaseControl {
 	private static final Logger logger = LoggerFactory.getLogger(MissileControl.class);
 	private final Node target;
 	private final ExplosionSmall explosion;
@@ -67,12 +67,13 @@ public class MissileControl extends ShipControl {
 	private final Vector3f sum = new Vector3f();
 	private final Matrix3f rotationalInertia = new Matrix3f();
 	private final Vector3f thrustForce = new Vector3f();
+	private final Vector3f rudderOffset = new Vector3f();
+	private float fuel = 1f;
 
 	public MissileControl(CollisionShape shape, Node target, float mass, ExplosionSmall explosion) {
 		super(shape, mass);
 		this.explosion = explosion;
 		this.target = target;
-		this.throttle = 1;
 	}
 
 	@Override
@@ -144,6 +145,8 @@ public class MissileControl extends ShipControl {
 
 	@Override
 	public void collision(PhysicsCollisionEvent event) {
+		super.collision(event);
+
 		if (event.getObjectA() == this || event.getObjectB() == this) {
 			logger.info("collision between {} and {}", event.getObjectA(), event.getObjectB());
 			if (explosion != null && getSpatial().getParent() != null) {

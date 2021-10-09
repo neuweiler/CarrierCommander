@@ -9,7 +9,7 @@ import com.jme3.scene.Node;
 import net.carriercommander.objects.Carrier;
 import net.carriercommander.objects.Manta;
 import net.carriercommander.objects.Walrus;
-import net.carriercommander.shared.model.GameObjectData;
+import net.carriercommander.shared.model.GameItemData;
 import net.carriercommander.shared.model.PlayerData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -70,7 +70,7 @@ public class SceneManager {
 		}
 	}
 
-	private void updateUnit(RigidBodyControl control, GameObjectData gameObject) {
+	private void updateUnit(RigidBodyControl control, GameItemData gameObject) {
 		if (control != null && gameObject != null) {
 			control.setPhysicsLocation(gameObject.getLocation());
 			control.setPhysicsRotation(gameObject.getRotation());

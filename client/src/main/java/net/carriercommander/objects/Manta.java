@@ -50,8 +50,8 @@ import org.slf4j.LoggerFactory;
  *
  * @author Michael Neuweiler
  */
-public class Manta extends PlayerUnit {
-	private static final Logger logger = LoggerFactory.getLogger(PlayerUnit.class);
+public class Manta extends PlayerItem {
+	private static final Logger logger = LoggerFactory.getLogger(PlayerItem.class);
 	public static final float WIDTH = 4.8f, LENGTH = 5.4f, HEIGHT = 2f, MASS = 3f;
 
 	public Manta(String name, AssetManager assetManager, BulletAppState phsyicsState, CameraNode camNode) {
@@ -78,7 +78,7 @@ public class Manta extends PlayerUnit {
 	}
 
 	private void createPlaneControl(BulletAppState phsyicsState, CollisionShape collisionShape) {
-		control = new PlaneControl(collisionShape, MASS);
+		PlaneControl control = new PlaneControl(collisionShape, MASS);
 		addControl(control);
 		control.setDamping(0.1f, 0.5f);
 		phsyicsState.getPhysicsSpace().add(control);

@@ -53,7 +53,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author Michael Neuweiler
  */
-public class Walrus extends PlayerUnit {
+public class Walrus extends PlayerItem {
 	private static final Logger logger = LoggerFactory.getLogger(Walrus.class);
 	public static final float WIDTH = 3.8f, LENGTH = 10.5f, HEIGHT = 3.2f, MASS = 5f;
 
@@ -85,7 +85,7 @@ public class Walrus extends PlayerUnit {
 	}
 
 	private void createShipControl(BulletAppState phsyicsState, CollisionShape comp) {
-		control = new ShipControl(comp, MASS);
+		ShipControl control = new ShipControl(comp, MASS);
 		control.setRudderPositionZ(LENGTH / 2);
 		addControl(control);
 		control.setDamping(0.2f, 0.3f);

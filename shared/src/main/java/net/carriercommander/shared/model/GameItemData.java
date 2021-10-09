@@ -8,7 +8,7 @@ import com.jme3.network.serializing.Serializable;
  * Base class for data objects which hold the necessary data to exchange with server.
  */
 @Serializable
-public class GameObjectData {
+public class GameItemData {
 
 	/**
 	 * The position of the object in the playfield
@@ -26,7 +26,7 @@ public class GameObjectData {
 
 	private boolean modified;
 
-	GameObjectData() {
+	GameItemData() {
 		modified = false;
 //		location = new Vector3f();
 //		rotation = new Quaternion();

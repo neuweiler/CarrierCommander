@@ -31,52 +31,48 @@
 
 package net.carriercommander.objects;
 
-import com.jme3.asset.AssetManager;
-import com.jme3.bullet.BulletAppState;
-import com.jme3.bullet.collision.shapes.BoxCollisionShape;
-import com.jme3.bullet.collision.shapes.CollisionShape;
-import com.jme3.math.Vector3f;
-import com.jme3.renderer.RenderManager;
+import com.jme3.audio.AudioNode;
+import com.jme3.scene.CameraNode;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
-import net.carriercommander.control.MissileControl;
-import net.carriercommander.effects.ExplosionSmall;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
- * Missile
- *
  * @author Michael Neuweiler
  */
-public class Missile extends GameItem {
-	private static final Logger logger = LoggerFactory.getLogger(PlayerItem.class);
-	public static final float WIDTH = .2f, LENGTH = 1.1f, HEIGHT = .2f, MASS = .1f;
+public abstract class PlayerItem extends GameItem {
 
-	public Missile(String name, AssetManager assetManager, BulletAppState phsyicsState, RenderManager renderManager, Node rootNode, Node target) {
+	protected CameraNode camNode;
+	private boolean rearView = false;
+	protected AudioNode audio = null;
+	protected Node camHookFront = null;
+	protected Node camHookRear = null;
+
+	PlayerItem(String name, CameraNode camNode) {
 		super(name);
-
-		attachChild(loadModel(assetManager));
-
-		CollisionShape collisionShape = createCollisionShape();
-
-		ExplosionSmall explosion = new ExplosionSmall(assetManager, renderManager, rootNode);
-		createMissileControl(phsyicsState, collisionShape, target, explosion);
+		this.camNode = camNode;
 	}
 
-	public static Spatial loadModel(AssetManager assetManager) {
-		Spatial missile = assetManager.loadModel("Models/Missile/Rocket.mesh.xml");
-		return missile;
+	protected void setCameraNode(Node node) {
+		if (camNode.getParent() != null)
+			camNode.getParent().detachChild(camNode);
+		node.attachChild(camNode);
 	}
 
-	public static CollisionShape createCollisionShape() {
-		return new BoxCollisionShape(new Vector3f(WIDTH, HEIGHT, LENGTH));
+	public void toggleRearView() {
+		if (rearView) {
+			setCameraToFront();
+		} else {
+			setCameraToRear();
+		}
 	}
 
-	private void createMissileControl(BulletAppState phsyicsState, CollisionShape collisionShape, Node target, ExplosionSmall explosion) {
-		MissileControl control = new MissileControl(collisionShape, target, MASS, explosion);
-		addControl(control);
-		control.setDamping(0.7f, 0.7f);
-		phsyicsState.getPhysicsSpace().add(control);
+	public void setCameraToFront() {
+		setCameraNode(camHookFront);
+		rearView = false;
+	}
+
+	public void setCameraToRear() {
+		setCameraNode(camHookRear);
+		rearView = true;
 	}
 }

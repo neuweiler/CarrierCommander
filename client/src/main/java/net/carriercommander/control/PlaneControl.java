@@ -32,9 +32,7 @@
 package net.carriercommander.control;
 
 import com.jme3.bullet.PhysicsSpace;
-import com.jme3.bullet.PhysicsTickListener;
 import com.jme3.bullet.collision.PhysicsCollisionEvent;
-import com.jme3.bullet.collision.PhysicsCollisionListener;
 import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
@@ -47,15 +45,13 @@ import org.slf4j.LoggerFactory;
  *
  * @author Michael Neuweiler
  */
-public class PlaneControl extends ShipControl {
+public class PlaneControl extends PlayerControl {
 	Logger logger = LoggerFactory.getLogger(PlaneControl.class);
 
 	private static final Vector3f gravity = Vector3f.ZERO;
 
 	private final Vector3f velocity = new Vector3f();
 	private final Quaternion rotation = new Quaternion();
-
-	private float attitude = 0; // aka pitch of airplane
 
 	public PlaneControl(CollisionShape shape, float mass) {
 		super(shape, mass);
@@ -81,18 +77,5 @@ public class PlaneControl extends ShipControl {
 		if (event.getObjectA() == this || event.getObjectB() == this) {
 			setAttitude(0);
 		}
-	}
-
-	public float getAttitude() {
-		return attitude;
-	}
-
-	public void setAttitude(float attitude) {
-		if (attitude > 1.0f)
-			attitude = 1.0f;
-		if (attitude < -1.0f)
-			attitude = -1.0f;
-		this.attitude = attitude;
-		logger.debug("attitude: {}", this.attitude);
 	}
 }

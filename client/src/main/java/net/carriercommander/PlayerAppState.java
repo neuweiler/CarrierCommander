@@ -20,6 +20,7 @@ import com.jme3.scene.Node;
 import com.jme3.water.WaterFilter;
 import net.carriercommander.control.MissileControl;
 import net.carriercommander.control.PlaneControl;
+import net.carriercommander.control.PlayerControl;
 import net.carriercommander.control.ShipControl;
 import net.carriercommander.objects.*;
 import net.carriercommander.shared.model.*;
@@ -42,7 +43,7 @@ public class PlayerAppState extends AbstractAppState {
 	private AssetManager assetManager;
 
 	private Geometry mark;
-	private PlayerUnit activeUnit;
+	private PlayerItem activeUnit;
 	private Carrier carrier;
 	private ShipControl carrierControl;
 	private final List<Walrus> walrus = new ArrayList<>();
@@ -68,7 +69,7 @@ public class PlayerAppState extends AbstractAppState {
 		initPlayer();
 		initInput();
 
-		activeUnit = (PlayerUnit) rootNode.getChild(Constants.CARRIER_PLAYER);
+		activeUnit = (PlayerItem) rootNode.getChild(Constants.CARRIER_PLAYER);
 	}
 
 	private void initPlayer() {
@@ -150,22 +151,22 @@ public class PlayerAppState extends AbstractAppState {
 		inputManager.addListener((AnalogListener) (name, value, tpf) -> {
 					switch (name) {
 						case Constants.INPUT_LEFT:
-							activeUnit.steerLeft(tpf);
+							getActiveUnitControl().steerLeft(tpf);
 							break;
 						case Constants.INPUT_RIGHT:
-							activeUnit.steerRight(tpf);
+							getActiveUnitControl().steerRight(tpf);
 							break;
 						case Constants.INPUT_UP:
-							activeUnit.steerDown(tpf);
+							getActiveUnitControl().steerDown(tpf);
 							break;
 						case Constants.INPUT_DOWN:
-							activeUnit.steerUp(tpf);
+							getActiveUnitControl().steerUp(tpf);
 							break;
 						case Constants.INPUT_ACCELERATE:
-							activeUnit.increaseSpeed(tpf);
+							getActiveUnitControl().increaseSpeed(tpf);
 							break;
 						case Constants.INPUT_DECELERATE:
-							activeUnit.decreaseSpeed(tpf);
+							getActiveUnitControl().decreaseSpeed(tpf);
 							break;
 					}
 				}, Constants.INPUT_LEFT, Constants.INPUT_RIGHT, Constants.INPUT_UP, Constants.INPUT_DOWN,
@@ -209,21 +210,21 @@ public class PlayerAppState extends AbstractAppState {
 	}
 
 	private void fire() {
-		GameObject target = findTarget();
+		GameItem target = findTarget();
 		if (target != null) {
 			logger.info("fire at {}", target.getName());
-			Missile missile = new Missile(Constants.MISSILE + System.currentTimeMillis(), assetManager, physicsState, camNode, renderManager, rootNode, target);
+			Missile missile = new Missile(Constants.MISSILE + System.currentTimeMillis(), assetManager, physicsState, renderManager, rootNode, target);
 			MissileControl control = missile.getControl(MissileControl.class);
-			Vector3f location = activeUnit.getControl(ShipControl.class).getPhysicsLocation();
+			Vector3f location = getActiveUnitControl().getPhysicsLocation();
 			location.y -= 5; // TODO respect the attitude and angle
 			control.setPhysicsLocation(location);
-			control.setPhysicsRotation(activeUnit.getControl(ShipControl.class).getPhysicsRotation().mult(new Quaternion().fromAngles(0, FastMath.PI, 0)));
+			control.setPhysicsRotation(getActiveUnitControl().getPhysicsRotation().mult(new Quaternion().fromAngles(0, FastMath.PI, 0)));
 			rootNode.attachChild(missile);
 //			missile.setCameraToFront();
 		}
 	}
 
-	private GameObject findTarget() {
+	private GameItem findTarget() {
 		CollisionResults results = new CollisionResults();
 		Ray ray = new Ray(camNode.getWorldTranslation(), camNode.getWorldRotation().mult(Vector3f.UNIT_Z));
 		rootNode.collideWith(ray, results);
@@ -231,8 +232,8 @@ public class PlayerAppState extends AbstractAppState {
 		if (results.size() > 0 && results.getClosestCollision().getGeometry() != null) {
 			Node node = results.getClosestCollision().getGeometry().getParent();
 			while (node != null) {
-				if (node instanceof GameObject) {
-					return (GameObject) node;
+				if (node instanceof GameItem) {
+					return (GameItem) node;
 				}
 				node = node.getParent();
 			}
@@ -240,12 +241,16 @@ public class PlayerAppState extends AbstractAppState {
 		return null;
 	}
 
-	public void setActiveUnit(PlayerUnit unit) {
+	public void setActiveUnit(PlayerItem unit) {
 		activeUnit = unit;
 	}
 
-	public PlayerUnit getActiveUnit() {
+	public PlayerItem getActiveUnit() {
 		return activeUnit;
+	}
+
+	private PlayerControl getActiveUnitControl() {
+		return activeUnit.getControl(PlayerControl.class);
 	}
 
 	@Override

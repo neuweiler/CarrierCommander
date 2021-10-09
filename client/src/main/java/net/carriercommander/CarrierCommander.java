@@ -33,7 +33,6 @@ package net.carriercommander;
 
 import com.jme3.app.SimpleApplication;
 import com.jme3.bullet.BulletAppState;
-import com.jme3.bullet.PhysicsSpace.BroadphaseType;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.font.BitmapText;
 import com.jme3.light.DirectionalLight;
@@ -70,7 +69,7 @@ import de.lessvoid.nifty.tools.SizeValue;
 import net.carriercommander.Constants.GameType;
 import net.carriercommander.network.ClientListener;
 import net.carriercommander.network.SceneManager;
-import net.carriercommander.objects.IslandMap;
+import net.carriercommander.terrain.IslandMap;
 import net.carriercommander.screen.HudScreenControl;
 import net.carriercommander.screen.StartScreenControl;
 import net.carriercommander.shared.Utils;

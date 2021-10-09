@@ -5,7 +5,7 @@ import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
-import net.carriercommander.objects.PlayerUnit;
+import net.carriercommander.objects.PlayerItem;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -19,7 +19,7 @@ public class PaintedRadar extends PaintableImage {
 	private final int offsetX, offsetY, radius;
 	private final Ellipse2D radarCircle;
 	private final Node rootNode;
-	private PlayerUnit activeUnit = null;
+	private PlayerItem activeUnit = null;
 	private int range = 3000;
 	private static final Quaternion rot180Y = new Quaternion().fromAngles(0, FastMath.PI, 0);
 
@@ -48,7 +48,7 @@ public class PaintedRadar extends PaintableImage {
 		refreshImage();
 	}
 
-	public void setActiveUnit(PlayerUnit activeUnit) {
+	public void setActiveUnit(PlayerItem activeUnit) {
 		this.activeUnit = activeUnit;
 	}
 

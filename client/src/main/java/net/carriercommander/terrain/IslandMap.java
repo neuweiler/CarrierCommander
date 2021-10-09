@@ -1,4 +1,4 @@
-package net.carriercommander.objects;
+package net.carriercommander.terrain;
 
 import com.jme3.math.Vector3f;
 
@@ -19,7 +19,7 @@ public class IslandMap {
 
 	private IslandMap() {
 		islands.add(new Island("Vulcan", new Vector3f(-4432.0f, -0.1f, -4276.0f), 12.9f, Island.IslandType.free));
-		islands.add(new Island("Elwood", new Vector3f(-4198.0f, -0.1f, -3651.0f), 5.2f, Island.IslandType.free));
+/*		islands.add(new Island("Elwood", new Vector3f(-4198.0f, -0.1f, -3651.0f), 5.2f, Island.IslandType.free));
 		islands.add(new Island("Byrne", new Vector3f(-3886.0f, -0.1f, -3886.0f), 4.6f, Island.IslandType.free));
 		islands.add(new Island("Cerebus", new Vector3f(-3651.0f, -0.1f, -4471.0f), 3.6f, Island.IslandType.free));
 		islands.add(new Island("Charissa", new Vector3f(-3183.0f, -0.1f, -4042.0f), 3.0f, Island.IslandType.free));
@@ -54,8 +54,9 @@ public class IslandMap {
 		islands.add(new Island("Steadfast", new Vector3f(0839.0f, -0.1f, 0722.0f), 5.7f, Island.IslandType.free));
 		islands.add(new Island("Judgement", new Vector3f(0410.0f, -0.1f, 0331.0f), 6.0f, Island.IslandType.free));
 		islands.add(new Island("Evergreen", new Vector3f(-0488.0f, -0.1f, 0214.0f), 12.2f, Island.IslandType.free));
+*/
 		islands.add(new Island("Fulcrum", new Vector3f(0019.0f, -0.1f, 0019.0f), 12.9f, Island.IslandType.free));
-		islands.add(new Island("Vattland", new Vector3f(0253.0f, -0.1f, -0292.0f), 6.2f, Island.IslandType.free));
+/*		islands.add(new Island("Vattland", new Vector3f(0253.0f, -0.1f, -0292.0f), 6.2f, Island.IslandType.free));
 		islands.add(new Island("Taksaven", new Vector3f(0917.0f, -0.1f, -0292.0f), 6.8f, Island.IslandType.free));
 		islands.add(new Island("Lingard", new Vector3f(-0097.0f, -0.1f, -0410.0f), 7.2f, Island.IslandType.free));
 		islands.add(new Island("Stavros", new Vector3f(-0566.0f, -0.1f, -0292.0f), 10.8f, Island.IslandType.free));
@@ -81,6 +82,7 @@ public class IslandMap {
 		islands.add(new Island("Inferno", new Vector3f(2597.0f, -0.1f, 2206.0f), 5.2f, Island.IslandType.free));
 		islands.add(new Island("Styx", new Vector3f(3261.0f, -0.1f, 2362.0f), 10.2f, Island.IslandType.free));
 		islands.add(new Island("Kouyate", new Vector3f(3847.0f, -0.1f, 1737.0f), 7.9f, Island.IslandType.free));
+*/
 		islands.add(new Island("Nemesis", new Vector3f(4159.0f, -0.1f, 2519.0f), 12.9f, Island.IslandType.free));
 	}
 
