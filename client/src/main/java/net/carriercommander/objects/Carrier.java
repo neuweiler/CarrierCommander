@@ -46,6 +46,7 @@ import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.water.WaterFilter;
 import net.carriercommander.control.FloatControl;
+import net.carriercommander.control.PlayerControl;
 import net.carriercommander.control.ShipControl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,7 +56,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author Michael Neuweiler
  */
-public class Carrier extends PlayerUnit {
+public class Carrier extends PlayerItem {
 	private static final Logger logger = LoggerFactory.getLogger(Carrier.class);
 	public static final float WIDTH = 30f, LENGTH = 160f, HEIGHT = 14f, MASS = 100000; // a carrier weighs 100'000 tons
 	public static final float WIDTH_TOWER = 10, LENGTH_TOWER = 30, HEIGHT_TOWER = 19f;
@@ -123,8 +124,8 @@ public class Carrier extends PlayerUnit {
 	}
 
 	private void createShipControl(BulletAppState phsyicsState, CollisionShape collisionShape) {
-		control = new ShipControl(collisionShape, MASS);
-		control.setRudderPositionZ(LENGTH);
+		ShipControl control = new ShipControl(collisionShape, MASS);
+		control.setRudderPositionZ(LENGTH / 2);
 		addControl(control);
 		control.setFriction(0.5f);
 		control.setDamping(0.2f, 0.3f);
@@ -142,12 +143,15 @@ public class Carrier extends PlayerUnit {
 	}
 
 	private void createAudio(AssetManager assetManager) {
-/*		audio = new AudioNode(assetManager, "Sound/carrierEngine.ogg", AudioData.DataType.Buffer);
+		audio = new AudioNode(assetManager, "Sound/carrierEngine.ogg", AudioData.DataType.Buffer);
 		audio.setLooping(true);
 		audio.setPositional(true);
-		audio.setVolume(3);
+		audio.setRefDistance(20);
+		audio.setMaxDistance(5000);
+		audio.setLocalTranslation(0,0,-LENGTH + 20);
+		audio.setVolume(0);
 		this.attachChild(audio);
-		audio.play();*/
+		audio.play();
 	}
 
 	public void setCameraToFlightDeck() {
@@ -164,5 +168,14 @@ public class Carrier extends PlayerUnit {
 
 	public void setCameraToSurfaceMissile() {
 		setCameraNode(camHookSurfaceMissile);
+	}
+
+	@Override
+	public void updateLogicalState(float tpf) {
+		super.updateLogicalState(tpf);
+		if (audio != null) {
+			audio.setPitch(1.0f + FastMath.abs(getControl(PlayerControl.class).getThrottle()) / 1.5f);
+			audio.setVolume(0.25f + FastMath.abs(getControl(PlayerControl.class).getThrottle()));
+		}
 	}
 }
