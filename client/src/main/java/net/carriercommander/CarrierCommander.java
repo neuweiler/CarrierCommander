@@ -54,6 +54,7 @@ import com.jme3.scene.Spatial;
 import com.jme3.scene.control.CameraControl.ControlDirection;
 import com.jme3.shadow.DirectionalLightShadowRenderer;
 import com.jme3.shadow.EdgeFilteringMode;
+import com.jme3.system.AppSettings;
 import com.jme3.terrain.geomipmap.TerrainQuad;
 import com.jme3.terrain.heightmap.AbstractHeightMap;
 import com.jme3.terrain.heightmap.ImageBasedHeightMap;
@@ -89,6 +90,7 @@ import java.io.IOException;
 public class CarrierCommander extends SimpleApplication implements ClientStateListener {
 	private final Logger logger = LoggerFactory.getLogger(CarrierCommander.class);
 	private final boolean DEBUG = false;
+	private final boolean AUTOSTART = false;
 
 	private BulletAppState physicsState;
 	private Nifty nifty;
@@ -110,6 +112,19 @@ public class CarrierCommander extends SimpleApplication implements ClientStateLi
 	public static void main(String[] args) {
 		Utils.initSerializers();
 		CarrierCommander app = new CarrierCommander();
+
+		AppSettings settings=new AppSettings(true);
+		if (app.AUTOSTART) {
+			settings.setFrameRate(60);
+			settings.setFullscreen(true);
+			settings.setResolution(800, 600);
+			settings.setFullscreen(false);
+			settings.setVSync(true);
+			app.setShowSettings(false);
+		}
+		settings.setTitle("Carrier Commander");
+		app.setSettings(settings);
+
 		app.start();
 	}
 
@@ -119,6 +134,10 @@ public class CarrierCommander extends SimpleApplication implements ClientStateLi
 		setDisplayStatView(DEBUG);
 		flyCam.setEnabled(false); // Disable the default flyby cam
 		createNitfyGui();
+
+		if(AUTOSTART) {
+			startGame(GameType.action.toString());
+		}
 	}
 
 	public void startGame(String gameType) {
@@ -202,7 +221,7 @@ public class CarrierCommander extends SimpleApplication implements ClientStateLi
 		nifty.addXml("Interface/Screens/start.xml");
 		nifty.addXml("Interface/Screens/load.xml");
 		nifty.addXml("Interface/Screens/hud.xml");
-		nifty.gotoScreen("start");
+		nifty.gotoScreen(AUTOSTART ? "load" : "start");
 
 		StartScreenControl startScreenControl = (StartScreenControl) nifty.getScreen(Constants.SCREEN_START).getScreenController();
 		HudScreenControl hudScreenControl = (HudScreenControl) nifty.getScreen(Constants.SCREEN_HUD).getScreenController();
