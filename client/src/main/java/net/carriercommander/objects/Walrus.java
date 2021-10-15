@@ -98,6 +98,7 @@ public class Walrus extends PlayerItem {
 
 		shipControl.setDamping(0.2f, 0.7f);
 		phsyicsState.getPhysicsSpace().add(shipControl);
+		shipControl.setEnabled(false); // we must enable vehicle first so the wheels get properly attached
 
 		return shipControl;
 	}
@@ -157,7 +158,6 @@ public class Walrus extends PlayerItem {
 //		control.getWheel(3).setFrictionSlip(4);
 
 		phsyicsState.getPhysicsSpace().add(control);
-		control.setEnabled(false);
 		return control;
 	}
 
@@ -190,11 +190,11 @@ public class Walrus extends PlayerItem {
 	private void createCameraHooks() {
 		camHookFront = new Node();
 		attachChild(camHookFront);
-		camHookFront.setLocalTranslation(0, 7, 2.7f);
+		camHookFront.setLocalTranslation(0, 7, -1.7f);
 
 		camHookRear = new Node();
 		attachChild(camHookRear);
-		camHookRear.setLocalTranslation(0, 7, 2.7f);
+		camHookRear.setLocalTranslation(0, 7, -1.7f);
 		camHookRear.rotate(0, FastMath.PI, 0);
 	}
 }

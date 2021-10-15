@@ -89,25 +89,25 @@ public class PlayerAppState extends AbstractAppState {
 	private void createWalrus() {
 		Walrus unit = new Walrus(Constants.WALRUS_1, assetManager, physicsState, water, camNode);
 		walrusControl.add(unit.getControl(ShipControl.class));
-		walrusControl.get(0).setPhysicsLocation(new Vector3f(-1450, 0, 500));
+		unit.getControl(VehicleControl.class).setPhysicsLocation(new Vector3f(-1450, 0, 500));
 		rootNode.attachChild(unit);
 		walrus.add(unit);
 
 		unit = new Walrus(Constants.WALRUS_2, assetManager, physicsState, water, camNode);
 		walrusControl.add(unit.getControl(ShipControl.class));
-		walrusControl.get(1).setPhysicsLocation(new Vector3f(-1400, 0, 500));
+		unit.getControl(VehicleControl.class).setPhysicsLocation(new Vector3f(-1400, 0, 500));
 		rootNode.attachChild(unit);
 		walrus.add(unit);
 
 		unit = new Walrus(Constants.WALRUS_3, assetManager, physicsState, water, camNode);
 		walrusControl.add(unit.getControl(ShipControl.class));
-		walrusControl.get(2).setPhysicsLocation(new Vector3f(-1350, 0, 500));
+		unit.getControl(VehicleControl.class).setPhysicsLocation(new Vector3f(-1350, 0, 500));
 		rootNode.attachChild(unit);
 		walrus.add(unit);
 
 		unit = new Walrus(Constants.WALRUS_4, assetManager, physicsState, water, camNode);
 		walrusControl.add(unit.getControl(ShipControl.class));
-		walrusControl.get(3).setPhysicsLocation(new Vector3f(-1300, 0, 500));
+		unit.getControl(VehicleControl.class).setPhysicsLocation(new Vector3f(-1300, 0, 500));
 		rootNode.attachChild(unit);
 		walrus.add(unit);
 	}
