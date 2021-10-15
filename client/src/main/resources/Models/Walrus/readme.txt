@@ -1,0 +1,1 @@
+Export from Blender with Forward=-X and Up=Y

@@ -5,6 +5,7 @@ import com.jme3.app.state.AbstractAppState;
 import com.jme3.app.state.AppStateManager;
 import com.jme3.asset.AssetManager;
 import com.jme3.bullet.BulletAppState;
+import com.jme3.bullet.control.VehicleControl;
 import com.jme3.collision.CollisionResults;
 import com.jme3.input.InputManager;
 import com.jme3.input.KeyInput;
@@ -169,12 +170,16 @@ public class PlayerAppState extends AbstractAppState {
 							getActiveUnitControl().decreaseSpeed(tpf);
 							break;
 					}
+					if (activeUnit.getControl(VehicleControl.class)  != null) {
+						activeUnit.getControl(VehicleControl.class).steer(getActiveUnitControl().getRudder());
+						activeUnit.getControl(VehicleControl.class).accelerate(getActiveUnitControl().getThrottle() * 10000);
+					}
 				}, Constants.INPUT_LEFT, Constants.INPUT_RIGHT, Constants.INPUT_UP, Constants.INPUT_DOWN,
 				Constants.INPUT_ACCELERATE, Constants.INPUT_DECELERATE);
-		inputManager.addListener((ActionListener) (name, keyPressed, tpf) -> {
+		inputManager.addListener((ActionListener) (name, value, tpf) -> {
 			switch (name) {
 				case Constants.INPUT_FIRE:
-					if (keyPressed) {
+					if (value) {
 						fire();
 					}
 					break;
@@ -255,6 +260,7 @@ public class PlayerAppState extends AbstractAppState {
 
 	@Override
 	public void update(float tpf) {
+		//TODO check if we're connected
 		CarrierData carrierData = playerData.getCarrier();
 		carrierData.setLocation(carrierControl.getPhysicsLocation());
 		carrierData.setRotation(carrierControl.getPhysicsRotation());

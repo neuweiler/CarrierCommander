@@ -36,14 +36,16 @@ import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.collision.shapes.BoxCollisionShape;
 import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.collision.shapes.CompoundCollisionShape;
+import com.jme3.bullet.control.VehicleControl;
 import com.jme3.math.FastMath;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.queue.RenderQueue.ShadowMode;
 import com.jme3.scene.CameraNode;
+import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.water.WaterFilter;
-import net.carriercommander.control.FloatControl;
+import net.carriercommander.control.AmphibiousControl;
 import net.carriercommander.control.ShipControl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,24 +57,26 @@ import org.slf4j.LoggerFactory;
  */
 public class Walrus extends PlayerItem {
 	private static final Logger logger = LoggerFactory.getLogger(Walrus.class);
-	public static final float WIDTH = 3.8f, LENGTH = 10.5f, HEIGHT = 3.2f, MASS = 5f;
+	public static final float WIDTH = 3.8f, LENGTH = 8.5f, HEIGHT = 2.2f, MASS = 5000f;
 
 	public Walrus(String name, AssetManager assetManager, BulletAppState phsyicsState, WaterFilter water, CameraNode camNode) {
 		super(name, camNode);
 
-		attachChild(loadModel(assetManager));
+		Spatial model = loadModel(assetManager);
+		attachChild(model);
 		createCameraHooks();
-		CollisionShape collisionShape = createCollisionShape();
 
-		createShipControl(phsyicsState, collisionShape);
-		createFloatControl(water);
+		CollisionShape collisionShape = createCollisionShape();
+		ShipControl shipControl = createShipControl(phsyicsState, collisionShape, water);
+		VehicleControl vehicleControl = createVehicleControl(phsyicsState, collisionShape);
+		createAmphibiousControl(shipControl, vehicleControl, water);
 	}
 
 	public static Spatial loadModel(AssetManager assetManager) {
 		Spatial model = assetManager.loadModel("Models/Walrus/walrus.fbx");
 		model.scale(0.05f);
-		model.move(0,6.8f,0);
-		model.rotate(0, FastMath.PI, 0);
+		model.move(0,-.6f,0);
+		model.updateModelBound();
 		model.setShadowMode(ShadowMode.CastAndReceive);
 		logger.debug("vertices: {} triangles: {}", model.getVertexCount(), model.getTriangleCount());
 		return model;
@@ -84,22 +88,103 @@ public class Walrus extends PlayerItem {
 		return comp;
 	}
 
-	private void createShipControl(BulletAppState phsyicsState, CollisionShape comp) {
-		ShipControl control = new ShipControl(comp, MASS);
-		control.setRudderPositionZ(LENGTH / 2);
-		addControl(control);
-		control.setDamping(0.2f, 0.3f);
-		phsyicsState.getPhysicsSpace().add(control);
+	private ShipControl createShipControl(BulletAppState phsyicsState, CollisionShape collisionShape, WaterFilter water) {
+		ShipControl shipControl = new ShipControl(collisionShape, MASS, water);
+		shipControl.setRudderPositionZ(LENGTH / 2);
+		shipControl.setVerticalOffset(-2);
+		shipControl.setDimensions(WIDTH, HEIGHT, LENGTH);
+
+		addControl(shipControl);
+
+		shipControl.setDamping(0.2f, 0.7f);
+		phsyicsState.getPhysicsSpace().add(shipControl);
+
+		return shipControl;
 	}
 
-	private void createFloatControl(WaterFilter water) {
-		FloatControl floatControl = new FloatControl();
-		floatControl.setWater(water);
-		floatControl.setVerticalOffset(-2);
-		floatControl.setWidth(WIDTH);
-		floatControl.setHeight(HEIGHT);
-		floatControl.setLength(LENGTH);
-		addControl(floatControl);
+	private VehicleControl createVehicleControl(BulletAppState phsyicsState, CollisionShape comp) {
+		float stiffness = 120.0f;
+		float compValue = 0.2f;
+		float dampValue = 1.3f;
+
+		VehicleControl control = new VehicleControl(comp, MASS);
+		addControl(control);
+
+		control.setSuspensionCompression(compValue * 2.0f * FastMath.sqrt(stiffness));
+		control.setSuspensionDamping(dampValue * 2.0f * FastMath.sqrt(stiffness));
+		control.setSuspensionStiffness(stiffness);
+		control.setMaxSuspensionForce(10000);
+
+		Vector3f direction = new Vector3f(0, -1, 0);
+		Vector3f axle = new Vector3f(-1, 0, 0);
+
+		float scaleFactor = 5f;
+		float restLength = .2f;
+		float radius = 0.3f * scaleFactor;
+		float xOff = .55f * scaleFactor;
+		float yOff = .2f * scaleFactor; //.31
+		float zOff1 = 1.15f * scaleFactor;
+		float zOff2 = 0.39f * scaleFactor;
+		float zOff3 = -.55f * scaleFactor;
+		float zOff4 = -1.31f * scaleFactor;
+
+		Geometry wheelFrontRight1 = findGeom(this, "wheel_frontright_1");
+		control.addWheel(wheelFrontRight1, new Vector3f(-xOff, yOff, zOff1), direction, axle, restLength, radius, true);
+
+		Geometry wheelFrontRight2 = findGeom(this, "wheel_frontright_2");
+		control.addWheel(wheelFrontRight2, new Vector3f(-xOff, yOff, zOff2), direction, axle, restLength, radius, true);
+
+		Geometry wheelFrontLeft1 = findGeom(this, "wheel_frontleft_1");
+		control.addWheel(wheelFrontLeft1, new Vector3f(xOff, yOff, zOff1), direction, axle, restLength, radius, true);
+
+		Geometry wheelFrontLeft2 = findGeom(this, "wheel_frontleft_2");
+		control.addWheel(wheelFrontLeft2, new Vector3f(xOff, yOff, zOff2), direction, axle, restLength, radius, true);
+
+
+		Geometry wheelRearRight1 = findGeom(this, "wheel_rearright_1");
+		control.addWheel(wheelRearRight1, new Vector3f(-xOff, yOff, zOff3), direction, axle, restLength, radius, false);
+
+		Geometry wheelRearRight2 = findGeom(this, "wheel_rearright_2");
+		control.addWheel(wheelRearRight2, new Vector3f(-xOff, yOff, zOff4), direction, axle, restLength, radius, false);
+
+		Geometry wheelRearLeft1 = findGeom(this, "wheel_rearleft_1");
+		control.addWheel(wheelRearLeft1, new Vector3f(xOff, yOff, zOff3), direction, axle, restLength, radius, false);
+
+		Geometry wheelRearLeft2 = findGeom(this, "wheel_rearleft_2");
+		control.addWheel(wheelRearLeft2, new Vector3f(xOff, yOff, zOff4), direction, axle, restLength, radius, false);
+
+//		control.getWheel(2).setFrictionSlip(4);
+//		control.getWheel(3).setFrictionSlip(4);
+
+		phsyicsState.getPhysicsSpace().add(control);
+		control.setEnabled(false);
+		return control;
+	}
+
+	private AmphibiousControl createAmphibiousControl(ShipControl shipControl, VehicleControl vehicleControl, WaterFilter water) {
+		AmphibiousControl amphibiousControl = new AmphibiousControl(shipControl, vehicleControl, water);
+
+		addControl(amphibiousControl);
+
+		return amphibiousControl;
+	}
+
+	private Geometry findGeom(Spatial spatial, String name) {
+		if (spatial instanceof Node) {
+			Node node = (Node) spatial;
+			for (int i = 0; i < node.getQuantity(); i++) {
+				Spatial child = node.getChild(i);
+				Geometry result = findGeom(child, name);
+				if (result != null) {
+					return result;
+				}
+			}
+		} else if (spatial instanceof Geometry) {
+			if (spatial.getName().startsWith(name)) {
+				return (Geometry) spatial;
+			}
+		}
+		return null;
 	}
 
 	private void createCameraHooks() {

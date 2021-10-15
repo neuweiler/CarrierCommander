@@ -45,7 +45,6 @@ import com.jme3.scene.CameraNode;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.water.WaterFilter;
-import net.carriercommander.control.FloatControl;
 import net.carriercommander.control.PlayerControl;
 import net.carriercommander.control.ShipControl;
 import org.slf4j.Logger;
@@ -58,7 +57,7 @@ import org.slf4j.LoggerFactory;
  */
 public class Carrier extends PlayerItem {
 	private static final Logger logger = LoggerFactory.getLogger(Carrier.class);
-	public static final float WIDTH = 30f, LENGTH = 160f, HEIGHT = 14f, MASS = 100000; // a carrier weighs 100'000 tons
+	public static final float WIDTH = 30f, LENGTH = 160f, HEIGHT = 14f, MASS = 100000000; // a carrier weighs 100'000 tons
 	public static final float WIDTH_TOWER = 10, LENGTH_TOWER = 30, HEIGHT_TOWER = 19f;
 	private Node camHookFlightDeck = null;
 	private Node camHookLaser = null;
@@ -72,8 +71,7 @@ public class Carrier extends PlayerItem {
 		createCameraHooks();
 
 		CollisionShape collisionShape = createCollisionShape();
-		createShipControl(phsyicsState, collisionShape);
-		createFloatControl(water);
+		createShipControl(phsyicsState, collisionShape, water);
 
 		createAudio(assetManager);
 	}
@@ -85,6 +83,41 @@ public class Carrier extends PlayerItem {
 		model.rotate(0, FastMath.PI, 0);
 		logger.debug("vertices: {} triangles: {}", model.getVertexCount(), model.getTriangleCount());
 		return model;
+	}
+
+	public static CompoundCollisionShape createCollisionShape() {
+		CompoundCollisionShape comp = new CompoundCollisionShape(); // use a simple compound shape to improve performance drastically!
+		comp.addChildShape(new BoxCollisionShape(new Vector3f(WIDTH, HEIGHT, LENGTH)), new Vector3f(0, 0, 0));
+		comp.addChildShape(new BoxCollisionShape(new Vector3f(WIDTH_TOWER, HEIGHT_TOWER, LENGTH_TOWER)), new Vector3f(WIDTH_TOWER * -3, HEIGHT + HEIGHT_TOWER, -LENGTH_TOWER - 10));
+		return comp;
+	}
+
+	private ShipControl createShipControl(BulletAppState phsyicsState, CollisionShape collisionShape, WaterFilter water) {
+		ShipControl shipControl = new ShipControl(collisionShape, MASS, water);
+
+		shipControl.setRudderPositionZ(LENGTH / 2);
+		shipControl.setVerticalOffset(3.7f);
+		shipControl.setDimensions(WIDTH, LENGTH, HEIGHT);
+
+		addControl(shipControl);
+
+		shipControl.setFriction(0.5f);
+		shipControl.setDamping(0.2f, 0.3f);
+
+		phsyicsState.getPhysicsSpace().add(shipControl);
+		return shipControl;
+	}
+
+	private void createAudio(AssetManager assetManager) {
+		audio = new AudioNode(assetManager, "Sound/carrierEngine.ogg", AudioData.DataType.Buffer);
+		audio.setLooping(true);
+		audio.setPositional(true);
+		audio.setRefDistance(20);
+		audio.setMaxDistance(5000);
+		audio.setLocalTranslation(0,0,-LENGTH + 20);
+		audio.setVolume(0);
+		this.attachChild(audio);
+		audio.play();
 	}
 
 	private void createCameraHooks() {
@@ -114,44 +147,6 @@ public class Carrier extends PlayerItem {
 		attachChild(camHookSurfaceMissile);
 		camHookSurfaceMissile.setLocalTranslation(0, 15, 10);
 		camHookSurfaceMissile.rotate(0, FastMath.PI, 0);
-	}
-
-	public static CompoundCollisionShape createCollisionShape() {
-		CompoundCollisionShape comp = new CompoundCollisionShape(); // use a simple compound shape to improve performance drastically!
-		comp.addChildShape(new BoxCollisionShape(new Vector3f(WIDTH, HEIGHT, LENGTH)), new Vector3f(0, 0, 0));
-		comp.addChildShape(new BoxCollisionShape(new Vector3f(WIDTH_TOWER, HEIGHT_TOWER, LENGTH_TOWER)), new Vector3f(WIDTH_TOWER * -3, HEIGHT + HEIGHT_TOWER, -LENGTH_TOWER - 10));
-		return comp;
-	}
-
-	private void createShipControl(BulletAppState phsyicsState, CollisionShape collisionShape) {
-		ShipControl control = new ShipControl(collisionShape, MASS);
-		control.setRudderPositionZ(LENGTH / 2);
-		addControl(control);
-		control.setFriction(0.5f);
-		control.setDamping(0.2f, 0.3f);
-		phsyicsState.getPhysicsSpace().add(control);
-	}
-
-	private void createFloatControl(WaterFilter water) {
-		FloatControl floatControl = new FloatControl();
-		floatControl.setWater(water);
-		floatControl.setVerticalOffset(3.7f);
-		floatControl.setWidth(WIDTH);
-		floatControl.setLength(LENGTH);
-		floatControl.setHeight(HEIGHT);
-		addControl(floatControl);
-	}
-
-	private void createAudio(AssetManager assetManager) {
-		audio = new AudioNode(assetManager, "Sound/carrierEngine.ogg", AudioData.DataType.Buffer);
-		audio.setLooping(true);
-		audio.setPositional(true);
-		audio.setRefDistance(20);
-		audio.setMaxDistance(5000);
-		audio.setLocalTranslation(0,0,-LENGTH + 20);
-		audio.setVolume(0);
-		this.attachChild(audio);
-		audio.play();
 	}
 
 	public void setCameraToFlightDeck() {

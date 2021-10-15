@@ -37,6 +37,7 @@ import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.math.FastMath;
 import com.jme3.math.Matrix3f;
 import com.jme3.math.Vector3f;
+import com.jme3.water.WaterFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,19 +47,33 @@ import org.slf4j.LoggerFactory;
  * @author Michael Neuweiler
  */
 public class ShipControl extends PlayerControl {
-	private final Logger logger = LoggerFactory.getLogger(ShipControl.class);
+	private static final Logger logger = LoggerFactory.getLogger(ShipControl.class);
 	protected Matrix3f currentRotation = new Matrix3f();
 	protected Vector3f engineForce = new Vector3f();
 	protected Vector3f rudderOffset = new Vector3f();
 	protected float rudderPositionZ = 0;
 
-	public ShipControl(CollisionShape shape, float mass) {
+	private float width = 5, length = 10, height = 2.5f; // TODO read dimensions from spatial instead
+	private final Vector3f rotationOffset = new Vector3f();
+	private final Vector3f waterForce = new Vector3f();
+	private final Vector3f waterOffset = new Vector3f();
+	private float verticalOffset = 0;
+	private final WaterFilter water;
+	private float displacement = 0;
+
+	public ShipControl(CollisionShape shape, float mass, WaterFilter water) {
 		super(shape, mass);
+		this.water = water;
 	}
 
 	@Override
 	public void prePhysicsTick(PhysicsSpace arg0, float tpf) {
-		float enginePower = throttle * getMass() * 10;
+		applyEngineRudder(tpf);
+		applyBuoyancy(tpf);
+	}
+
+	private void applyEngineRudder(float tpf) {
+		float enginePower = throttle * getMass() * tpf * 600;
 
 		getPhysicsRotationMatrix(currentRotation);
 		heading = FastMath.atan2(currentRotation.get(0, 2), currentRotation.get(2, 2));
@@ -75,6 +90,27 @@ public class ShipControl extends PlayerControl {
 		}
 	}
 
+	protected void applyBuoyancy(float tpf) {
+		float meterBelowWater = (water != null ? water.getWaterHeight() : 0) -
+				getPhysicsLocation().getY() + verticalOffset;
+
+		displacement = meterBelowWater / height;
+		if (displacement > 0) {
+			if (displacement > 1f)
+				displacement = 1f;
+			float force = (mass + displacement * mass) * 9.81f;
+			waterForce.setY(force * tpf * 60);
+
+			getPhysicsRotation().mult(Vector3f.UNIT_Y, rotationOffset);
+			waterOffset.set(width * rotationOffset.x, rotationOffset.y, length * rotationOffset.z);
+			applyForce(waterForce, waterOffset);
+		}
+//		if (getSpatial().getName().startsWith("walrus"))
+//		logger.info("Y: {}, belowWater: {}, displacement: {}, waterForce: {}, offset: {}", getPhysicsLocation().getY(),
+//				meterBelowWater, displacement, waterForce, waterOffset);
+	}
+
+
 	@Override
 	public void collision(PhysicsCollisionEvent event) {
 		super.collision(event);
@@ -86,6 +122,16 @@ public class ShipControl extends PlayerControl {
 
 	public void setRudderPositionZ(float rudderPositionZ) {
 		this.rudderPositionZ = rudderPositionZ;
+	}
+
+	public void setVerticalOffset(float verticalOffset) {
+		this.verticalOffset = verticalOffset;
+	}
+
+	public void setDimensions(float width, float length, float height) {
+		this.width = width;
+		this.length = length;
+		this.height = height;
 	}
 
 }
