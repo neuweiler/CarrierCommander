@@ -10,7 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class BaseControl extends RigidBodyControl implements PhysicsCollisionListener, PhysicsTickListener {
-	private final Logger logger = LoggerFactory.getLogger(BaseControl.class);
+	private static final Logger logger = LoggerFactory.getLogger(BaseControl.class);
 
 	public BaseControl(CollisionShape shape, float mass) {
 		super(shape, mass);
@@ -35,6 +35,6 @@ public class BaseControl extends RigidBodyControl implements PhysicsCollisionLis
 
 	@Override
 	public void collision(PhysicsCollisionEvent event) {
-		logger.debug("collision between {} and {}", event.getObjectA(), event.getObjectB());
+//		logger.debug("collision between {} and {}", event.getObjectA(), event.getObjectB());
 	}
 }

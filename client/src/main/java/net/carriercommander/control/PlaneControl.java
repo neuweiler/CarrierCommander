@@ -46,7 +46,7 @@ import org.slf4j.LoggerFactory;
  * @author Michael Neuweiler
  */
 public class PlaneControl extends PlayerControl {
-	Logger logger = LoggerFactory.getLogger(PlaneControl.class);
+	private static final Logger logger = LoggerFactory.getLogger(PlaneControl.class);
 
 	private static final Vector3f gravity = Vector3f.ZERO;
 

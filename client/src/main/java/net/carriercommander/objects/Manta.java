@@ -52,7 +52,7 @@ import org.slf4j.LoggerFactory;
  */
 public class Manta extends PlayerItem {
 	private static final Logger logger = LoggerFactory.getLogger(PlayerItem.class);
-	public static final float WIDTH = 4.8f, LENGTH = 5.4f, HEIGHT = 2f, MASS = 3f;
+	public static final float WIDTH = 4.8f, LENGTH = 5.4f, HEIGHT = 2f, MASS = 5000f;
 
 	public Manta(String name, AssetManager assetManager, BulletAppState phsyicsState, CameraNode camNode) {
 		super(name, camNode);

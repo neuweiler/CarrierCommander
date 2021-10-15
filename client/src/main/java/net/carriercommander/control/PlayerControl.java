@@ -5,7 +5,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class PlayerControl extends BaseControl {
-	private final Logger logger = LoggerFactory.getLogger(PlayerControl.class);
+	private static final Logger logger = LoggerFactory.getLogger(PlayerControl.class);
 
 	protected float rudder = 0, attitude = 0, throttle = 0, heading = 0, fuel = 1.0f;
 
