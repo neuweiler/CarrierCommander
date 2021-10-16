@@ -43,6 +43,7 @@ public class PlayerAppState extends AbstractAppState {
 	private InputManager inputManager;
 	private AssetManager assetManager;
 
+	private boolean mouseGrabbed = false;
 	private Geometry mark;
 	private PlayerItem activeUnit;
 	private Carrier carrier;
@@ -82,7 +83,7 @@ public class PlayerAppState extends AbstractAppState {
 	private void createCarrier() {
 		carrier = new Carrier(Constants.CARRIER_PLAYER, assetManager, physicsState, water, camNode);
 		carrierControl = carrier.getControl(ShipControl.class);
-		carrierControl.setPhysicsLocation(new Vector3f(-1800, (water != null ? water.getWaterHeight() : 0) + 5, 800));
+		carrierControl.setPhysicsLocation(new Vector3f(-1800, (water != null ? water.getWaterHeight() : 0), 800));
 		rootNode.attachChild(carrier);
 	}
 
@@ -144,11 +145,15 @@ public class PlayerAppState extends AbstractAppState {
 		inputManager.addMapping(Constants.INPUT_RIGHT, new KeyTrigger(KeyInput.KEY_RIGHT));
 		inputManager.addMapping(Constants.INPUT_UP, new KeyTrigger(KeyInput.KEY_UP));
 		inputManager.addMapping(Constants.INPUT_DOWN, new KeyTrigger(KeyInput.KEY_DOWN));
-		inputManager.addMapping(Constants.INPUT_ACCELERATE, new KeyTrigger(KeyInput.KEY_PGUP),
-				new MouseAxisTrigger(MouseInput.AXIS_WHEEL, false));
-		inputManager.addMapping(Constants.INPUT_DECELERATE, new KeyTrigger(KeyInput.KEY_PGDN),
-				new MouseAxisTrigger(MouseInput.AXIS_WHEEL, true));
+		inputManager.addMapping(Constants.INPUT_ACCELERATE, new KeyTrigger(KeyInput.KEY_PGUP), new MouseAxisTrigger(MouseInput.AXIS_WHEEL, true));
+		inputManager.addMapping(Constants.INPUT_DECELERATE, new KeyTrigger(KeyInput.KEY_PGDN), new MouseAxisTrigger(MouseInput.AXIS_WHEEL, false));
 		inputManager.addMapping(Constants.INPUT_FIRE, new KeyTrigger(KeyInput.KEY_SPACE), new MouseButtonTrigger(MouseInput.BUTTON_LEFT));
+		inputManager.addMapping(Constants.INPUT_GRAB_MOUSE, new MouseButtonTrigger(MouseInput.BUTTON_RIGHT));
+		inputManager.addMapping(Constants.INPUT_MOUSE_X, new MouseAxisTrigger(MouseInput.AXIS_X, false));
+		inputManager.addMapping(Constants.INPUT_MOUSE_Y, new MouseAxisTrigger(MouseInput.AXIS_Y, false));
+		inputManager.addMapping(Constants.INPUT_MOUSE_X_NEGATIVE, new MouseAxisTrigger(MouseInput.AXIS_X, true));
+		inputManager.addMapping(Constants.INPUT_MOUSE_Y_NEGATIVE, new MouseAxisTrigger(MouseInput.AXIS_Y, true));
+
 		inputManager.addListener((AnalogListener) (name, value, tpf) -> {
 					switch (name) {
 						case Constants.INPUT_LEFT:
@@ -169,13 +174,28 @@ public class PlayerAppState extends AbstractAppState {
 						case Constants.INPUT_DECELERATE:
 							getActiveUnitControl().decreaseSpeed(tpf);
 							break;
+						case Constants.INPUT_MOUSE_X_NEGATIVE:
+							value = -value;
+						case Constants.INPUT_MOUSE_X:
+							if (mouseGrabbed) {
+								getActiveUnitControl().setRudder(getActiveUnitControl().getRudder() - value);
+							}
+							break;
+						case Constants.INPUT_MOUSE_Y_NEGATIVE:
+							value = -value;
+						case Constants.INPUT_MOUSE_Y:
+							if (mouseGrabbed) {
+								getActiveUnitControl().setAttitude(getActiveUnitControl().getAttitude() + value);
+							}
+							break;
 					}
 					if (activeUnit.getControl(VehicleControl.class)  != null) {
 						activeUnit.getControl(VehicleControl.class).steer(getActiveUnitControl().getRudder());
 						activeUnit.getControl(VehicleControl.class).accelerate(getActiveUnitControl().getThrottle() * 10000);
 					}
 				}, Constants.INPUT_LEFT, Constants.INPUT_RIGHT, Constants.INPUT_UP, Constants.INPUT_DOWN,
-				Constants.INPUT_ACCELERATE, Constants.INPUT_DECELERATE);
+				Constants.INPUT_ACCELERATE, Constants.INPUT_DECELERATE, Constants.INPUT_MOUSE_X,
+				Constants.INPUT_MOUSE_Y, Constants.INPUT_MOUSE_X_NEGATIVE, Constants.INPUT_MOUSE_Y_NEGATIVE);
 		inputManager.addListener((ActionListener) (name, value, tpf) -> {
 			switch (name) {
 				case Constants.INPUT_FIRE:
@@ -183,9 +203,15 @@ public class PlayerAppState extends AbstractAppState {
 						fire();
 					}
 					break;
+				case Constants.INPUT_GRAB_MOUSE:
+					if (value) {
+						mouseGrabbed = !mouseGrabbed;
+						inputManager.setCursorVisible(!mouseGrabbed);
+					}
+					break;
 			}
-		}, Constants.INPUT_FIRE);
-
+		}, Constants.INPUT_FIRE, Constants.INPUT_GRAB_MOUSE);
+/*
 		inputManager.addRawInputListener(new RawInputListener() {
 			public void onJoyAxisEvent(JoyAxisEvent evt) {
 			}
@@ -194,7 +220,7 @@ public class PlayerAppState extends AbstractAppState {
 			}
 
 			public void onMouseMotionEvent(MouseMotionEvent evt) {
-				// logger.debug("Mouse moved x:{} y:{}", evt.getX(), evt.getY());
+				 logger.debug("Mouse moved x:{} y:{}", evt.getX(), evt.getY());
 			}
 
 			public void onMouseButtonEvent(MouseButtonEvent evt) {
@@ -211,7 +237,7 @@ public class PlayerAppState extends AbstractAppState {
 
 			public void onTouchEvent(TouchEvent evt) {
 			}
-		});
+		});*/
 	}
 
 	private void fire() {
@@ -261,7 +287,7 @@ public class PlayerAppState extends AbstractAppState {
 	@Override
 	public void update(float tpf) {
 		//TODO check if we're connected
-		CarrierData carrierData = playerData.getCarrier();
+/*		CarrierData carrierData = playerData.getCarrier();
 		carrierData.setLocation(carrierControl.getPhysicsLocation());
 		carrierData.setRotation(carrierControl.getPhysicsRotation());
 		carrierData.setVelocity(carrierControl.getLinearVelocity());
@@ -276,6 +302,6 @@ public class PlayerAppState extends AbstractAppState {
 			walrusData.setLocation(walrusControl.get(i).getPhysicsLocation());
 			walrusData.setRotation(walrusControl.get(i).getPhysicsRotation());
 			walrusData.setVelocity(walrusControl.get(i).getLinearVelocity());
-		}
+		}*/
 	}
 }

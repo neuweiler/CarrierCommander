@@ -50,6 +50,7 @@ public interface Constants {
 	String MANTA_3 = "manta-3";
 	String MANTA_4 = "manta-4";
 	String MISSILE = "missile";
+
 	// key input
 	String INPUT_LEFT = "left";
 	String INPUT_RIGHT = "right";
@@ -58,6 +59,12 @@ public interface Constants {
 	String INPUT_ACCELERATE = "accelerate";
 	String INPUT_DECELERATE = "decelerate";
 	String INPUT_FIRE = "fire";
+	String INPUT_GRAB_MOUSE = "grab";
+	String INPUT_MOUSE_X = "mouse+x";
+	String INPUT_MOUSE_Y = "mouse+y";
+	String INPUT_MOUSE_X_NEGATIVE = "mouse-x";
+	String INPUT_MOUSE_Y_NEGATIVE = "mouse-y";
+
 	// name of menu's and controls (nifty)
 	String SCREEN_START = "start";
 	String SCREEN_HUD = "hud";
