@@ -92,7 +92,7 @@ public class Walrus extends PlayerItem {
 		ShipControl shipControl = new ShipControl(collisionShape, MASS, water);
 		shipControl.setRudderPositionZ(LENGTH / 2);
 		shipControl.setVerticalOffset(-2);
-		shipControl.setDimensions(WIDTH, HEIGHT, LENGTH);
+		shipControl.setDimensions(WIDTH, LENGTH, HEIGHT);
 
 		addControl(shipControl);
 
@@ -190,11 +190,11 @@ public class Walrus extends PlayerItem {
 	private void createCameraHooks() {
 		camHookFront = new Node();
 		attachChild(camHookFront);
-		camHookFront.setLocalTranslation(0, 7, -1.7f);
+		camHookFront.setLocalTranslation(0, 7, -.7f);
 
 		camHookRear = new Node();
 		attachChild(camHookRear);
-		camHookRear.setLocalTranslation(0, 7, -1.7f);
+		camHookRear.setLocalTranslation(0, 7, -.7f);
 		camHookRear.rotate(0, FastMath.PI, 0);
 	}
 }
