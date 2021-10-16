@@ -95,16 +95,16 @@ public class ShipControl extends PlayerControl {
 				getPhysicsLocation().getY() + verticalOffset;
 
 		displacement = meterBelowWater / height;
-		if (displacement > 0) {
-			if (displacement > 1f)
-				displacement = 1f;
-			float force = (mass + displacement * mass) * 9.81f;
-			waterForce.setY(force * tpf * 60);
-
-			getPhysicsRotation().mult(Vector3f.UNIT_Y, rotationOffset);
-			waterOffset.set(width * rotationOffset.x, rotationOffset.y, length * rotationOffset.z);
-			applyForce(waterForce, waterOffset);
+		if (displacement > 1f) {
+			displacement = 1f;
 		}
+		float force = (mass + displacement * mass) * 9.81f;
+		waterForce.setY(force * tpf * 60);
+
+		getPhysicsRotation().mult(Vector3f.UNIT_Y, rotationOffset);
+		waterOffset.set(width * rotationOffset.x, rotationOffset.y, length * rotationOffset.z);
+		applyForce(waterForce, waterOffset);
+
 //		if (getSpatial().getName().startsWith("walrus"))
 //		logger.info("Y: {}, belowWater: {}, displacement: {}, waterForce: {}, offset: {}", getPhysicsLocation().getY(),
 //				meterBelowWater, displacement, waterForce, waterOffset);
