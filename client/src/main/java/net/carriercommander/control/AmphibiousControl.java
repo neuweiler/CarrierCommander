@@ -40,18 +40,18 @@ public class AmphibiousControl extends AbstractControl {
 				shipControl.setLinearVelocity(velocity);
 				logger.info("{} has reached the shore", shipControl.getSpatial().getName());
 			}
-		} else { // switch from ship to vehicle
+		} else if ((spatial.getWorldTranslation().getY()) > waterHeight + 1f) { // switch from ship to vehicle
 			if (shipControl.isEnabled()) {
-				shipControl.setEnabled(false);
 				throttle = shipControl.getThrottle();
 				velocity = shipControl.getLinearVelocity();
+				shipControl.setEnabled(false);
 				return;
 			}
 			if (!vehicleControl.isEnabled()) {
 				vehicleControl.setEnabled(true);
 				shipControl.clearForces();
 				vehicleControl.setLinearVelocity(velocity);
-				vehicleControl.accelerate(throttle * 10000);
+				vehicleControl.accelerate(throttle * vehicleControl.getMass());
 				logger.info("{} has reached the beach of {}", shipControl.getSpatial().getName(), "tbd");
 			}
 		}

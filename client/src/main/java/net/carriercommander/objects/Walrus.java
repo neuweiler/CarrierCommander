@@ -104,9 +104,9 @@ public class Walrus extends PlayerItem {
 	}
 
 	private VehicleControl createVehicleControl(BulletAppState phsyicsState, CollisionShape comp) {
-		float stiffness = 120.0f;
-		float compValue = 0.2f;
-		float dampValue = 1.3f;
+		float stiffness = 20.0f;
+		float compValue = 0.8f;
+		float dampValue = 0.9f;
 
 		VehicleControl control = new VehicleControl(comp, MASS);
 		addControl(control);
@@ -114,13 +114,14 @@ public class Walrus extends PlayerItem {
 		control.setSuspensionCompression(compValue * 2.0f * FastMath.sqrt(stiffness));
 		control.setSuspensionDamping(dampValue * 2.0f * FastMath.sqrt(stiffness));
 		control.setSuspensionStiffness(stiffness);
-		control.setMaxSuspensionForce(10000);
+		control.setMaxSuspensionForce(MASS * 5);
+		control.setMaxSuspensionTravelCm(100f);
 
 		Vector3f direction = new Vector3f(0, -1, 0);
 		Vector3f axle = new Vector3f(-1, 0, 0);
 
 		float scaleFactor = 5f;
-		float restLength = .2f;
+		float restLength = .5f;
 		float radius = 0.3f * scaleFactor;
 		float xOff = .55f * scaleFactor;
 		float yOff = .2f * scaleFactor; //.31

@@ -80,32 +80,32 @@ public class PlayerAppState extends AbstractAppState {
 	private void createCarrier() {
 		carrier = new Carrier(Constants.CARRIER_PLAYER, assetManager, physicsState, water, camNode);
 		carrierControl = carrier.getControl(ShipControl.class);
-		carrierControl.setPhysicsLocation(new Vector3f(-1800, (water != null ? water.getWaterHeight() : 0), 800));
+		carrierControl.setPhysicsLocation(new Vector3f(300, (water != null ? water.getWaterHeight() : 0), 1700));
 		rootNode.attachChild(carrier);
 	}
 
 	private void createWalrus() {
 		Walrus unit = new Walrus(Constants.WALRUS_1, assetManager, physicsState, water, camNode);
 		walrusControl.add(unit.getControl(ShipControl.class));
-		unit.getControl(VehicleControl.class).setPhysicsLocation(new Vector3f(-1450, 0, 500));
+		unit.getControl(VehicleControl.class).setPhysicsLocation(new Vector3f(850, 5, 1700));
 		rootNode.attachChild(unit);
 		walrus.add(unit);
 
 		unit = new Walrus(Constants.WALRUS_2, assetManager, physicsState, water, camNode);
 		walrusControl.add(unit.getControl(ShipControl.class));
-		unit.getControl(VehicleControl.class).setPhysicsLocation(new Vector3f(-1400, 0, 500));
+		unit.getControl(VehicleControl.class).setPhysicsLocation(new Vector3f(550, 0, 1700));
 		rootNode.attachChild(unit);
 		walrus.add(unit);
 
 		unit = new Walrus(Constants.WALRUS_3, assetManager, physicsState, water, camNode);
 		walrusControl.add(unit.getControl(ShipControl.class));
-		unit.getControl(VehicleControl.class).setPhysicsLocation(new Vector3f(-1350, 0, 500));
+		unit.getControl(VehicleControl.class).setPhysicsLocation(new Vector3f(500, 0, 1700));
 		rootNode.attachChild(unit);
 		walrus.add(unit);
 
 		unit = new Walrus(Constants.WALRUS_4, assetManager, physicsState, water, camNode);
 		walrusControl.add(unit.getControl(ShipControl.class));
-		unit.getControl(VehicleControl.class).setPhysicsLocation(new Vector3f(-1300, 0, 500));
+		unit.getControl(VehicleControl.class).setPhysicsLocation(new Vector3f(450, 0, 1700));
 		rootNode.attachChild(unit);
 		walrus.add(unit);
 	}
@@ -114,25 +114,25 @@ public class PlayerAppState extends AbstractAppState {
 		Manta unit = new Manta(Constants.MANTA_1, assetManager, physicsState, camNode);
 		mantaControl.add(unit.getControl(PlaneControl.class));
 //		mantaControl.get(0).setPhysicsLocation(new Vector3f(-1450, 20, 400));
-		mantaControl.get(0).setPhysicsLocation(new Vector3f(-1800, (water != null ? water.getWaterHeight() : 0) + 5, 400));
+		mantaControl.get(0).setPhysicsLocation(new Vector3f(850, (water != null ? water.getWaterHeight() : 0) + 15, 1700));
 		rootNode.attachChild(unit);
 		manta.add(unit);
 
 		unit = new Manta(Constants.MANTA_2, assetManager, physicsState, camNode);
 		mantaControl.add(unit.getControl(PlaneControl.class));
-		mantaControl.get(1).setPhysicsLocation(new Vector3f(-1400, 20, 400));
+		mantaControl.get(1).setPhysicsLocation(new Vector3f(550, 20, 1600));
 		rootNode.attachChild(unit);
 		manta.add(unit);
 
 		unit = new Manta(Constants.MANTA_3, assetManager, physicsState, camNode);
 		mantaControl.add(unit.getControl(PlaneControl.class));
-		mantaControl.get(2).setPhysicsLocation(new Vector3f(-1350, 20, 400));
+		mantaControl.get(2).setPhysicsLocation(new Vector3f(500, 20, 1600));
 		rootNode.attachChild(unit);
 		manta.add(unit);
 
 		unit = new Manta(Constants.MANTA_4, assetManager, physicsState, camNode);
 		mantaControl.add(unit.getControl(PlaneControl.class));
-		mantaControl.get(3).setPhysicsLocation(new Vector3f(-1300, 20, 400));
+		mantaControl.get(3).setPhysicsLocation(new Vector3f(450, 20, 1600));
 		rootNode.attachChild(unit);
 		manta.add(unit);
 	}
@@ -186,9 +186,10 @@ public class PlayerAppState extends AbstractAppState {
 							}
 							break;
 					}
-					if (activeUnit.getControl(VehicleControl.class)  != null) {
-						activeUnit.getControl(VehicleControl.class).steer(getActiveUnitControl().getRudder());
-						activeUnit.getControl(VehicleControl.class).accelerate(getActiveUnitControl().getThrottle() * 10000);
+					VehicleControl vehicleControl = activeUnit.getControl(VehicleControl.class);
+					if (vehicleControl  != null) {
+						vehicleControl.steer(getActiveUnitControl().getRudder());
+						vehicleControl.accelerate(getActiveUnitControl().getThrottle() * vehicleControl.getMass());
 					}
 				}, Constants.INPUT_LEFT, Constants.INPUT_RIGHT, Constants.INPUT_UP, Constants.INPUT_DOWN,
 				Constants.INPUT_ACCELERATE, Constants.INPUT_DECELERATE, Constants.INPUT_MOUSE_X,
