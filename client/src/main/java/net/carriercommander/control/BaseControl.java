@@ -36,7 +36,9 @@ public class BaseControl extends RigidBodyControl implements PhysicsCollisionLis
 
 	@Override
 	public void collision(PhysicsCollisionEvent event) {
-		logger.info("collision between {} and {}", event.getObjectA(), event.getObjectB());
+		if (event.getObjectA() == this || event.getObjectB() == this) {
+			logger.info("collision between {} and {} with impulse {}", event.getObjectA(), event.getObjectB(), event.getAppliedImpulse());
+		}
 	}
 
 	public float getHealth() {
