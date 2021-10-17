@@ -57,7 +57,7 @@ import org.slf4j.LoggerFactory;
  */
 public class Walrus extends PlayerItem {
 	private static final Logger logger = LoggerFactory.getLogger(Walrus.class);
-	public static final float WIDTH = 3.8f, LENGTH = 8.5f, HEIGHT = 2.2f, MASS = 5000f;
+	public static final float WIDTH = 3.8f, LENGTH = 8.5f, HEIGHT = 2.2f, MASS = 5f;
 
 	public Walrus(String name, AssetManager assetManager, BulletAppState phsyicsState, WaterFilter water, CameraNode camNode) {
 		super(name, camNode);

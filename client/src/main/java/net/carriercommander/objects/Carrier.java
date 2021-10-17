@@ -57,7 +57,7 @@ import org.slf4j.LoggerFactory;
  */
 public class Carrier extends PlayerItem {
 	private static final Logger logger = LoggerFactory.getLogger(Carrier.class);
-	public static final float WIDTH = 30f, LENGTH = 160f, HEIGHT = 14f, MASS = 100000000; // a carrier weighs 100'000 tons
+	public static final float WIDTH = 30f, LENGTH = 160f, HEIGHT = 14f, MASS = 100000; // a carrier weighs 100'000 tons
 	public static final float WIDTH_TOWER = 10, LENGTH_TOWER = 30, HEIGHT_TOWER = 19f;
 	private Node camHookFlightDeck = null;
 	private Node camHookLaser = null;
