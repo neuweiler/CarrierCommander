@@ -75,7 +75,6 @@ public class PlaneControl extends PlayerControl {
 	public void collision(PhysicsCollisionEvent event) {
 		super.collision(event);
 		if (event.getObjectA() == this || event.getObjectB() == this) {
-			setAttitude(0);
 		}
 	}
 }

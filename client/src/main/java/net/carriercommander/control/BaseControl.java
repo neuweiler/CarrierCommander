@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 
 public class BaseControl extends RigidBodyControl implements PhysicsCollisionListener, PhysicsTickListener {
 	private static final Logger logger = LoggerFactory.getLogger(BaseControl.class);
+	protected float health = 1.0f;
 
 	public BaseControl(CollisionShape shape, float mass) {
 		super(shape, mass);
@@ -35,6 +36,26 @@ public class BaseControl extends RigidBodyControl implements PhysicsCollisionLis
 
 	@Override
 	public void collision(PhysicsCollisionEvent event) {
-//		logger.debug("collision between {} and {}", event.getObjectA(), event.getObjectB());
+		logger.info("collision between {} and {}", event.getObjectA(), event.getObjectB());
 	}
+
+	public float getHealth() {
+		return health;
+	}
+
+	public void setHealth(float health) {
+		this.health = health;
+	}
+
+	protected void removeItem() {
+		if (getPhysicsSpace() != null) {
+			getPhysicsSpace().removeCollisionListener(this);
+			getPhysicsSpace().removeTickListener(this);
+			getPhysicsSpace().remove(this);
+		}
+		if (getSpatial() != null) {
+			getSpatial().removeFromParent();
+		}
+	}
+
 }

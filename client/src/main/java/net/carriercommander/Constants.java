@@ -51,7 +51,7 @@ public interface Constants {
 	String MANTA_4 = "manta-4";
 	String MISSILE = "missile";
 
-	// key input
+	// input mappings
 	String INPUT_LEFT = "left";
 	String INPUT_RIGHT = "right";
 	String INPUT_UP = "up";

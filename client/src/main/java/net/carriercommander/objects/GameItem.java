@@ -4,8 +4,6 @@ import com.jme3.scene.Node;
 
 public class GameItem extends Node {
 
-	protected float health = 1.0f;
-
 	public GameItem() {
 		super();
 	}
