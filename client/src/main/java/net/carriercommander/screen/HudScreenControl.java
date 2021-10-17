@@ -16,7 +16,6 @@ import de.lessvoid.nifty.screen.ScreenController;
 import net.carriercommander.CarrierCommander;
 import net.carriercommander.Constants;
 import net.carriercommander.PlayerAppState;
-import net.carriercommander.control.PlaneControl;
 import net.carriercommander.control.PlayerControl;
 import net.carriercommander.control.ShipControl;
 import net.carriercommander.objects.*;
@@ -341,12 +340,21 @@ public class HudScreenControl extends AbstractAppState implements ScreenControll
 		}
 	}
 
-	public void carrierStop(String what) {
-		ShipControl control = app.getRootNode().getChild(Constants.CARRIER_PLAYER).getControl(ShipControl.class);
-		if ("all".equals(what)) {
-			control.setThrottle(0);
+	public void stop(String what) {
+		PlayerControl control = playerAppState.getActiveUnit().getControl(PlayerControl.class);
+		switch (what) {
+			case "all":
+				control.setThrottle(0);
+				control.setRudder(0);
+				control.setAttitude(0);
+				break;
+			case "rudder":
+				control.setRudder(0);
+				break;
+			case "aileron":
+				control.setAttitude(0);
+				break;
 		}
-		control.setRudder(0);
 	}
 
 	public void carrierSpeed(String command) {
@@ -371,20 +379,8 @@ public class HudScreenControl extends AbstractAppState implements ScreenControll
 		}
 	}
 
-	public void walrusStop(String what) {
-		ShipControl control = app.getRootNode().getChild("walrus-" + selectedWalrus).getControl(ShipControl.class);
-		switch (what) {
-			case "all":
-				control.setThrottle(0);
-			case "rudder":
-				control.setRudder(0);
-				break;
-		}
-	}
-
 	public void toggleRearView() {
-		PlayerItem activeUnit = playerAppState.getActiveUnit();
-		activeUnit.toggleRearView();
+		playerAppState.getActiveUnit().toggleRearView();
 	}
 
 	public void selectManta(String id) {
@@ -400,18 +396,30 @@ public class HudScreenControl extends AbstractAppState implements ScreenControll
 		}
 	}
 
-	public void mantaStop(String what) {
-		PlaneControl control = app.getRootNode().getChild("manta-" + selectedManta).getControl(PlaneControl.class);
-		switch (what) {
-			case "all":
-				control.setThrottle(0);
-			case "rudder":
-				control.setRudder(0);
+	public void setAutoPilot() {
+		logger.info("{} autopilot", playerAppState.getActiveUnit().getName());
+	}
+
+	public void setWeapon(String type) {
+		logger.info("{} weapon: {}", playerAppState.getActiveUnit().getName(), type);
+		PlayerControl.WeaponType weaponType = PlayerControl.WeaponType.CANON;
+		switch (type) {
+			case "canon":
+				weaponType = PlayerControl.WeaponType.CANON;
 				break;
-			case "aileron":
-				control.setAttitude(0);
+			case "laser":
+				weaponType = PlayerControl.WeaponType.LASER;
 				break;
+			case "missile":
+				weaponType = PlayerControl.WeaponType.MISSILE;
+				break;
+			case "bomb":
+				weaponType = PlayerControl.WeaponType.BOMB;
+				break;
+			case "pod":
+				weaponType = PlayerControl.WeaponType.POD;
 		}
+		playerAppState.getActiveUnit().getControl(PlayerControl.class).setWeaponType(weaponType);
 	}
 
 	private void setStyle(String id, String style) {

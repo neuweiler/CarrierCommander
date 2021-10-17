@@ -35,6 +35,7 @@ import com.jme3.app.SimpleApplication;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.font.BitmapText;
+import com.jme3.light.AmbientLight;
 import com.jme3.light.DirectionalLight;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
@@ -272,7 +273,7 @@ public class CarrierCommander extends SimpleApplication implements ClientStateLi
 			fpp.addFilter(water);
 		}
 
-		BloomFilter bloom = new BloomFilter();
+		BloomFilter bloom = new BloomFilter(BloomFilter.GlowMode.Objects);
 		bloom.setExposurePower(35);
 		bloom.setBloomIntensity(.5f);
 		fpp.addFilter(bloom);
@@ -324,6 +325,10 @@ public class CarrierCommander extends SimpleApplication implements ClientStateLi
 		sun.setColor(ColorRGBA.White.clone().multLocal(1.1f));
 		dlsr.setLight(sun);
 		rootNode.addLight(sun);
+
+		AmbientLight al = new AmbientLight();
+		al.setColor(ColorRGBA.White.mult(.3f));
+		rootNode.addLight(al);
 	}
 
 	private void configureCamera() {
@@ -334,7 +339,7 @@ public class CarrierCommander extends SimpleApplication implements ClientStateLi
 
 	private void addCrossHairs() {
 		BitmapText ch = new BitmapText(guiFont, false);
-		ch.setSize(guiFont.getCharSet().getRenderedSize() + 20);
+		ch.setSize(guiFont.getCharSet().getRenderedSize() * 2);
 		ch.setText("+");
 		ch.setColor(ColorRGBA.Black);
 		ch.setLocalTranslation(

@@ -29,54 +29,52 @@
  *
  */
 
-package net.carriercommander.objects;
+package net.carriercommander.control;
 
-import com.jme3.asset.AssetManager;
 import com.jme3.bullet.PhysicsSpace;
-import com.jme3.bullet.collision.shapes.BoxCollisionShape;
+import com.jme3.bullet.collision.PhysicsCollisionEvent;
 import com.jme3.bullet.collision.shapes.CollisionShape;
+import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
-import com.jme3.renderer.RenderManager;
-import com.jme3.scene.Node;
-import com.jme3.scene.Spatial;
-import net.carriercommander.control.MissileControl;
-import net.carriercommander.effects.ExplosionSmall;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Missile
+ * Controller for projectiles
  *
  * @author Michael Neuweiler
  */
-public class Missile extends GameItem {
-	private static final Logger logger = LoggerFactory.getLogger(Missile.class);
-	public static final float WIDTH = .2f, LENGTH = 1.1f, HEIGHT = .2f, MASS = .1f;
+public class ProjectileControl extends PlayerControl {
+	private static final Logger logger = LoggerFactory.getLogger(ProjectileControl.class);
 
-	public Missile(String name, AssetManager assetManager, PhysicsSpace physicsSpace, RenderManager renderManager, Node rootNode, Node target) {
-		super(name);
+	private static final Vector3f gravity = Vector3f.ZERO;
+	private final Vector3f velocity;
 
-		attachChild(loadModel(assetManager));
-
-		CollisionShape collisionShape = createCollisionShape();
-
-		ExplosionSmall explosion = new ExplosionSmall(assetManager, renderManager, rootNode);
-		createMissileControl(physicsSpace, collisionShape, target, explosion);
+	public ProjectileControl(CollisionShape shape, float mass, Quaternion rotation) {
+		super(shape, mass);
+		velocity = rotation.mult(Vector3f.UNIT_Z).mult(200);
 	}
 
-	public static Spatial loadModel(AssetManager assetManager) {
-		Spatial missile = assetManager.loadModel("Models/Missile/Rocket.mesh.xml");
-		return missile;
+	@Override
+	public void prePhysicsTick(PhysicsSpace arg0, float tpf) {
+		setGravity(gravity);
+		setLinearVelocity(velocity);
+		fuel -= 0.004;
 	}
 
-	public static CollisionShape createCollisionShape() {
-		return new BoxCollisionShape(new Vector3f(WIDTH, HEIGHT, LENGTH));
+	@Override
+	public void update(float tpf) {
+		super.update(tpf);
+		if (fuel < 0) {
+			removeItem();
+		}
 	}
 
-	private void createMissileControl(PhysicsSpace physicsSpace, CollisionShape collisionShape, Node target, ExplosionSmall explosion) {
-		MissileControl control = new MissileControl(collisionShape, target, MASS, explosion);
-		addControl(control);
-		control.setDamping(0.7f, 0.7f);
-		physicsSpace.add(control);
+	@Override
+	public void collision(PhysicsCollisionEvent event) {
+		super.collision(event);
+		if (event.getObjectA() == this || event.getObjectB() == this) {
+			removeItem();
+		}
 	}
 }

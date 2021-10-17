@@ -161,15 +161,15 @@ s					<panel id="mainWeaponsButton" style="unselected" childLayout="vertical">
 						</image>
 					</panel>
 					<image filename="Interface/Screens/hud/stop.png" style="unselected">
-						<interact onClick="carrierStop(all)" />
+						<interact onClick="stop(all)" />
 					</image>
 					<panel childLayout="vertical">
 						<image filename="Interface/Screens/hud/centerRudder.png" style="unselected">
-							<interact onClick="carrierStop(rudder)" />
+							<interact onClick="stop(rudder)" />
 						</image>
 						<panel id="carrierAutoPilotButton" style="unselected" childLayout="vertical">
 							<image filename="Interface/Screens/hud/autoPilot.png" />
-							<interact onClick="carrierAutoPilot()" />
+							<interact onClick="setAutoPilot()" />
 						</panel>
 					</panel>
 					<panel childLayout="vertical" style="infoBox">
@@ -241,7 +241,7 @@ s					<panel id="mainWeaponsButton" style="unselected" childLayout="vertical">
 						</panel>
 						<panel id="walrusLaserButton" style="unselected" childLayout="vertical">
 							<image filename="Interface/Screens/hud/laser.png" width="42" height="44" />
-							<interact onClick="setWalrusAutoPilot()" />
+							<interact onClick="setWeapon(canon)" />
 						</panel>
 					</panel>
 					<panel childLayout="vertical">
@@ -251,7 +251,7 @@ s					<panel id="mainWeaponsButton" style="unselected" childLayout="vertical">
 						</panel>
 						<panel id="walrusMissileButton" style="unselected" childLayout="vertical">
 							<image filename="Interface/Screens/hud/missile.png" />
-							<interact onClick="setWalrusAutoPilot()" />
+							<interact onClick="setWeapon(missile)" />
 						</panel>
 					</panel>
 					<panel childLayout="vertical">
@@ -261,7 +261,7 @@ s					<panel id="mainWeaponsButton" style="unselected" childLayout="vertical">
 						</panel>
 						<panel id="walrusPodButton" style="unselected" childLayout="vertical">
 							<image filename="Interface/Screens/hud/pod.png" />
-							<interact onClick="setWalrusAutoPilot()" />
+							<interact onClick="setWeapon(pod)" />
 						</panel>
 					</panel>
 					<panel childLayout="vertical">
@@ -271,12 +271,12 @@ s					<panel id="mainWeaponsButton" style="unselected" childLayout="vertical">
 						</panel>
 						<panel id="walrusAutopilotButton" style="unselected" childLayout="vertical">
 							<image filename="Interface/Screens/hud/autoPilot.png" style="unselected"/>
-							<interact onClick="setWalrusAutoPilot()" />
+							<interact onClick="setAutoPilot()" />
 						</panel>
 					</panel>
 					<panel childLayout="vertical">
 						<image filename="Interface/Screens/hud/centerRudder.png" style="unselected">
-							<interact onClick="walrusStop(rudder)" />
+							<interact onClick="stop(rudder)" />
 						</image>
 						<image filename="Interface/Screens/hud/link.png" style="unselected">
 							<interact onClick="walrusLink()" />
@@ -326,7 +326,7 @@ s					<panel id="mainWeaponsButton" style="unselected" childLayout="vertical">
 						</panel>
 						<panel id="mantaLaserButton" style="unselected" childLayout="vertical">
 							<image filename="Interface/Screens/hud/laser.png" width="42" height="44" />
-							<interact onClick="setMantaAutoPilot()" />
+							<interact onClick="setWeapon(canon)" />
 						</panel>
 					</panel>
 					<panel childLayout="vertical">
@@ -336,7 +336,7 @@ s					<panel id="mainWeaponsButton" style="unselected" childLayout="vertical">
 						</panel>
 						<panel id="mantaMissileButton" style="unselected" childLayout="vertical">
 							<image filename="Interface/Screens/hud/missile.png" />
-							<interact onClick="setMantaAutoPilot()" />
+							<interact onClick="setWeapon(missile)" />
 						</panel>
 					</panel>
 					<panel childLayout="vertical">
@@ -346,7 +346,7 @@ s					<panel id="mainWeaponsButton" style="unselected" childLayout="vertical">
 						</panel>
 						<panel id="mantaPodButton" style="unselected" childLayout="vertical">
 							<image filename="Interface/Screens/hud/pod.png" />
-							<interact onClick="setMantaAutoPilot()" />
+							<interact onClick="setWeapon(bomb)" />
 						</panel>
 					</panel>
 					<panel childLayout="vertical">
@@ -356,15 +356,15 @@ s					<panel id="mainWeaponsButton" style="unselected" childLayout="vertical">
 						</panel>
 						<panel id="mantaAutopilotButton" style="unselected" childLayout="vertical">
 							<image filename="Interface/Screens/hud/autoPilot.png" style="unselected"/>
-							<interact onClick="setMantaAutoPilot()" />
+							<interact onClick="setAutoPilot()" />
 						</panel>
 					</panel>
 					<panel childLayout="vertical">
 						<image filename="Interface/Screens/hud/centerRudder.png" style="unselected">
-							<interact onClick="mantaStop(rudder)" />
+							<interact onClick="stop(rudder)" />
 						</image>
 						<image filename="Interface/Screens/hud/level.png" style="unselected">
-							<interact onClick="mantaStop(aileron)" />
+							<interact onClick="stop(aileron)" />
 						</image>
 					</panel>
 					<panel childLayout="vertical" style="infoBox">

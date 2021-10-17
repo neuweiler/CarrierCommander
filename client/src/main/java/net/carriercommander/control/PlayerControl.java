@@ -7,11 +7,15 @@ import org.slf4j.LoggerFactory;
 public class PlayerControl extends BaseControl {
 	private static final Logger logger = LoggerFactory.getLogger(PlayerControl.class);
 
+	public enum WeaponType {CANON, LASER, MISSILE, BOMB, POD}
+
 	protected float rudder = 0, attitude = 0, throttle = 0, heading = 0, fuel = 1.0f;
+	protected WeaponType weaponType = WeaponType.CANON;
 
 	public PlayerControl(CollisionShape shape, float mass) {
 		super(shape, mass);
 	}
+
 	public void steerLeft(float tpf) {
 		setRudder(rudder += 0.5f * tpf);
 	}
@@ -41,11 +45,7 @@ public class PlayerControl extends BaseControl {
 	}
 
 	public void setAttitude(float attitude) {
-		if (attitude > 1.0f)
-			attitude = 1.0f;
-		if (attitude < -1.0f)
-			attitude = -1.0f;
-		this.attitude = attitude;
+		this.attitude = constrain(attitude, -1.0f, 1.0f);
 		logger.debug("attitude: {}", this.attitude);
 	}
 
@@ -54,11 +54,7 @@ public class PlayerControl extends BaseControl {
 	}
 
 	public void setRudder(float rudder) {
-		if (rudder > 1.0f)
-			rudder = 1.0f;
-		if (rudder < -1.0f)
-			rudder = -1.0f;
-		this.rudder = rudder;
+		this.rudder = constrain(rudder, -1.0f, 1.0f);
 		logger.debug("rudder: {}", this.rudder);
 	}
 
@@ -67,12 +63,12 @@ public class PlayerControl extends BaseControl {
 	}
 
 	public void setThrottle(float throttle) {
-		if (throttle > 1.0f)
-			throttle = 1.0f;
-		if (throttle < -0.2f)
-			throttle = -0.2f;
-		this.throttle = throttle;
+		this.throttle = constrain(throttle, -0.2f, 1.0f);
 		logger.debug("throttle: {}", this.throttle);
+	}
+
+	private float constrain(float value, float min, float max) {
+		return value > max ? max : value < min ? min : value;
 	}
 
 	public float getFuel() {
@@ -83,5 +79,11 @@ public class PlayerControl extends BaseControl {
 		this.fuel = fuel;
 	}
 
+	public WeaponType getWeaponType() {
+		return weaponType;
+	}
 
+	public void setWeaponType(WeaponType weaponType) {
+		this.weaponType = weaponType;
+	}
 }

@@ -19,10 +19,7 @@ import com.jme3.scene.CameraNode;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.water.WaterFilter;
-import net.carriercommander.control.MissileControl;
-import net.carriercommander.control.PlaneControl;
-import net.carriercommander.control.PlayerControl;
-import net.carriercommander.control.ShipControl;
+import net.carriercommander.control.*;
 import net.carriercommander.objects.*;
 import net.carriercommander.shared.model.*;
 import org.slf4j.Logger;
@@ -240,24 +237,61 @@ public class PlayerAppState extends AbstractAppState {
 		});*/
 	}
 
-	private void fire() {
-		GameItem target = findTarget();
+	public void setActiveUnit(PlayerItem unit) {
+		activeUnit = unit;
+	}
+
+	public PlayerItem getActiveUnit() {
+		return activeUnit;
+	}
+
+	private PlayerControl getActiveUnitControl() {
+		return activeUnit.getControl(PlayerControl.class);
+	}
+
+	public void fire() {
+		switch (getActiveUnitControl().getWeaponType()) {
+			case CANON:
+				fireCanon();
+				break;
+			case LASER:
+				break;
+			case MISSILE:
+				fireMissile();
+				break;
+			case BOMB:
+				break;
+			case POD:
+				break;
+		}
+	}
+
+	private void fireCanon() {
+		Quaternion rotation = getActiveUnitControl().getPhysicsRotation();
+		Projectile projectile = new Projectile("projectile" + System.currentTimeMillis(), assetManager,  physicsState.getPhysicsSpace(), rotation);
+		ProjectileControl control = projectile.getControl(ProjectileControl.class);
+		control.setPhysicsLocation(getActiveUnitControl().getPhysicsLocation().add(rotation.mult(Vector3f.UNIT_Z).mult(15)));
+		control.setPhysicsRotation(rotation);
+		rootNode.attachChild(projectile);
+	}
+
+	private void fireMissile() {
+		GameItem target = findTarget(camNode.getWorldTranslation(), camNode.getWorldRotation(), rootNode);
 		if (target != null) {
-			logger.info("fire at {}", target.getName());
-			Missile missile = new Missile(Constants.MISSILE + System.currentTimeMillis(), assetManager, physicsState, renderManager, rootNode, target);
+			logger.info("fire missile at {}", target.getName());
+			Missile missile = new Missile(Constants.MISSILE + System.currentTimeMillis(), assetManager, physicsState.getPhysicsSpace(), renderManager, rootNode, target);
 			MissileControl control = missile.getControl(MissileControl.class);
-			Vector3f location = getActiveUnitControl().getPhysicsLocation();
+			Vector3f location = control.getPhysicsLocation();
 			location.y -= 5; // TODO respect the attitude and angle
-			control.setPhysicsLocation(location);
-			control.setPhysicsRotation(getActiveUnitControl().getPhysicsRotation().mult(new Quaternion().fromAngles(0, FastMath.PI, 0)));
+			control.setPhysicsRotation(control.getPhysicsRotation().mult(new Quaternion().fromAngles(0, FastMath.PI, 0)));
 			rootNode.attachChild(missile);
 //			missile.setCameraToFront();
 		}
 	}
 
-	private GameItem findTarget() {
+	private GameItem findTarget(Vector3f translation, Quaternion rotation, Node rootNode) {
 		CollisionResults results = new CollisionResults();
-		Ray ray = new Ray(camNode.getWorldTranslation(), camNode.getWorldRotation().mult(Vector3f.UNIT_Z));
+		Ray ray = new Ray(translation, rotation.mult(Vector3f.UNIT_Z));
 		rootNode.collideWith(ray, results);
 
 		if (results.size() > 0 && results.getClosestCollision().getGeometry() != null) {
@@ -270,18 +304,6 @@ public class PlayerAppState extends AbstractAppState {
 			}
 		}
 		return null;
-	}
-
-	public void setActiveUnit(PlayerItem unit) {
-		activeUnit = unit;
-	}
-
-	public PlayerItem getActiveUnit() {
-		return activeUnit;
-	}
-
-	private PlayerControl getActiveUnitControl() {
-		return activeUnit.getControl(PlayerControl.class);
 	}
 
 	@Override
