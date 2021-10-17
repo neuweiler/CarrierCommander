@@ -281,18 +281,18 @@ public class PlayerAppState extends AbstractAppState {
 		if (target != null) {
 			logger.info("fire missile at {}", target.getName());
 			Missile missile = new Missile(Constants.MISSILE + System.currentTimeMillis(), assetManager, physicsState.getPhysicsSpace(), renderManager, rootNode, target);
-			MissileControl control = missile.getControl(MissileControl.class);
-			Vector3f location = control.getPhysicsLocation();
+			MissileControl missileControl = missile.getControl(MissileControl.class);
+			Vector3f location = getActiveUnitControl().getPhysicsLocation();
 			location.y -= 5; // TODO respect the attitude and angle
-			control.setPhysicsRotation(control.getPhysicsRotation().mult(new Quaternion().fromAngles(0, FastMath.PI, 0)));
+			missileControl.setPhysicsLocation(location);
+			missileControl.setPhysicsRotation(getActiveUnitControl().getPhysicsRotation().mult(new Quaternion().fromAngles(0, FastMath.PI, 0)));
 			rootNode.attachChild(missile);
-//			missile.setCameraToFront();
 		}
 	}
 
 	private GameItem findTarget(Vector3f translation, Quaternion rotation, Node rootNode) {
 		CollisionResults results = new CollisionResults();
-		Ray ray = new Ray(translation, rotation.mult(Vector3f.UNIT_Z));
+		Ray ray = new Ray(translation, rotation.getRotationColumn(2, null));
 		rootNode.collideWith(ray, results);
 
 		if (results.size() > 0 && results.getClosestCollision().getGeometry() != null) {
