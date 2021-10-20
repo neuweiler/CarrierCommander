@@ -34,6 +34,13 @@ public class PaintedGauge extends PaintableImage {
 	}
 
 	/**
+	 * Create a painted gauge with reasonable settings for this game.
+	 */
+	public PaintedGauge() {
+		this(42, 90, 30, 7, 4, 74, true);
+	}
+
+	/**
 	 * Set the value to be displayed by the gauge.
 	 *
 	 * @param value between 0 and 1

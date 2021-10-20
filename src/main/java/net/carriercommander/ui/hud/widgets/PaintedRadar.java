@@ -19,7 +19,7 @@ public class PaintedRadar extends PaintableImage {
 	private final int offsetX, offsetY, radius;
 	private final Ellipse2D radarCircle;
 	private final Node rootNode;
-	private PlayerItem activeUnit = null;
+	private PlayerItem activeUnit;
 	private int range = 3000;
 	private static final Quaternion rot180Y = new Quaternion().fromAngles(0, FastMath.PI, 0);
 
