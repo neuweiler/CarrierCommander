@@ -4,13 +4,14 @@
 	<groupId>net.carriercommander</groupId>
 	<artifactId>carrier-commander</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<packaging>pom</packaging>
-	<name>Carrier Commander Base</name>
-	<modules>
-		<module>client</module>
-		<module>server</module>
-		<module>shared</module>
-	</modules>
+	<name>Carrier Commander</name>
+
+	<repositories>
+		<repository>
+			<id>bintray-repo</id>
+			<url>https://jcenter.bintray.com/</url>
+		</repository>
+	</repositories>
 
 	<properties>
 		<version.jmonkeyengine>3.4.0-stable</version.jmonkeyengine>
@@ -38,6 +39,46 @@
 			<version>${version.jmonkeyengine}</version>
 		</dependency>
 		<dependency>
+			<groupId>org.jmonkeyengine</groupId>
+			<artifactId>jme3-effects</artifactId>
+			<version>${version.jmonkeyengine}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.jmonkeyengine</groupId>
+			<artifactId>jme3-jogg</artifactId>
+			<version>${version.jmonkeyengine}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.jmonkeyengine</groupId>
+			<artifactId>jme3-plugins</artifactId>
+			<version>${version.jmonkeyengine}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.jmonkeyengine</groupId>
+			<artifactId>jme3-terrain</artifactId>
+			<version>${version.jmonkeyengine}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.github.stephengold</groupId>
+			<artifactId>Minie</artifactId>
+			<version>4.3.0</version>
+		</dependency>
+		<dependency>
+			<groupId>com.simsilica</groupId>
+			<artifactId>lemur</artifactId>
+			<version>1.15.0</version>
+		</dependency>
+		<dependency>
+			<groupId>com.simsilica</groupId>
+			<artifactId>lemur-proto</artifactId>
+			<version>1.12.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.codehaus.groovy</groupId>
+			<artifactId>groovy-jsr223</artifactId>
+			<version>3.0.9</version>
+		</dependency>
+		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
 			<version>1.7.32</version>
@@ -47,6 +88,7 @@
 			<artifactId>logback-classic</artifactId>
 			<version>1.2.5</version>
 		</dependency>
+
 	</dependencies>
 
 	<build>
@@ -60,7 +102,39 @@
 					<target>1.8</target>
 				</configuration>
 			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<version>2.4</version>
+				<configuration>
+					<archive>
+						<manifest>
+							<addClasspath>true</addClasspath>
+							<mainClass>net.carriercommander.CarrierCommander</mainClass>
+							<classpathPrefix>lib/</classpathPrefix>
+						</manifest>
+					</archive>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<version>2.5.1</version>
+				<executions>
+					<execution>
+						<id>copy-dependencies</id>
+						<phase>package</phase>
+						<goals>
+							<goal>copy-dependencies</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>
+								${project.build.directory}/lib/
+							</outputDirectory>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
 	</build>
-
 </project>
