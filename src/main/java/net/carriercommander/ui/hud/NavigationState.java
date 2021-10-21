@@ -1,6 +1,13 @@
 package net.carriercommander.ui.hud;
 
+import com.jme3.app.SimpleApplication;
+import com.jme3.material.Material;
+import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
+import com.jme3.scene.Geometry;
+import com.jme3.scene.Node;
+import com.jme3.scene.Spatial;
+import com.jme3.scene.shape.Quad;
 import com.simsilica.lemur.Insets3f;
 import com.simsilica.lemur.Label;
 import com.simsilica.lemur.component.IconComponent;
@@ -27,6 +34,7 @@ public abstract class NavigationState extends WindowState {
 	private QuadBackgroundComponent radarImage, fuelImage, throttleImage;
 	private long timestamp = 0;
 	private PlayerItem activeUnit;
+	private Node crossHairs;
 
 	@Override
 	public void update(float tpf) {
@@ -147,6 +155,37 @@ public abstract class NavigationState extends WindowState {
 	public void setActiveUnit(PlayerItem activeUnit) {
 		this.activeUnit = activeUnit;
 		radar.setActiveUnit(activeUnit);
+	}
+
+	protected void addCrossHairs() {
+		float width = 20f;
+		float height = 1f;
+
+		crossHairs = new Node();
+		Geometry geometry = new Geometry("Quad", new Quad(width, height));
+		geometry.move(width * -1.5f,0,0);
+		crossHairs.attachChild(geometry);
+		geometry = new Geometry("Quad", new Quad(width, height));
+		geometry.move(width * 0.5f,0,0);
+		crossHairs.attachChild(geometry);
+		geometry = new Geometry("Quad", new Quad(height, width));
+		geometry.move(0,width * -1.5f,0);
+		crossHairs.attachChild(geometry);
+		geometry = new Geometry("Quad", new Quad(height, width));
+		geometry.move(0,width * 0.5f,0);
+		crossHairs.attachChild(geometry);
+
+		Material mat1 = new Material(getApplication().getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
+		mat1.setColor("Color", new ColorRGBA(.3f, .8f, .8f, .6f));
+		crossHairs.setMaterial(mat1);
+		crossHairs.setCullHint(Spatial.CullHint.Never);
+		crossHairs.setLocalTranslation(getApplication().getCamera().getWidth() / 2, getApplication().getCamera().getHeight() / 2, 0);
+
+		((SimpleApplication)getApplication()).getGuiNode().attachChild(crossHairs);
+	}
+
+	protected void removeCrossHairs() {
+		crossHairs.removeFromParent();
 	}
 
 	/* Methods called from the UI widgets (IDE's might indicate that they are never used which is wrong */

@@ -54,6 +54,13 @@ public class StateWalrusNavigation extends NavigationState {
 	protected void onEnable() {
 		super.onEnable();
 		selectWalrus(lastSelectedWalrus);
+		addCrossHairs();
+	}
+
+	@Override
+	protected void onDisable() {
+		super.onDisable();
+		removeCrossHairs();
 	}
 
 	private void selectWalrus(int id) {

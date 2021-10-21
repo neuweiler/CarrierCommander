@@ -14,7 +14,6 @@ import com.jme3.math.Quaternion;
 import com.jme3.math.Ray;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.CameraNode;
-import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.water.WaterFilter;
 import net.carriercommander.control.*;
@@ -40,7 +39,6 @@ public class StatePlayer extends AbstractState {
 	private BulletAppState physicsState;
 
 	private boolean mouseGrabbed = false;
-	private Geometry mark;
 	private PlayerItem activeUnit;
 	private Carrier carrier;
 	private final List<Walrus> walrus = new ArrayList<>();
@@ -59,7 +57,6 @@ public class StatePlayer extends AbstractState {
 
 		initPlayer();
 		initInput();
-
 	}
 
 	@Override
@@ -75,7 +72,6 @@ public class StatePlayer extends AbstractState {
 
 	@Override
 	protected void onDisable() {
-
 	}
 
 	@Override

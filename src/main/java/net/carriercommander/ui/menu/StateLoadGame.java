@@ -115,7 +115,6 @@ public class StateLoadGame extends WindowState {
 				getStateManager().attach(statePlayer);
 				break;
 			case 8:
-				addCrossHairs();
 				setProgress(1.0f, "finished");
 				getStateManager().attach(stateMainControls);
 				getStateManager().detach(this);
@@ -152,14 +151,4 @@ public class StateLoadGame extends WindowState {
 		getApplication().getCamera().setFrustumFar(20000);
 	}
 
-	private void addCrossHairs() {
-/*		BitmapText ch = new BitmapText(guiFont, false);
-		ch.setSize(guiFont.getCharSet().getRenderedSize() * 2);
-		ch.setText("+");
-		ch.setColor(ColorRGBA.Black);
-		ch.setLocalTranslation(
-				settings.getWidth() / 2 - ch.getLineWidth() / 2,
-				settings.getHeight() / 2 + ch.getLineHeight() / 2, 0);
-		guiNode.attachChild(ch);
-*/	}
 }

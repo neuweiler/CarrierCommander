@@ -56,25 +56,20 @@ public class StateMainMenu extends WindowState {
 	}
 
 	protected void action() {
-		getStateManager().attach(stateLoadGame);
-		getStateManager().detach(this);
+		startGame(Constants.GameType.action);
 	}
 
 	protected void strategy() {
+		startGame(Constants.GameType.strategy);
 	}
 
 	protected void network() {
+		startGame(Constants.GameType.network);
 	}
 
-	public void startGame(String gameType) {
-/*		if ("network".equals(gameType)) {
-			this.gameType = Constants.GameType.network;
-		} else if ("action".equals(gameType)) {
-			this.gameType = Constants.GameType.action;
-		} else {
-			this.gameType = Constants.GameType.strategy;
-		}
-*/	}
-
+	public void startGame(Constants.GameType gameType) {
+		getStateManager().attach(stateLoadGame);
+		getStateManager().detach(this);
+	}
 
 }

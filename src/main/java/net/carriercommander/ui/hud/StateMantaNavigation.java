@@ -61,6 +61,13 @@ public class StateMantaNavigation extends NavigationState {
 	protected void onEnable() {
 		super.onEnable();
 		selectManta(lastSelectedManta);
+		addCrossHairs();
+	}
+
+	@Override
+	protected void onDisable() {
+		super.onDisable();
+		removeCrossHairs();
 	}
 
 	private Label createAltitudeGauge() {
