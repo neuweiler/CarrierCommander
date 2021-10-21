@@ -30,6 +30,8 @@ import java.util.List;
 public class StatePlayer extends AbstractState {
 	Logger logger = LoggerFactory.getLogger(StatePlayer.class);
 
+	public enum PlayerUnit { CARRIER, WALRUS, MANTA }
+
 	private final PlayerData playerData = new PlayerData();
 	private final CameraNode camNode;
 	private WaterFilter water;
@@ -267,8 +269,24 @@ public class StatePlayer extends AbstractState {
 		});*/
 	}
 
-	public void setActiveUnit(PlayerItem unit) {
-		activeUnit = unit;
+	public PlayerItem setActiveUnit(PlayerUnit unit, int id) {
+		if (id < 0 && id > 3) {
+			logger.error("id invalid: {}", id);
+			return activeUnit;
+		}
+		switch (unit) {
+			case CARRIER:
+				activeUnit = carrier;
+				break;
+			case MANTA:
+				activeUnit = manta.get(id);
+				break;
+			case WALRUS:
+				activeUnit = walrus.get(id);
+				break;
+		}
+		activeUnit.setCameraToFront();
+		return activeUnit;
 	}
 
 	public PlayerItem getActiveUnit() {
