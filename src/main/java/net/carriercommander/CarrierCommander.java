@@ -104,7 +104,7 @@ public class CarrierCommander extends SimpleApplication {
 	private void createUI() {
 		GuiGlobals.initialize(this);
 		BaseStyles.loadGlassStyle();
-		GuiGlobals.getInstance().getStyles().setDefaultStyle("glass");
+		GuiGlobals.getInstance().getStyles().setDefaultStyle(BaseStyles.GLASS);
 	}
 
 }

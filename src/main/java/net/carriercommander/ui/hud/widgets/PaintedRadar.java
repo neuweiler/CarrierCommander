@@ -75,10 +75,14 @@ public class PaintedRadar extends PaintableImage {
 		g.setColor(colorCircle);
 		g.fill(radarCircle);
 
+		if (activeUnit == null) {
+			return;
+		}
+
 		rootNode.getChildren().stream()
 				.filter(node -> !node.getClass().equals(Geometry.class))
 				.forEach(node -> {
-					if (activeUnit != null && activeUnit.getWorldTranslation().distance(node.getWorldTranslation()) <= range) {
+					if (activeUnit.getWorldTranslation().distance(node.getWorldTranslation()) <= range) {
 						Vector3f radarCoordinates = node.getWorldTranslation().subtract(activeUnit.getWorldTranslation());
 
 						Quaternion radarRotation = activeUnit.getWorldRotation().inverse().mult(rot180Y);
