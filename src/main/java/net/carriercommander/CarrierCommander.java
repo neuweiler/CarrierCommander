@@ -35,7 +35,6 @@ import com.jme3.app.SimpleApplication;
 import com.jme3.system.AppSettings;
 import com.simsilica.lemur.GuiGlobals;
 import com.simsilica.lemur.style.BaseStyles;
-import net.carriercommander.Constants.GameType;
 import net.carriercommander.network.Utils;
 import net.carriercommander.ui.menu.StateMainMenu;
 import org.slf4j.Logger;
@@ -93,12 +92,7 @@ public class CarrierCommander extends SimpleApplication {
 	public void simpleInitApp() {
 		setDisplayFps(Constants.DEBUG);
 		setDisplayStatView(Constants.DEBUG);
-//		flyCam.setEnabled(false); // Disable the default flyby cam
 		createUI();
-
-		if (Constants.AUTOSTART) {
-//			startGame(GameType.action.toString());
-		}
 	}
 
 	private void createUI() {

@@ -74,33 +74,6 @@ public interface Constants {
 	String INPUT_MOUSE_X_NEGATIVE = "mouse-x";
 	String INPUT_MOUSE_Y_NEGATIVE = "mouse-y";
 
-	// name of menu's and controls (nifty)
-	String SCREEN_START = "start";
-	String SCREEN_HUD = "hud";
-	String MENU_MAIN = "main";
-	String MENU_CARRIER = "carrier";
-	String MENU_WEAPONS = "weapons";
-	String MENU_WALRUS = "walrus";
-	String MENU_MANTA = "manta";
-	String MENU_GAME = "game";
-	String CONTROL_CONTROL = "Control";
-	String CONTROL_MAP = "Map";
-	String CONTROL_REPAIR = "Repair";
-	String CONTROL_RESOURCES = "Resources";
-	String CONTROL_MESSAGES = "Messages";
-	String CONTROL_LASER = "Laser";
-	String CONTROL_FLARES = "Flares";
-	String CONTROL_MISSILES = "Missiles";
-	String CONTROL_DRONES = "Drones";
-	String CONTROL_STATUS = "Status";
-	String CONTROL_EQUIP = "Equip";
-	String CONTROL_HANGAR = "Hangar";
-	String CONTROL_EXTENSION_BUTTON = "Button";
-	String CONTROL_EXTENSION_CONTROLS = "Controls";
-	String CONTROL_SUBCONTROLS = "subControls";
-	String STYLE_SELECTED = "selected";
-	String STYLE_UNSELECTED = "unselected";
-
 	int MAP_SCENE_FACTOR = 100; // by how much the map coordinates are multiplied for the scene graph
 
 	Vector3f LIGHT_DIRECTION = new Vector3f(-4.9236743f, -1.27054665f, 5.896916f);

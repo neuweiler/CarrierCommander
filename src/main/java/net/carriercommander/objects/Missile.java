@@ -41,8 +41,6 @@ import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import net.carriercommander.control.MissileControl;
 import net.carriercommander.effects.ExplosionSmall;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Missile
@@ -50,7 +48,6 @@ import org.slf4j.LoggerFactory;
  * @author Michael Neuweiler
  */
 public class Missile extends GameItem {
-	private static final Logger logger = LoggerFactory.getLogger(Missile.class);
 	public static final float WIDTH = .2f, LENGTH = 1.1f, HEIGHT = .2f, MASS = .1f;
 
 	public Missile(String name, AssetManager assetManager, PhysicsSpace physicsSpace, RenderManager renderManager, Node rootNode, Node target) {
@@ -65,8 +62,7 @@ public class Missile extends GameItem {
 	}
 
 	public static Spatial loadModel(AssetManager assetManager) {
-		Spatial missile = assetManager.loadModel("Models/Missile/Rocket.mesh.xml");
-		return missile;
+		return assetManager.loadModel("Models/Missile/Rocket.mesh.xml");
 	}
 
 	public static CollisionShape createCollisionShape() {

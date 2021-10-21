@@ -1,5 +1,6 @@
 package net.carriercommander.ui.hud.widgets;
 
+import com.jme3.scene.Spatial;
 import com.simsilica.lemur.Container;
 import com.simsilica.lemur.Label;
 import com.simsilica.lemur.event.CursorEventControl;
@@ -8,17 +9,13 @@ import com.simsilica.lemur.style.ElementId;
 
 public class Window extends Container {
 
-	private Label titleBar;
-
 	public Window(int x, int y) {
 		this(x, y, null, true);
 	}
 
 	public Window(int x, int y, String title, boolean draggable) {
 		setLocalTranslation(x, y, 0);
-
-		titleBar = createTitleBar(title, draggable);
-		addChild(titleBar);
+		addChild(createTitleBar(title, draggable));
 	}
 
 	private Label createTitleBar(String title, boolean draggable) {
@@ -30,7 +27,7 @@ public class Window extends Container {
 
 		if (draggable) {
 			DragHandler dragHandler = new DragHandler();
-			dragHandler.setDraggableLocator(spatial -> spatial.getParent());
+			dragHandler.setDraggableLocator(Spatial::getParent);
 			CursorEventControl.addListenersToSpatial(label, dragHandler);
 		}
 

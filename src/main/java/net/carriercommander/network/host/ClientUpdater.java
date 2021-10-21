@@ -19,6 +19,8 @@ public class ClientUpdater implements PlayerManagerListener {
 	@Override
 	public void playerDataChanged(Map<Integer, PlayerData> players) {
 		server.broadcast(new ServerStatusMessage(players));
-//		logger.debug("sending player data: {}", players.get(0).getCarrier().getLocation());
+		if (logger.isDebugEnabled()) {
+			logger.debug("sending player data: {}", players.get(0).getCarrier().getLocation());
+		}
 	}
 }

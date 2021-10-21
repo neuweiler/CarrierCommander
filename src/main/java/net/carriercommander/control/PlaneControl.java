@@ -32,13 +32,10 @@
 package net.carriercommander.control;
 
 import com.jme3.bullet.PhysicsSpace;
-import com.jme3.bullet.collision.PhysicsCollisionEvent;
 import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Controller for air planes
@@ -46,8 +43,6 @@ import org.slf4j.LoggerFactory;
  * @author Michael Neuweiler
  */
 public class PlaneControl extends PlayerControl {
-	private static final Logger logger = LoggerFactory.getLogger(PlaneControl.class);
-
 	private static final Vector3f gravity = Vector3f.ZERO;
 
 	private final Vector3f velocity = new Vector3f();
@@ -69,12 +64,5 @@ public class PlaneControl extends PlayerControl {
 		setLinearVelocity(velocity);
 
 		setPhysicsRotation(rotation.fromAngles(attitude, heading, -rudder));
-	}
-
-	@Override
-	public void collision(PhysicsCollisionEvent event) {
-		super.collision(event);
-		if (event.getObjectA() == this || event.getObjectB() == this) {
-		}
 	}
 }

@@ -43,11 +43,8 @@ public class StatePlayer extends AbstractState {
 	private Geometry mark;
 	private PlayerItem activeUnit;
 	private Carrier carrier;
-	private ShipControl carrierControl;
 	private final List<Walrus> walrus = new ArrayList<>();
-	private final List<ShipControl> walrusControl = new ArrayList<>();
 	private final List<Manta> manta = new ArrayList<>();
-	private final List<PlaneControl> mantaControl = new ArrayList<>();
 
 	public StatePlayer(CameraNode camNode) {
 		this.camNode = camNode;
@@ -110,32 +107,28 @@ public class StatePlayer extends AbstractState {
 
 	private void createCarrier() {
 		carrier = new Carrier(Constants.CARRIER_PLAYER, assetManager, physicsState, water, camNode);
-		carrierControl = carrier.getControl(ShipControl.class);
+		ShipControl carrierControl = carrier.getControl(ShipControl.class);
 		carrierControl.setPhysicsLocation(new Vector3f(300, (water != null ? water.getWaterHeight() : 0), 1700));
 		getRootNode().attachChild(carrier);
 	}
 
 	private void createWalrus() {
 		Walrus unit = new Walrus(Constants.WALRUS_1, assetManager, physicsState, water, camNode);
-		walrusControl.add(unit.getControl(ShipControl.class));
 		unit.getControl(VehicleControl.class).setPhysicsLocation(new Vector3f(850, 5, 1700));
 		getRootNode().attachChild(unit);
 		walrus.add(unit);
 
 		unit = new Walrus(Constants.WALRUS_2, assetManager, physicsState, water, camNode);
-		walrusControl.add(unit.getControl(ShipControl.class));
 		unit.getControl(VehicleControl.class).setPhysicsLocation(new Vector3f(550, 0, 1700));
 		getRootNode().attachChild(unit);
 		walrus.add(unit);
 
 		unit = new Walrus(Constants.WALRUS_3, assetManager, physicsState, water, camNode);
-		walrusControl.add(unit.getControl(ShipControl.class));
 		unit.getControl(VehicleControl.class).setPhysicsLocation(new Vector3f(500, 0, 1700));
 		getRootNode().attachChild(unit);
 		walrus.add(unit);
 
 		unit = new Walrus(Constants.WALRUS_4, assetManager, physicsState, water, camNode);
-		walrusControl.add(unit.getControl(ShipControl.class));
 		unit.getControl(VehicleControl.class).setPhysicsLocation(new Vector3f(450, 0, 1700));
 		getRootNode().attachChild(unit);
 		walrus.add(unit);
@@ -143,27 +136,22 @@ public class StatePlayer extends AbstractState {
 
 	private void createManta() {
 		Manta unit = new Manta(Constants.MANTA_1, assetManager, physicsState, camNode);
-		mantaControl.add(unit.getControl(PlaneControl.class));
-//		mantaControl.get(0).setPhysicsLocation(new Vector3f(-1450, 20, 400));
-		mantaControl.get(0).setPhysicsLocation(new Vector3f(850, (water != null ? water.getWaterHeight() : 0) + 15, 1700));
+		unit.getControl(PlaneControl.class).setPhysicsLocation(new Vector3f(850, (water != null ? water.getWaterHeight() : 0) + 15, 1700));
 		getRootNode().attachChild(unit);
 		manta.add(unit);
 
 		unit = new Manta(Constants.MANTA_2, assetManager, physicsState, camNode);
-		mantaControl.add(unit.getControl(PlaneControl.class));
-		mantaControl.get(1).setPhysicsLocation(new Vector3f(550, 20, 1600));
+		unit.getControl(PlaneControl.class).setPhysicsLocation(new Vector3f(550, 20, 1600));
 		getRootNode().attachChild(unit);
 		manta.add(unit);
 
 		unit = new Manta(Constants.MANTA_3, assetManager, physicsState, camNode);
-		mantaControl.add(unit.getControl(PlaneControl.class));
-		mantaControl.get(2).setPhysicsLocation(new Vector3f(500, 20, 1600));
+		unit.getControl(PlaneControl.class).setPhysicsLocation(new Vector3f(500, 20, 1600));
 		getRootNode().attachChild(unit);
 		manta.add(unit);
 
 		unit = new Manta(Constants.MANTA_4, assetManager, physicsState, camNode);
-		mantaControl.add(unit.getControl(PlaneControl.class));
-		mantaControl.get(3).setPhysicsLocation(new Vector3f(450, 20, 1600));
+		unit.getControl(PlaneControl.class).setPhysicsLocation(new Vector3f(450, 20, 1600));
 		getRootNode().attachChild(unit);
 		manta.add(unit);
 	}
@@ -270,7 +258,7 @@ public class StatePlayer extends AbstractState {
 	}
 
 	public PlayerItem setActiveUnit(PlayerUnit unit, int id) {
-		if (id < 0 && id > 3) {
+		if (id < 0 || id > 3) {
 			logger.error("id invalid: {}", id);
 			return activeUnit;
 		}

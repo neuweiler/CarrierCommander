@@ -10,7 +10,6 @@ import java.util.Optional;
 public class IslandMap {
 
 	private final List<Island> islands = new ArrayList<>();
-	private Island stockpileIsland = null;
 	private static final IslandMap instance = new IslandMap();
 
 	public static IslandMap getInstance() {
@@ -92,8 +91,7 @@ public class IslandMap {
 
 	public Optional<Island> getClosestIsland(Vector3f position) {
 		Comparator<Island> minComparator = (n1, n2) ->
-				Float.valueOf(n1.getPosition().distance(position))
-						.compareTo(n2.getPosition().distance(position));
+				Float.compare(n1.getPosition().distance(position), n2.getPosition().distance(position));
 		return islands.stream().min(minComparator);
 	}
 }

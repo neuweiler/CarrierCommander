@@ -12,11 +12,8 @@ import com.jme3.scene.Geometry;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.shape.Cylinder;
 import net.carriercommander.control.ProjectileControl;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class Projectile extends GameItem {
-	private static final Logger logger = LoggerFactory.getLogger(Projectile.class);
 	private static Material material = null;
 	public static final float RADIUS = .1f, LENGTH = .9f, MASS = .0005f;
 	private static final Cylinder cylinder = new Cylinder(2, 6, RADIUS, LENGTH, true);
@@ -25,7 +22,7 @@ public class Projectile extends GameItem {
 		super(name);
 
 		initMaterial(assetManager);
-		attachChild(loadModel(name, assetManager));
+		attachChild(loadModel(name));
 
 		CollisionShape collisionShape = createCollisionShape();
 
@@ -41,7 +38,7 @@ public class Projectile extends GameItem {
 		material.setColor("GlowColor", ColorRGBA.Yellow.mult(20));
 	}
 
-	public static Spatial loadModel(String name, AssetManager assetManager) {
+	public static Spatial loadModel(String name) {
 		Geometry model = new Geometry(name, cylinder);
 		model.setMaterial(material);
 		return model;

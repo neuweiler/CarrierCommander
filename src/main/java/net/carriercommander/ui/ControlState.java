@@ -1,12 +1,7 @@
 package net.carriercommander.ui;
 
 import com.jme3.app.Application;
-import com.jme3.app.SimpleApplication;
 import com.jme3.app.state.AppState;
-import com.jme3.scene.Node;
-import com.simsilica.lemur.ActionButton;
-import com.simsilica.lemur.CallMethodAction;
-import com.simsilica.lemur.component.IconComponent;
 
 import java.util.ArrayList;
 import java.util.Arrays;

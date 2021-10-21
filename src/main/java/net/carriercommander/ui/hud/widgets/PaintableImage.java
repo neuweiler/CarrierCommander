@@ -9,9 +9,9 @@ import java.awt.image.BufferedImage;
 import java.nio.ByteBuffer;
 
 public abstract class PaintableImage extends Image {
-	private BufferedImage bufferedImage;
-	private ByteBuffer scratch;
-	Texture2D texture;
+	private final BufferedImage bufferedImage;
+	private final ByteBuffer scratch;
+	private final Texture2D texture;
 
 	public PaintableImage(int width, int height) {
 		super();
@@ -34,7 +34,7 @@ public abstract class PaintableImage extends Image {
 		g.dispose();
 
 		/* get the image data */
-		byte data[] = (byte[]) bufferedImage.getRaster().getDataElements(0, 0, getWidth(), getHeight(), null);
+		byte[] data = (byte[]) bufferedImage.getRaster().getDataElements(0, 0, getWidth(), getHeight(), null);
 		scratch.clear();
 		scratch.put(data, 0, data.length);
 		scratch.rewind();

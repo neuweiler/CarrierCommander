@@ -2,12 +2,10 @@ package net.carriercommander.network.client;
 
 import com.jme3.app.Application;
 import com.jme3.app.SimpleApplication;
-import com.jme3.network.*;
+import com.jme3.network.Client;
+import com.jme3.network.ClientStateListener;
+import com.jme3.network.Network;
 import net.carriercommander.Constants;
-import net.carriercommander.network.Utils;
-import net.carriercommander.network.host.ClientUpdater;
-import net.carriercommander.network.host.PlayerDataListener;
-import net.carriercommander.network.host.PlayerManager;
 import net.carriercommander.network.messages.PlayerDataMessage;
 import net.carriercommander.network.messages.TextMessage;
 import net.carriercommander.network.model.PlayerData;

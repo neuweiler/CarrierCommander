@@ -49,6 +49,10 @@ public class StateMainMenu extends WindowState {
 	protected void onEnable() {
 		super.onEnable();
 		GuiGlobals.getInstance().requestFocus(window);
+
+		if (Constants.AUTOSTART) {
+			action();
+		}
 	}
 
 	protected void action() {

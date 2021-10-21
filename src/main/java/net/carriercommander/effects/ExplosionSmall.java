@@ -14,11 +14,11 @@ import com.jme3.scene.Node;
 public class ExplosionSmall extends Node {
 	private static final boolean POINT_SPRITE = true;
 	private static final ParticleMesh.Type EMITTER_TYPE = POINT_SPRITE ? ParticleMesh.Type.Point : ParticleMesh.Type.Triangle;
+	private static final float FX_TIME = 6f;
 
 	private final AssetManager assetManager;
 	private final Node rootNode;
 	private ParticleEmitter flame, flash, spark, smoketrail, debris, shockwave;
-	final private float fxTime = 6f;
 	private float curTime = -1.0f;
 	private boolean flameStarted = false;
 
@@ -56,7 +56,7 @@ public class ExplosionSmall extends Node {
 				flame.emitAllParticles();
 				flameStarted = true;
 			}
-			if (curTime > fxTime) {
+			if (curTime > FX_TIME) {
 				curTime = -1;
 				removeFromParent();
 			}
@@ -178,7 +178,7 @@ public class ExplosionSmall extends Node {
 
 	private void createShockwave(){
 		shockwave = new ParticleEmitter("Shockwave", ParticleMesh.Type.Triangle, 1);
-//        shockwave.setRandomAngle(true);
+//		shockwave.setRandomAngle(true);
 //		shockwave.setFaceNormal(Vector3f.UNIT_Y);
 		shockwave.setStartColor(new ColorRGBA(.48f, 0.17f, 0.01f, .8f));
 		shockwave.setEndColor(new ColorRGBA(.48f, 0.17f, 0.01f, 0f));

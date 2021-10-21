@@ -6,7 +6,6 @@ import com.jme3.network.HostedConnection;
 import com.jme3.network.Network;
 import com.jme3.network.Server;
 import net.carriercommander.Constants;
-import net.carriercommander.network.Utils;
 import net.carriercommander.ui.AbstractState;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

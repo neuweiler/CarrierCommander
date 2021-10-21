@@ -1,8 +1,6 @@
 package net.carriercommander;
 
 import com.jme3.app.Application;
-import com.jme3.app.SimpleApplication;
-import com.jme3.app.state.BaseAppState;
 import com.jme3.light.AmbientLight;
 import com.jme3.light.DirectionalLight;
 import com.jme3.math.ColorRGBA;

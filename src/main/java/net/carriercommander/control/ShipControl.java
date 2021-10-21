@@ -32,7 +32,6 @@
 package net.carriercommander.control;
 
 import com.jme3.bullet.PhysicsSpace;
-import com.jme3.bullet.collision.PhysicsCollisionEvent;
 import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.math.FastMath;
 import com.jme3.math.Matrix3f;
@@ -59,7 +58,6 @@ public class ShipControl extends PlayerControl {
 	private final Vector3f waterOffset = new Vector3f();
 	private float verticalOffset = 0;
 	private final WaterFilter water;
-	private float displacement = 0;
 
 	public ShipControl(CollisionShape shape, float mass, WaterFilter water) {
 		super(shape, mass);
@@ -79,7 +77,7 @@ public class ShipControl extends PlayerControl {
 		heading = FastMath.atan2(currentRotation.get(0, 2), currentRotation.get(2, 2));
 
 		engineForce.setX(enginePower * FastMath.sin(heading - rudder / 2));
-		engineForce.setZ(-enginePower * FastMath.cos(heading  + FastMath.PI - rudder / 2));
+		engineForce.setZ(-enginePower * FastMath.cos(heading + FastMath.PI - rudder / 2));
 
 		rudderOffset.setX(-rudderPositionZ * FastMath.sin(heading));
 		rudderOffset.setZ(-rudderPositionZ * FastMath.cos(heading));
@@ -94,7 +92,7 @@ public class ShipControl extends PlayerControl {
 		float meterBelowWater = (water != null ? water.getWaterHeight() : 0) -
 				getPhysicsLocation().getY() + verticalOffset;
 
-		displacement = meterBelowWater / height;
+		float displacement = meterBelowWater / height;
 		if (displacement > 1f) {
 			displacement = 1f;
 		}
@@ -105,18 +103,9 @@ public class ShipControl extends PlayerControl {
 		waterOffset.set(width * rotationOffset.x, rotationOffset.y, length * rotationOffset.z);
 		applyForce(waterForce, waterOffset);
 
-//		if (getSpatial().getName().startsWith("walrus"))
-//		logger.info("Y: {}, belowWater: {}, displacement: {}, waterForce: {}, offset: {}", getPhysicsLocation().getY(),
-//				meterBelowWater, displacement, waterForce, waterOffset);
-	}
-
-
-	@Override
-	public void collision(PhysicsCollisionEvent event) {
-		super.collision(event);
-		if (event.getObjectA() == this || event.getObjectB() == this) {
-//			setThrottle(0);
-//			setRudder(0);
+		if (logger.isDebugEnabled()) {
+			logger.debug("Y: {}, belowWater: {}, displacement: {}, waterForce: {}, offset: {}", getPhysicsLocation().getY(),
+					meterBelowWater, displacement, waterForce, waterOffset);
 		}
 	}
 

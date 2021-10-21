@@ -23,7 +23,7 @@ import java.util.Optional;
 public abstract class NavigationState extends WindowState {
 	private PaintedRadar radar;
 	private PaintedGauge fuelGauge, throttleGauge;
-	private Label fuelLabel, throttleLabel, infoBox;
+	private Label infoBox;
 	private QuadBackgroundComponent radarImage, fuelImage, throttleImage;
 	private long timestamp = 0;
 	private PlayerItem activeUnit;
@@ -118,12 +118,12 @@ public abstract class NavigationState extends WindowState {
 	 * @return the gauge which can be added to a Container
 	 */
 	protected Label createFuelGauge() {
-		fuelLabel = new Label("");
-		fuelLabel.setIcon(new IconComponent("/Interface/hud/fuel.png"));
+		Label label = new Label("");
+		label.setIcon(new IconComponent("/Interface/hud/fuel.png"));
 		fuelGauge = new PaintedGauge();
 		fuelImage = new QuadBackgroundComponent();
-		fuelLabel.setBackground(fuelImage);
-		return fuelLabel;
+		label.setBackground(fuelImage);
+		return label;
 	}
 
 	/**
@@ -132,12 +132,12 @@ public abstract class NavigationState extends WindowState {
 	 * @return the gauge which can be added to a Container
 	 */
 	protected Label createThrottleGauge() {
-		throttleLabel = new Label("");
-		throttleLabel.setIcon(new IconComponent("/Interface/hud/speed.png"));
+		Label label = new Label("");
+		label.setIcon(new IconComponent("/Interface/hud/speed.png"));
 		throttleGauge = new PaintedGauge();
 		throttleImage = new QuadBackgroundComponent();
-		throttleLabel.setBackground(throttleImage);
-		return throttleLabel;
+		label.setBackground(throttleImage);
+		return label;
 	}
 
 	public PlayerItem getActiveUnit() {
@@ -149,7 +149,7 @@ public abstract class NavigationState extends WindowState {
 		radar.setActiveUnit(activeUnit);
 	}
 
-	/** Methods called from the UI widgets (IDE's might indicate that they are never used which is wrong **/
+	/* Methods called from the UI widgets (IDE's might indicate that they are never used which is wrong */
 
 	/**
 	 * Zoom in the radar image

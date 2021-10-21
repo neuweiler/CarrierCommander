@@ -17,9 +17,9 @@ public class PlayerData {
 	public static final int NUM_MANTA = 4;
 
 	private int id;
-	private CarrierData carrier;
-	private List<WalrusData> walrus;
-	private List<MantaData> manta;
+	private final CarrierData carrier;
+	private final List<WalrusData> walrus;
+	private final List<MantaData> manta;
 
 	public PlayerData() {
 		carrier = new CarrierData();

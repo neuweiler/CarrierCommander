@@ -1,11 +1,7 @@
 package net.carriercommander.ui.hud;
 
 import com.jme3.app.Application;
-import com.simsilica.lemur.ActionButton;
-import com.simsilica.lemur.CallMethodAction;
-import com.simsilica.lemur.component.IconComponent;
 import net.carriercommander.ui.ControlState;
-import net.carriercommander.ui.WindowState;
 import net.carriercommander.ui.hud.widgets.ImageButton;
 import net.carriercommander.ui.hud.widgets.ToggleGroup;
 import net.carriercommander.ui.hud.widgets.Window;
