@@ -97,8 +97,8 @@ public class CarrierCommander extends SimpleApplication {
 
 	private void createUI() {
 		GuiGlobals.initialize(this);
-		BaseStyles.loadGlassStyle();
-		GuiGlobals.getInstance().getStyles().setDefaultStyle(BaseStyles.GLASS);
+		BaseStyles.loadStyleResources("Interface/styles.groovy");
+		GuiGlobals.getInstance().getStyles().setDefaultStyle("cc");
 	}
 
 }

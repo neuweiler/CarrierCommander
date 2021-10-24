@@ -7,9 +7,7 @@ import com.simsilica.lemur.component.IconComponent;
 import com.simsilica.lemur.component.QuadBackgroundComponent;
 import net.carriercommander.StatePlayer;
 import net.carriercommander.control.PlayerControl;
-import net.carriercommander.ui.hud.widgets.ImageButton;
-import net.carriercommander.ui.hud.widgets.PaintedGauge;
-import net.carriercommander.ui.hud.widgets.Window;
+import net.carriercommander.ui.hud.widgets.*;
 
 public class StateMantaNavigation extends NavigationState {
 	private PaintedGauge altitudeGauge;
@@ -20,37 +18,34 @@ public class StateMantaNavigation extends NavigationState {
 	protected void initialize(Application app) {
 		window = new Window(0, 100);
 
-		Container container = window.addChild(new Container(), 1);
-		container.addChild(new ImageButton("/Interface/hud/manta_small.png", this, "manta1"));
-		container.addChild(new ImageButton("/Interface/hud/laser_small.png", this, "weaponCanon"));
+		Container base = window.addChild(new Container(), 1);
+		Container container = base.addChild(new Container());
+		ToggleGroup group = container.addChild(new ToggleGroup(), 0);
+		group.addChild(new ToggleImageButton("/Interface/hud/manta_small.png", this, "manta1"), 0);
+		group.addChild(new ToggleImageButton("/Interface/hud/manta_small.png", this, "manta2"), 1);
+		group.addChild(new ToggleImageButton("/Interface/hud/manta_small.png", this, "manta3"), 2);
+		group.addChild(new ToggleImageButton("/Interface/hud/manta_small.png", this, "manta4"), 3);
+		container.addChild(new ImageButton("/Interface/hud/centerRudder.png", this, "centerRudder"), 1);
 
-		container = window.addChild(new Container(), 2);
-		container.addChild(new ImageButton("/Interface/hud/manta_small.png", this, "manta2"));
-		container.addChild(new ImageButton("/Interface/hud/missile.png", this, "weaponMissile"));
+		container = base.addChild(new Container());
+		group = container.addChild(new ToggleGroup(), 0);
+		group.addChild(new ToggleImageButton("/Interface/hud/laser_small.png", this, "weaponCanon"), 0);
+		group.addChild(new ToggleImageButton("/Interface/hud/missile.png", this, "weaponMissile"), 1);
+		group.addChild(new ToggleImageButton("/Interface/hud/pod.png", this, "weaponBomb"), 2);
+		container.addChild(new ToggleImageButton("/Interface/hud/autoPilot.png", this, "autoPilot"), 1);
+		container.addChild(new ImageButton("/Interface/hud/level.png", this, "levelOff"), 2);
 
-		container = window.addChild(new Container(), 3);
-		container.addChild(new ImageButton("/Interface/hud/manta_small.png", this, "manta3"));
-		container.addChild(new ImageButton("/Interface/hud/pod.png", this, "weaponBomb"));
+		window.addChild(createInfoBox(), 2);
 
-		container = window.addChild(new Container(), 4);
-		container.addChild(new ImageButton("/Interface/hud/manta_small.png", this, "manta4"));
-		container.addChild(new ImageButton("/Interface/hud/autoPilot.png", this, "autoPilot"));
+		window.addChild(createAltitudeGauge(), 3);
+		window.addChild(createFuelGauge(), 4);
+		window.addChild(createThrottleGauge(), 5);
 
-		container = window.addChild(new Container(), 5);
-		container.addChild(new ImageButton("/Interface/hud/centerRudder.png", this, "centerRudder"));
-		container.addChild(new ImageButton("/Interface/hud/level.png", this, "levelOff"));
+		container = window.addChild(new Container(), 6);
+		container.addChild(new ToggleImageButton("/Interface/hud/radar_small.png", this, "radar"));
+		container.addChild(new ToggleImageButton("/Interface/hud/rearView.png", this, "rearView"));
 
-		window.addChild(createInfoBox(), 6);
-
-		window.addChild(createAltitudeGauge(), 7);
-		window.addChild(createFuelGauge(), 8);
-		window.addChild(createThrottleGauge(), 9);
-
-		container = window.addChild(new Container(), 10);
-		container.addChild(new ImageButton("/Interface/hud/radar_small.png", this, "radar"));
-		container.addChild(new ImageButton("/Interface/hud/rearView.png", this, "rearView"));
-
-		window.addChild(createRadar(), 11);
+		window.addChild(createRadar(), 7);
 	}
 
 	@Override

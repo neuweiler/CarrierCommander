@@ -5,10 +5,12 @@ import com.simsilica.lemur.Container;
 import com.simsilica.lemur.Label;
 import com.simsilica.lemur.component.IconComponent;
 import com.simsilica.lemur.component.QuadBackgroundComponent;
+import com.simsilica.lemur.style.ElementId;
 import net.carriercommander.StatePlayer;
 import net.carriercommander.control.PlayerControl;
 import net.carriercommander.ui.hud.widgets.ImageButton;
 import net.carriercommander.ui.hud.widgets.PaintedGauge;
+import net.carriercommander.ui.hud.widgets.ToggleImageButton;
 import net.carriercommander.ui.hud.widgets.Window;
 
 public class StateCarrierNavigation extends NavigationState {
@@ -29,7 +31,7 @@ public class StateCarrierNavigation extends NavigationState {
 
 		container = window.addChild(new Container(), 4);
 		container.addChild(new ImageButton("/Interface/hud/centerRudder.png", this, "centerRudder"));
-		container.addChild(new ImageButton("/Interface/hud/autoPilot.png", this, "autoPilot"));
+		container.addChild(new ToggleImageButton("/Interface/hud/autoPilot.png", this, "autoPilot"));
 
 		window.addChild(createInfoBox(), 5);
 
@@ -38,8 +40,8 @@ public class StateCarrierNavigation extends NavigationState {
 		window.addChild(createThrottleGauge(), 8);
 
 		container = window.addChild(new Container(), 9);
-		container.addChild(new ImageButton("/Interface/hud/speedIncrease.png", this, "increaseSpeed"));
-		container.addChild(new ImageButton("/Interface/hud/speedDecrease.png", this, "decreaseSpeed"));
+		container.addChild(new ImageButton("/Interface/hud/speedIncrease.png", this, "increaseSpeed", new ElementId("repeatButton")));
+		container.addChild(new ImageButton("/Interface/hud/speedDecrease.png", this, "decreaseSpeed", new ElementId("repeatButton")));
 	}
 
 	@Override
