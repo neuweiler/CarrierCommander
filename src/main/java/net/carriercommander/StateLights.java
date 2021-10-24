@@ -22,7 +22,7 @@ public class StateLights extends AbstractState {
 
 		sun = new DirectionalLight();
 		sun.setDirection(Constants.LIGHT_DIRECTION);
-		sun.setColor(ColorRGBA.White.clone().multLocal(1.1f));
+		sun.setColor(ColorRGBA.White.clone().multLocal(.7f));
 		shadowRenderer.setLight(sun);
 
 		ambientLight = new AmbientLight();

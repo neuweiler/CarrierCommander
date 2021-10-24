@@ -27,7 +27,7 @@ public class StateSpinningCarrier extends AbstractState {
 		light.setDirection(new Vector3f(-0.2f, -1, -0.3f).normalizeLocal());
 
 		ambient = new AmbientLight();
-		ambient.setColor(new ColorRGBA(0.25f, 0.25f, 0.25f, 1));
+		ambient.setColor(new ColorRGBA(0.65f, 0.65f, 0.65f, 1));
 	}
 
 	@Override
