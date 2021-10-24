@@ -25,11 +25,14 @@ public class ToggleButton extends ActionButton {
 	}
 
 	@Override
-	protected void runClick() {
-		if( !isEnabled() )
+	protected void setPressed(boolean f) {
+		if (isPressed() == f) {
 			return;
-		selected = !selected;
-		super.runClick();
+		}
+		if (f) {
+			selected = !selected;
+		}
+		super.setPressed(f);
 	}
 
 	public boolean isSelected() {
@@ -38,5 +41,6 @@ public class ToggleButton extends ActionButton {
 
 	public void setSelected(boolean selected) {
 		this.selected = selected;
+		getCommands(ButtonAction.Down).get(0).execute(this);
 	}
 }

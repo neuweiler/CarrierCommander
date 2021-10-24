@@ -19,7 +19,7 @@ public class StateWalrusNavigation extends NavigationState {
 		Container base = window.addChild(new Container(), 1);
 		Container container = base.addChild(new Container());
 		ToggleGroup group = container.addChild(new ToggleGroup(), 0);
-		group.addChild(new ToggleImageButton("/Interface/hud/walrus_small.png", this, "walrus1"), 0);
+		group.addChild(new ToggleImageButton("/Interface/hud/walrus_small.png", this, "walrus1"), 0).setSelected(true);
 		group.addChild(new ToggleImageButton("/Interface/hud/walrus_small.png", this, "walrus2"), 1);
 		group.addChild(new ToggleImageButton("/Interface/hud/walrus_small.png", this, "walrus3"), 2);
 		group.addChild(new ToggleImageButton("/Interface/hud/walrus_small.png", this, "walrus4"), 3);
@@ -27,7 +27,7 @@ public class StateWalrusNavigation extends NavigationState {
 
 		container = base.addChild(new Container());
 		group = container.addChild(new ToggleGroup(), 0);
-		group.addChild(new ToggleImageButton("/Interface/hud/laser_small.png", this, "weaponCanon"), 0);
+		group.addChild(new ToggleImageButton("/Interface/hud/laser_small.png", this, "weaponCanon"), 0).setSelected(true);
 		group.addChild(new ToggleImageButton("/Interface/hud/missile.png", this, "weaponMissile"), 1);
 		group.addChild(new ToggleImageButton("/Interface/hud/pod.png", this, "weaponPod"), 2);
 		container.addChild(new ToggleImageButton("/Interface/hud/autoPilot.png", this, "autoPilot"), 1);

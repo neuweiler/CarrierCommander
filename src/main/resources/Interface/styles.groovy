@@ -64,16 +64,14 @@ def pressedCommand = new Command<Button>() {
 
 def toggleCommand = new Command<ToggleButton>() {
     void execute(ToggleButton source) {
-        if (source.isPressed() && source.isHighlightOn()) {
-            if (!source.isSelected()) {
+            if (source.isSelected()) {
                 source.setBackground(new QuadBackgroundComponent(color(1, 0.3, 0.3, 0.7)))
-                source.move(4, -4, 0)
+                source.move(1, -1, 0)
             } else {
                 source.setBackground(new QuadBackgroundComponent(color(0, 0, 0, 0)))
-                source.move(-4, 4, 0)
+                source.move(-1, 1, 0)
             }
         }
-    }
 }
 
 def repeatCommand = new Command<Button>() {

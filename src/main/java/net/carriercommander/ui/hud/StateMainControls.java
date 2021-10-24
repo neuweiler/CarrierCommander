@@ -15,7 +15,7 @@ public class StateMainControls extends ControlState {
 		window = new Window(0, getApplication().getCamera().getHeight());
 
 		ToggleGroup group = window.addChild(new ToggleGroup());
-		group.addChild(new ToggleImageButton("/Interface/hud/carrier.png", this, "carrier"));
+		group.addChild(new ToggleImageButton("/Interface/hud/carrier.png", this, "carrier")).setSelected(true);
 		group.addChild(new ToggleImageButton("/Interface/hud/weapons.png", this, "weapons"));
 		group.addChild(new ToggleImageButton("/Interface/hud/walrus.png", this, "walrus"));
 		group.addChild(new ToggleImageButton("/Interface/hud/manta.png", this, "manta"));

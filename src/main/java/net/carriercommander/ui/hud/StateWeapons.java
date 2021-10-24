@@ -2,8 +2,8 @@ package net.carriercommander.ui.hud;
 
 import com.jme3.app.Application;
 import net.carriercommander.ui.ControlState;
-import net.carriercommander.ui.hud.widgets.ImageButton;
 import net.carriercommander.ui.hud.widgets.ToggleGroup;
+import net.carriercommander.ui.hud.widgets.ToggleImageButton;
 import net.carriercommander.ui.hud.widgets.Window;
 
 public class StateWeapons extends ControlState {
@@ -16,11 +16,11 @@ public class StateWeapons extends ControlState {
 		window = new Window(getApplication().getCamera().getWidth() - 55, getApplication().getCamera().getHeight());
 
 		ToggleGroup group = window.addChild(new ToggleGroup());
-		group.addChild(new ImageButton("/Interface/hud/laser.png", this, "laser"));
-		group.addChild(new ImageButton("/Interface/hud/flare.png", this, "flare"));
-		group.addChild(new ImageButton("/Interface/hud/missileCarrier.png", this, "missile"));
-		group.addChild(new ImageButton("/Interface/hud/drones.png", this, "drone"));
-		group.addChild(new ImageButton("/Interface/hud/status.png", this, "status"));
+		group.addChild(new ToggleImageButton("/Interface/hud/laser.png", this, "laser")).setSelected(true);
+		group.addChild(new ToggleImageButton("/Interface/hud/flare.png", this, "flare"));
+		group.addChild(new ToggleImageButton("/Interface/hud/missileCarrier.png", this, "missile"));
+		group.addChild(new ToggleImageButton("/Interface/hud/drones.png", this, "drone"));
+		group.addChild(new ToggleImageButton("/Interface/hud/status.png", this, "status"));
 	}
 
 	private void laser() {

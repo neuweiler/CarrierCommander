@@ -8,6 +8,7 @@ import net.carriercommander.ui.ControlState;
 import net.carriercommander.ui.WindowState;
 import net.carriercommander.ui.hud.widgets.ImageButton;
 import net.carriercommander.ui.hud.widgets.ToggleGroup;
+import net.carriercommander.ui.hud.widgets.ToggleImageButton;
 import net.carriercommander.ui.hud.widgets.Window;
 
 public class StateWalrus extends ControlState {
@@ -21,11 +22,11 @@ public class StateWalrus extends ControlState {
 		window = new Window(getApplication().getCamera().getWidth() - 55, getApplication().getCamera().getHeight());
 
 		ToggleGroup group = window.addChild(new ToggleGroup());
-		group.addChild(new ImageButton("/Interface/hud/control.png", this, "navigation"));
-		group.addChild(new ImageButton("/Interface/hud/map.png", this, "map"));
-		group.addChild(new ImageButton("/Interface/hud/walrusEquip.png", this, "equip"));
-		group.addChild(new ImageButton("/Interface/hud/walrusHangar.png", this, "hangar"));
-		group.addChild(new ImageButton("/Interface/hud/status.png", this, "status"));
+		group.addChild(new ToggleImageButton("/Interface/hud/control.png", this, "navigation")).setSelected(true);
+		group.addChild(new ToggleImageButton("/Interface/hud/map.png", this, "map"));
+		group.addChild(new ToggleImageButton("/Interface/hud/walrusEquip.png", this, "equip"));
+		group.addChild(new ToggleImageButton("/Interface/hud/walrusHangar.png", this, "hangar"));
+		group.addChild(new ToggleImageButton("/Interface/hud/status.png", this, "status"));
 	}
 
 	private void navigation() {

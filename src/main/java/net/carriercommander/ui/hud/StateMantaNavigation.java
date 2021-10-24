@@ -21,7 +21,7 @@ public class StateMantaNavigation extends NavigationState {
 		Container base = window.addChild(new Container(), 1);
 		Container container = base.addChild(new Container());
 		ToggleGroup group = container.addChild(new ToggleGroup(), 0);
-		group.addChild(new ToggleImageButton("/Interface/hud/manta_small.png", this, "manta1"), 0);
+		group.addChild(new ToggleImageButton("/Interface/hud/manta_small.png", this, "manta1"), 0).setSelected(true);
 		group.addChild(new ToggleImageButton("/Interface/hud/manta_small.png", this, "manta2"), 1);
 		group.addChild(new ToggleImageButton("/Interface/hud/manta_small.png", this, "manta3"), 2);
 		group.addChild(new ToggleImageButton("/Interface/hud/manta_small.png", this, "manta4"), 3);
@@ -29,7 +29,7 @@ public class StateMantaNavigation extends NavigationState {
 
 		container = base.addChild(new Container());
 		group = container.addChild(new ToggleGroup(), 0);
-		group.addChild(new ToggleImageButton("/Interface/hud/laser_small.png", this, "weaponCanon"), 0);
+		group.addChild(new ToggleImageButton("/Interface/hud/laser_small.png", this, "weaponCanon"), 0).setSelected(true);
 		group.addChild(new ToggleImageButton("/Interface/hud/missile.png", this, "weaponMissile"), 1);
 		group.addChild(new ToggleImageButton("/Interface/hud/pod.png", this, "weaponBomb"), 2);
 		container.addChild(new ToggleImageButton("/Interface/hud/autoPilot.png", this, "autoPilot"), 1);
