@@ -25,14 +25,11 @@ public class ToggleButton extends ActionButton {
 	}
 
 	@Override
-	protected void setPressed(boolean f) {
-		if (isPressed() == f) {
-			return;
-		}
-		if (f) {
+	protected void setPressed(boolean pressed) {
+		if (pressed && !isPressed() && (!isPartOfToggleGroup() || !isSelected())) {
 			selected = !selected;
 		}
-		super.setPressed(f);
+		super.setPressed(pressed);
 	}
 
 	public boolean isSelected() {
@@ -42,5 +39,9 @@ public class ToggleButton extends ActionButton {
 	public void setSelected(boolean selected) {
 		this.selected = selected;
 		getCommands(ButtonAction.Down).get(0).execute(this);
+	}
+
+	private boolean isPartOfToggleGroup() {
+		return getParent() instanceof ToggleGroup;
 	}
 }

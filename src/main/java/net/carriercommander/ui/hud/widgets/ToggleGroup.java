@@ -1,12 +1,9 @@
 package net.carriercommander.ui.hud.widgets;
 
 import com.jme3.scene.Node;
-import com.simsilica.lemur.Button;
-import com.simsilica.lemur.Command;
-import com.simsilica.lemur.Container;
+import com.simsilica.lemur.*;
 
 public class ToggleGroup extends Container {
-
 	@Override
 	public <T extends Node> T addChild(T child, Object... constraints ) {
 		super.addChild(child, constraints);
@@ -28,9 +25,9 @@ public class ToggleGroup extends Container {
 		this.children.forEach(child -> {
 			if (child != source && child instanceof ToggleButton) {
 				ToggleButton toggleButton = (ToggleButton) child;
-				toggleButton.setSelected(false);
-				toggleButton.getCommands(Button.ButtonAction.Down).get(0).execute(toggleButton);
-				toggleButton.runEffect(Button.EFFECT_PRESS);
+				if (toggleButton.isSelected()) {
+					toggleButton.setSelected(false);
+				}
 			}
 		});
 	}
