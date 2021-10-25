@@ -13,6 +13,7 @@ public class StateMantaNavigation extends NavigationState {
 	private PaintedGauge altitudeGauge;
 	private QuadBackgroundComponent altitudeImage;
 	private int lastSelectedManta = 0;
+	private ToggleImageButton buttonCanon, buttonMissile, buttonBomb, buttonAutoPilot;
 
 	@Override
 	protected void initialize(Application app) {
@@ -29,12 +30,11 @@ public class StateMantaNavigation extends NavigationState {
 
 		container = base.addChild(new Container());
 		group = container.addChild(new ToggleGroup(), 0);
-		group.addChild(new ToggleImageButton("/Interface/hud/laser_small.png", this, "weaponCanon"), 0).setSelected(true);
-		group.addChild(new ToggleImageButton("/Interface/hud/missile.png", this, "weaponMissile"), 1);
-		group.addChild(new ToggleImageButton("/Interface/hud/pod.png", this, "weaponBomb"), 2);
-		container.addChild(new ToggleImageButton("/Interface/hud/autoPilot.png", this, "autoPilot"), 1);
+		buttonCanon = group.addChild(new ToggleImageButton("/Interface/hud/laser_small.png", this, "weaponCanon"), 0);
+		buttonMissile = group.addChild(new ToggleImageButton("/Interface/hud/missile.png", this, "weaponMissile"), 1);
+		buttonBomb = group.addChild(new ToggleImageButton("/Interface/hud/pod.png", this, "weaponBomb"), 2);
+		buttonAutoPilot = container.addChild(new ToggleImageButton("/Interface/hud/autoPilot.png", this, "autoPilot"), 1);
 		container.addChild(new ImageButton("/Interface/hud/level.png", this, "levelOff"), 2);
-
 		window.addChild(createInfoBox(), 2);
 
 		window.addChild(createAltitudeGauge(), 3);
@@ -86,6 +86,11 @@ public class StateMantaNavigation extends NavigationState {
 	private void selectManta(int id) {
 		setActiveUnit(getState(StatePlayer.class).setActiveUnit(StatePlayer.PlayerUnit.MANTA, id));
 		lastSelectedManta = id;
+
+		PlayerControl.WeaponType selectedWeapon = getPlayerControl().getWeaponType();
+		buttonCanon.setSelected(selectedWeapon == PlayerControl.WeaponType.CANON);
+		buttonMissile.setSelected(selectedWeapon == PlayerControl.WeaponType.MISSILE);
+		buttonBomb.setSelected(selectedWeapon == PlayerControl.WeaponType.BOMB);
 	}
 
 	private void manta1() {

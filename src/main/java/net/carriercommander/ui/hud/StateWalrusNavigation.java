@@ -11,6 +11,7 @@ import net.carriercommander.ui.hud.widgets.Window;
 
 public class StateWalrusNavigation extends NavigationState {
 	private int lastSelectedWalrus = 0;
+	private ToggleImageButton buttonCanon, buttonMissile, buttonPod, buttonAutoPilot;
 
 	@Override
 	protected void initialize(Application app) {
@@ -27,10 +28,10 @@ public class StateWalrusNavigation extends NavigationState {
 
 		container = base.addChild(new Container());
 		group = container.addChild(new ToggleGroup(), 0);
-		group.addChild(new ToggleImageButton("/Interface/hud/laser_small.png", this, "weaponCanon"), 0).setSelected(true);
-		group.addChild(new ToggleImageButton("/Interface/hud/missile.png", this, "weaponMissile"), 1);
-		group.addChild(new ToggleImageButton("/Interface/hud/pod.png", this, "weaponPod"), 2);
-		container.addChild(new ToggleImageButton("/Interface/hud/autoPilot.png", this, "autoPilot"), 1);
+		buttonCanon = group.addChild(new ToggleImageButton("/Interface/hud/laser_small.png", this, "weaponCanon"), 0);
+		buttonMissile = group.addChild(new ToggleImageButton("/Interface/hud/missile.png", this, "weaponMissile"), 1);
+		buttonPod = group.addChild(new ToggleImageButton("/Interface/hud/pod.png", this, "weaponPod"), 2);
+		buttonAutoPilot = container.addChild(new ToggleImageButton("/Interface/hud/autoPilot.png", this, "autoPilot"), 1);
 		container.addChild(new ToggleImageButton("/Interface/hud/link.png", this, "link"), 2);
 
 		window.addChild(createInfoBox(), 6);
@@ -65,6 +66,11 @@ public class StateWalrusNavigation extends NavigationState {
 	private void selectWalrus(int id) {
 		setActiveUnit(getState(StatePlayer.class).setActiveUnit(StatePlayer.PlayerUnit.WALRUS, id));
 		lastSelectedWalrus = id;
+
+		PlayerControl.WeaponType selectedWeapon = getPlayerControl().getWeaponType();
+		buttonCanon.setSelected(selectedWeapon == PlayerControl.WeaponType.CANON);
+		buttonMissile.setSelected(selectedWeapon == PlayerControl.WeaponType.MISSILE);
+		buttonPod.setSelected(selectedWeapon == PlayerControl.WeaponType.POD);
 	}
 
 	private void walrus1() {
