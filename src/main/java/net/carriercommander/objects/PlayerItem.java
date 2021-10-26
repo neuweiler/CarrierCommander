@@ -65,6 +65,10 @@ public abstract class PlayerItem extends GameItem {
 		}
 	}
 
+	public boolean isRearView() {
+		return rearView;
+	}
+
 	public void setCameraToFront() {
 		setCameraNode(camHookFront);
 		rearView = false;

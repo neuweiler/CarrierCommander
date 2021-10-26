@@ -11,7 +11,8 @@ import net.carriercommander.ui.hud.widgets.Window;
 
 public class StateWalrusNavigation extends NavigationState {
 	private int lastSelectedWalrus = 0;
-	private ToggleImageButton buttonCanon, buttonMissile, buttonPod, buttonAutoPilot;
+	private ToggleImageButton buttonCanon, buttonMissile, buttonPod, buttonAutoPilot, buttonRearView,
+			buttonLink, buttonRadar;
 
 	@Override
 	protected void initialize(Application app) {
@@ -32,7 +33,7 @@ public class StateWalrusNavigation extends NavigationState {
 		buttonMissile = group.addChild(new ToggleImageButton("/Interface/hud/missile.png", this, "weaponMissile"), 1);
 		buttonPod = group.addChild(new ToggleImageButton("/Interface/hud/pod.png", this, "weaponPod"), 2);
 		buttonAutoPilot = container.addChild(new ToggleImageButton("/Interface/hud/autoPilot.png", this, "autoPilot"), 1);
-		container.addChild(new ToggleImageButton("/Interface/hud/link.png", this, "link"), 2);
+		buttonLink = container.addChild(new ToggleImageButton("/Interface/hud/link.png", this, "link"), 2);
 
 		window.addChild(createInfoBox(), 6);
 
@@ -40,8 +41,8 @@ public class StateWalrusNavigation extends NavigationState {
 		window.addChild(createThrottleGauge(), 8);
 
 		container = window.addChild(new Container(), 9);
-		container.addChild(new ToggleImageButton("/Interface/hud/radar_small.png", this, "radar"));
-		container.addChild(new ToggleImageButton("/Interface/hud/rearView.png", this, "rearView"));
+		buttonRadar = container.addChild(new ToggleImageButton("/Interface/hud/radar_small.png", this, "radar"));
+		buttonRearView = container.addChild(new ToggleImageButton("/Interface/hud/rearView.png", this, "rearView"));
 
 		window.addChild(createRadar(), 10);
 	}
@@ -71,6 +72,9 @@ public class StateWalrusNavigation extends NavigationState {
 		buttonCanon.setSelected(selectedWeapon == PlayerControl.WeaponType.CANON);
 		buttonMissile.setSelected(selectedWeapon == PlayerControl.WeaponType.MISSILE);
 		buttonPod.setSelected(selectedWeapon == PlayerControl.WeaponType.POD);
+		buttonRearView.setSelected(getActiveUnit().isRearView());
+		buttonLink.setSelected(false); //TODO
+		buttonRadar.setSelected(true); // TODO
 	}
 
 	private void walrus1() {

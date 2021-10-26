@@ -13,7 +13,8 @@ public class StateMantaNavigation extends NavigationState {
 	private PaintedGauge altitudeGauge;
 	private QuadBackgroundComponent altitudeImage;
 	private int lastSelectedManta = 0;
-	private ToggleImageButton buttonCanon, buttonMissile, buttonBomb, buttonAutoPilot;
+	private ToggleImageButton buttonCanon, buttonMissile, buttonBomb, buttonAutoPilot,
+			buttonRearView, buttonRadar;
 
 	@Override
 	protected void initialize(Application app) {
@@ -42,8 +43,8 @@ public class StateMantaNavigation extends NavigationState {
 		window.addChild(createThrottleGauge(), 5);
 
 		container = window.addChild(new Container(), 6);
-		container.addChild(new ToggleImageButton("/Interface/hud/radar_small.png", this, "radar"));
-		container.addChild(new ToggleImageButton("/Interface/hud/rearView.png", this, "rearView"));
+		buttonRadar = container.addChild(new ToggleImageButton("/Interface/hud/radar_small.png", this, "radar"));
+		buttonRearView = container.addChild(new ToggleImageButton("/Interface/hud/rearView.png", this, "rearView"));
 
 		window.addChild(createRadar(), 7);
 	}
@@ -91,6 +92,8 @@ public class StateMantaNavigation extends NavigationState {
 		buttonCanon.setSelected(selectedWeapon == PlayerControl.WeaponType.CANON);
 		buttonMissile.setSelected(selectedWeapon == PlayerControl.WeaponType.MISSILE);
 		buttonBomb.setSelected(selectedWeapon == PlayerControl.WeaponType.BOMB);
+		buttonRearView.setSelected(getActiveUnit().isRearView());
+		buttonRadar.setSelected(true); // TODO
 	}
 
 	private void manta1() {
