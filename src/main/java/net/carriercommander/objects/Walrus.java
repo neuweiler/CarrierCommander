@@ -37,6 +37,7 @@ import com.jme3.bullet.collision.shapes.BoxCollisionShape;
 import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.collision.shapes.CompoundCollisionShape;
 import com.jme3.bullet.control.VehicleControl;
+import com.jme3.bullet.objects.PhysicsRigidBody;
 import com.jme3.math.FastMath;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.queue.RenderQueue.ShadowMode;
@@ -195,4 +196,10 @@ public class Walrus extends PlayerItem {
 		camHookRear.setLocalTranslation(0, 7, -.7f);
 		camHookRear.rotate(0, FastMath.PI, 0);
 	}
+
+	@Override
+	public PhysicsRigidBody getControl() {
+		return (getControl(ShipControl.class).isEnabled() ? getControl(ShipControl.class) : getControl(VehicleControl.class));
+	}
+
 }

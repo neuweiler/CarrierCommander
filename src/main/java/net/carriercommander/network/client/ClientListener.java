@@ -7,11 +7,9 @@ import net.carriercommander.network.messages.ServerStatusMessage;
 
 public class ClientListener implements MessageListener<Client> {
 
-	private final Client client;
 	private final SceneManager sceneManager;
 
-	public ClientListener(Client client, SceneManager sceneManager) {
-		this.client = client;
+	public ClientListener(SceneManager sceneManager) {
 		this.sceneManager = sceneManager;
 	}
 
@@ -19,7 +17,7 @@ public class ClientListener implements MessageListener<Client> {
 	public void messageReceived(Client source, Message message) {
 		if (message instanceof ServerStatusMessage) {
 			ServerStatusMessage serverStatusMessage = (ServerStatusMessage) message;
-			sceneManager.refreshPlayerList(serverStatusMessage.getPlayers());
+			sceneManager.updatePlayers(serverStatusMessage.getPlayers());
 		}
 	}
 

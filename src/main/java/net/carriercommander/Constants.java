@@ -44,20 +44,15 @@ public interface Constants {
 	boolean AUTOSTART = false;
 
 	// network settings
-	int DEFAULT_PORT = 72224;
+	int DEFAULT_PORT = 54321;
 	String DEFAULT_HOST = "localhost";
+	String GAME_NAME = "CarrierCommand";
+	int GAME_VERSION = 1;
 
 	// names of game objects
-	String CARRIER_PLAYER = "carrier-1";
-	String CARRIER_ENEMY = "carrier-2";
-	String WALRUS_1 = "walrus-1";
-	String WALRUS_2 = "walrus-2";
-	String WALRUS_3 = "walrus-3";
-	String WALRUS_4 = "walrus-4";
-	String MANTA_1 = "manta-1";
-	String MANTA_2 = "manta-2";
-	String MANTA_3 = "manta-3";
-	String MANTA_4 = "manta-4";
+	String CARRIER = "carrier";
+	String WALRUS = "walrus";
+	String MANTA = "manta";
 	String MISSILE = "missile";
 
 	// input mappings

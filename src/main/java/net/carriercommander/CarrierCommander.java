@@ -34,9 +34,11 @@ package net.carriercommander;
 import com.jme3.app.SimpleApplication;
 import com.jme3.system.AppSettings;
 import com.simsilica.lemur.GuiGlobals;
+import com.simsilica.lemur.OptionPanelState;
 import com.simsilica.lemur.style.BaseStyles;
 import net.carriercommander.network.Utils;
 import net.carriercommander.ui.menu.StateMainMenu;
+import net.carriercommander.ui.menu.StateNetworkMenu;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -85,7 +87,9 @@ public class CarrierCommander extends SimpleApplication {
 	}
 
 	public CarrierCommander() {
-		super(new StateMainMenu(), new StateSpinningCarrier());
+		super(new StateMainMenu(), new StateSpinningCarrier(),
+				new OptionPanelState(), new StateNetworkMenu()
+		);
 	}
 
 	@Override

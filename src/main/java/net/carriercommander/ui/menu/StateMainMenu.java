@@ -8,24 +8,22 @@ import net.carriercommander.ui.WindowState;
 
 public class StateMainMenu extends WindowState {
 
-	private StateLoadGame stateLoadGame;
-
 	@Override
 	protected void initialize(Application app) {
 		window = new Container();
 
 		Label title = window.addChild(new Label("Carrier Commander"));
-		title.setFontSize(24);
-		title.setInsets(new Insets3f(10, 10, 0, 10));
+		title.setFontSize(24); // TODO move to styles
+		title.setInsets(new Insets3f(10, 10, 0, 10)); // TODO move to styles
 
 		Container mainPanel = window.addChild(new Container());
-		mainPanel.setInsets(new Insets3f(10, 10, 10, 10));
+		mainPanel.setInsets(new Insets3f(10, 10, 10, 10)); // TODO move to styles
 		mainPanel.addChild(new ActionButton(new CallMethodAction("Action Game", this, "action")));
 		mainPanel.addChild(new ActionButton(new CallMethodAction("Strategy Game", this, "strategy")));
 		mainPanel.addChild(new ActionButton(new CallMethodAction("Network Game", this, "network")));
 
 		ActionButton exit = window.addChild(new ActionButton(new CallMethodAction("Exit Game", app, "stop")));
-		exit.setInsets(new Insets3f(10, 10, 10, 10));
+		exit.setInsets(new Insets3f(10, 10, 10, 10)); // TODO move to styles
 
 		int height = app.getCamera().getHeight();
 		Vector3f pref = window.getPreferredSize().clone();
@@ -37,8 +35,6 @@ public class StateMainMenu extends WindowState {
 
 		window.setLocalTranslation(100 * standardScale, y, 0);
 		window.setLocalScale(1.5f * standardScale);
-
-		stateLoadGame = new StateLoadGame();
 	}
 
 	@Override
@@ -64,12 +60,13 @@ public class StateMainMenu extends WindowState {
 	}
 
 	protected void network() {
-		startGame(Constants.GameType.network);
+		getStateManager().getState(StateNetworkMenu.class).setEnabled(true);
+		setEnabled(false);
 	}
 
 	public void startGame(Constants.GameType gameType) {
-		getStateManager().attach(stateLoadGame);
-		getStateManager().detach(this);
+		getStateManager().attach(new StateLoadGame());
+		setEnabled(false);
 	}
 
 }
