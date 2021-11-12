@@ -1,25 +1,21 @@
 package net.carriercommander.network;
 
 import com.jme3.network.serializing.Serializer;
-import net.carriercommander.network.messages.PlayerDataMessage;
-import net.carriercommander.network.messages.ServerStatusMessage;
+import net.carriercommander.network.messages.MessagePlayerAdded;
+import net.carriercommander.network.messages.MessagePlayerRemoved;
+import net.carriercommander.network.messages.MessagePlayerUpdate;
 import net.carriercommander.network.messages.TextMessage;
-import net.carriercommander.network.model.CarrierData;
-import net.carriercommander.network.model.MantaData;
-import net.carriercommander.network.model.PlayerData;
-import net.carriercommander.network.model.WalrusData;
+import net.carriercommander.network.model.GameItemData;
 
 public class Utils {
 
 	public static void initSerializers() {
 		Serializer.registerClasses(
-				ServerStatusMessage.class,
+				MessagePlayerAdded.class,
+				MessagePlayerRemoved.class,
+				MessagePlayerUpdate.class,
 				TextMessage.class,
-				PlayerDataMessage.class,
-				PlayerData.class,
-				CarrierData.class,
-				MantaData.class,
-				WalrusData.class
+				GameItemData.class
 		);
 	}
 }

@@ -32,6 +32,7 @@
 package net.carriercommander;
 
 import com.jme3.math.Vector3f;
+import net.carriercommander.network.model.PlayerData;
 
 /**
  * Carrier Commander Global Constants
@@ -54,6 +55,7 @@ public interface Constants {
 	String WALRUS = "walrus";
 	String MANTA = "manta";
 	String MISSILE = "missile";
+	String PROJECTILE = "projectile";
 
 	// input mappings
 	String INPUT_LEFT = "left";
@@ -72,6 +74,9 @@ public interface Constants {
 	int MAP_SCENE_FACTOR = 100; // by how much the map coordinates are multiplied for the scene graph
 
 	Vector3f LIGHT_DIRECTION = new Vector3f(-4.9236743f, -1.27054665f, 5.896916f);
+
+	int NUM_WALRUS = 4;
+	int NUM_MANTA = 4;
 
 	enum GameType {strategy, action, network}
 }

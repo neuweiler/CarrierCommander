@@ -11,6 +11,7 @@ import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.shape.Cylinder;
+import net.carriercommander.Constants;
 import net.carriercommander.control.ProjectileControl;
 
 public class Projectile extends GameItem {
@@ -21,15 +22,14 @@ public class Projectile extends GameItem {
 	public Projectile(String name, AssetManager assetManager, PhysicsSpace physicsSpace, Quaternion rotation) {
 		super(name);
 
-		initMaterial(assetManager);
-		attachChild(loadModel(name));
+		attachChild(loadModel(assetManager));
 
 		CollisionShape collisionShape = createCollisionShape();
 
 		createProjectileControl(physicsSpace, collisionShape, rotation);
 	}
 
-	private void initMaterial(AssetManager assetManager) {
+	private static void initMaterial(AssetManager assetManager) {
 		if (material != null)
 			return;
 
@@ -38,8 +38,9 @@ public class Projectile extends GameItem {
 		material.setColor("GlowColor", ColorRGBA.Yellow.mult(20));
 	}
 
-	public static Spatial loadModel(String name) {
-		Geometry model = new Geometry(name, cylinder);
+	public static Spatial loadModel(AssetManager assetManager) {
+		initMaterial(assetManager);
+		Geometry model = new Geometry(Constants.PROJECTILE + System.currentTimeMillis(), cylinder);
 		model.setMaterial(material);
 		return model;
 	}

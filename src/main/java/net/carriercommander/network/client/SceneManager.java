@@ -5,19 +5,17 @@ import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.objects.PhysicsRigidBody;
 import com.jme3.math.Vector3f;
-import net.carriercommander.Constants;
+import com.jme3.scene.Spatial;
 import net.carriercommander.Player;
 import net.carriercommander.control.BaseControl;
-import net.carriercommander.objects.Carrier;
-import net.carriercommander.objects.GameItem;
-import net.carriercommander.objects.Manta;
-import net.carriercommander.objects.Walrus;
 import net.carriercommander.network.model.GameItemData;
-import net.carriercommander.network.model.PlayerData;
+import net.carriercommander.network.model.ItemType;
+import net.carriercommander.objects.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -28,127 +26,138 @@ public class SceneManager {
 
 	private final Map<Integer, Player> players = new HashMap<>();
 	private final SimpleApplication app;
-	private int myId;
+	private int myPlayerId;
 
 	public SceneManager(SimpleApplication app) {
-		this.myId = -1;
+		this.myPlayerId = -1;
 		this.app = app;
+	}
+
+	public Player addPlayer(int id) {
+		if (myPlayerId == id) {
+			return null;
+		}
+		logger.info("adding new player {}", id);
+		Player player = new Player(id);
+		players.put(id, player);
+
+		return player;
 	}
 
 	/**
 	 * Remove a remote player's objects from the scene
+	 *
 	 * @param id of the player
 	 */
 	public void removePlayer(int id) {
+		if (myPlayerId == id) {
+			return;
+		}
 		if (players.containsKey(id)) {
 			Player player = players.get(id);
 			app.enqueue(() -> {
-				app.getRootNode().detachChild(player.getCarrier());
 				BulletAppState bulletAppState = app.getStateManager().getState(BulletAppState.class);
-				bulletAppState.getPhysicsSpace().remove(player.getCarrier());
-
-				//TODO remove walrus and mantas too
+				player.getItems().forEach(gameItem -> {
+					app.getRootNode().detachChild(gameItem);
+					bulletAppState.getPhysicsSpace().remove(gameItem);
+				});
 			});
 
 			players.remove(id);
 		}
 	}
 
-	public void updatePlayers(Map<Integer, PlayerData> players) {
-		players.forEach(this::updatePlayer);
-	}
-
-	private void updatePlayer(int id, PlayerData data) {
-		if (myId == id) {
+	public void updatePlayer(int playerId, List<GameItemData> data) {
+		if (myPlayerId == playerId) {
 			return;
 		}
+		Player player = players.get(playerId);
+		if (player == null) {
+			logger.info("received data from new remote player {}", playerId);
+			player = addPlayer(playerId);
+		}
 
-		final Player player = (players.containsKey(id) ? players.get(id) : addPlayer(id));
-		app.enqueue(() -> {
-			updateItem(player.getCarrier(), data.getCarrier());
-			for (int index = 0; index < PlayerData.NUM_MANTA; index++) {
-				updateItem(player.getManta().get(index), data.getManta(index));
+		Player finalPlayer = player;
+		app.enqueue(() -> data.forEach(gameItemData -> updatePlayer(finalPlayer, gameItemData)));
+	}
+
+	private void updatePlayer(Player player, GameItemData gameItemData) {
+		String itemName = player.getId() + "_" + gameItemData.getId();
+		GameItem gameItem = player.getItem(itemName);
+		if (gameItem == null) {
+			gameItem = createItem(itemName, gameItemData.getType());
+			if (gameItem == null) {
+				return;
 			}
-			for (int index = 0; index < PlayerData.NUM_WALRUS; index++) {
-				updateItem(player.getWalrus().get(index), data.getWalrus(index));
-			}
-		});
+			player.addItem(gameItem);
+		}
+		updateItem(gameItem, gameItemData);
+	}
+
+	private GameItem createItem(String itemName, ItemType type) {
+		switch (type) {
+			case carrier:
+				return createGameItem(itemName,
+						Carrier.loadModel(app.getAssetManager()),
+						createControl(Carrier.createCollisionShape(), Carrier.MASS));
+			case manta:
+				return createGameItem(itemName,
+						Manta.loadModel(app.getAssetManager()),
+						createControl(Manta.createCollisionShape(), Manta.MASS));
+			case walrus:
+				return createGameItem(itemName,
+						Walrus.loadModel(app.getAssetManager()),
+						createControl(Walrus.createCollisionShape(), Walrus.MASS));
+			case missile:
+				return createGameItem(itemName,
+						Missile.loadModel(app.getAssetManager()),
+						createControl(Missile.createCollisionShape(), Missile.MASS));
+			case projectile:
+				return createGameItem(itemName,
+						Projectile.loadModel(app.getAssetManager()),
+						createControl(Projectile.createCollisionShape(), Projectile.MASS));
+		}
+		logger.error("cannot create remote game item {}", type);
+		return null;
 	}
 
 	private void updateItem(GameItem item, GameItemData gameItemData) {
 		PhysicsRigidBody control = item.getControl();
 		if (control != null && gameItemData != null) {
-			control.setPhysicsLocation(gameItemData.getLocation());
-			control.setPhysicsRotation(gameItemData.getRotation());
-			control.setLinearVelocity(gameItemData.getVelocity());
+			if (gameItemData.isDestroy()) {
+				BulletAppState bulletAppState = app.getStateManager().getState(BulletAppState.class);
+				app.getRootNode().detachChild(item);
+				bulletAppState.getPhysicsSpace().remove(item);
+			} else {
+				control.setPhysicsLocation(gameItemData.getLocation());
+				control.setPhysicsRotation(gameItemData.getRotation());
+				control.setLinearVelocity(gameItemData.getVelocity());
+			}
 		}
 	}
 
-	private Player addPlayer(int id) {
-		logger.info("adding new player {}", id);
-		Player player = new Player(id);
-		players.put(id, player);
-
-		player.setCarrier(createRemoteCarrier(id));
-		for (int i = 0; i < PlayerData.NUM_MANTA; i++) {
-			player.getManta().put(i, createRemoteManta(id, i));
-		}
-		for (int i = 0; i < PlayerData.NUM_WALRUS; i++) {
-			player.getWalrus().put(i, createRemoteWalrus(id, i));
-		}
-		return player;
-	}
-
-	private GameItem createRemoteCarrier(int id) {
-		GameItem carrier = new GameItem(Constants.CARRIER + "_" + id);
-		carrier.attachChild(Carrier.loadModel(app.getAssetManager()));
-		BaseControl carrierControl = createControl(Carrier.createCollisionShape(), Carrier.MASS);
-		carrier.addControl(carrierControl);
+	private GameItem createGameItem(String itemName, Spatial spatial, BaseControl control) {
+		GameItem item = new GameItem(itemName);
+		item.attachChild(spatial);
+		item.addControl(control);
 
 		app.enqueue(() -> {
-			app.getRootNode().attachChild(carrier);
+			app.getRootNode().attachChild(item);
 			BulletAppState bulletAppState = app.getStateManager().getState(BulletAppState.class);
-			bulletAppState.getPhysicsSpace().addAll(carrier);
+			bulletAppState.getPhysicsSpace().addAll(item);
 		});
-		return carrier;
-	}
 
-	private GameItem createRemoteManta(int playerId, int id) {
-		GameItem manta = new GameItem(Constants.MANTA + "_" + playerId + "_" + id);
-		manta.attachChild(Manta.loadModel(app.getAssetManager()));
-		BaseControl control = createControl(Manta.createCollisionShape(), Manta.MASS);
-		manta.addControl(control);
-
-		app.enqueue(() -> {
-			app.getRootNode().attachChild(manta);
-			BulletAppState bulletAppState = app.getStateManager().getState(BulletAppState.class);
-			bulletAppState.getPhysicsSpace().addAll(manta);
-		});
-		return manta;
-	}
-
-	private GameItem createRemoteWalrus(int playerId, int id) {
-		GameItem walrus = new GameItem(Constants.WALRUS + "_" + playerId + "_" + id);
-		walrus.attachChild(Walrus.loadModel(app.getAssetManager()));
-		BaseControl control = createControl(Walrus.createCollisionShape(), Walrus.MASS);
-		walrus.addControl(control);
-
-		app.enqueue(() -> {
-			app.getRootNode().attachChild(walrus);
-			BulletAppState bulletAppState = app.getStateManager().getState(BulletAppState.class);
-			bulletAppState.getPhysicsSpace().addAll(walrus);
-		});
-		return walrus;
+		return item;
 	}
 
 	private BaseControl createControl(CollisionShape collisionShape, float mass) {
 		BaseControl control = new BaseControl(collisionShape, mass);
-		control.setKinematicSpatial(false);
+		control.setKinematicSpatial(true);
 		control.setGravity(Vector3f.ZERO);
 		return control;
 	}
 
-	public void setMyId(int myId) {
-		this.myId = myId;
+	public void setMyPlayerId(int myPlayerId) {
+		this.myPlayerId = myPlayerId;
 	}
 }

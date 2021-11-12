@@ -1,17 +1,9 @@
 package net.carriercommander;
 
-import com.jme3.bullet.control.RigidBodyControl;
-import com.jme3.scene.Node;
-import net.carriercommander.control.BaseControl;
-import net.carriercommander.network.model.PlayerData;
-import net.carriercommander.objects.Carrier;
 import net.carriercommander.objects.GameItem;
-import net.carriercommander.objects.Manta;
-import net.carriercommander.objects.Walrus;
 
-import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -19,9 +11,7 @@ import java.util.Map;
  */
 public class Player {
 	private final int id;
-	private GameItem carrier;
-	private final Map<Integer, GameItem> walrus = new HashMap<>(PlayerData.NUM_WALRUS);
-	private final Map<Integer, GameItem> manta = new HashMap<>(PlayerData.NUM_MANTA);
+	private final Map<String, GameItem> items = new HashMap<>();
 
 	public Player(int id) {
 		this.id = id;
@@ -31,20 +21,20 @@ public class Player {
 		return id;
 	}
 
-	public GameItem getCarrier() {
-		return carrier;
+	public void addItem(GameItem gameItem) {
+		items.put(gameItem.getName(), gameItem);
 	}
 
-	public void setCarrier(GameItem carrier) {
-		this.carrier = carrier;
+	public void removeItem(GameItem gameItem) {
+		items.remove(gameItem);
 	}
 
-	public Map<Integer, GameItem> getWalrus() {
-		return walrus;
+	public GameItem getItem(String name) {
+		return items.get(name);
 	}
 
-	public Map<Integer, GameItem> getManta() {
-		return manta;
+	public Collection<GameItem> getItems() {
+		return items.values();
 	}
 
 }

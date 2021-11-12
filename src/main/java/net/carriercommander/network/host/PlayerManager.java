@@ -1,30 +1,31 @@
 package net.carriercommander.network.host;
 
-import net.carriercommander.network.model.PlayerData;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import com.jme3.network.Server;
+import net.carriercommander.network.messages.MessagePlayerAdded;
+import net.carriercommander.network.messages.MessagePlayerRemoved;
+import net.carriercommander.network.messages.MessagePlayerUpdate;
 
 public class PlayerManager {
-	private final List<PlayerManagerListener> listeners = new ArrayList<>();
-	private final Map<Integer, PlayerData> players = new HashMap<>();
+	private final Server server;
 
-	public void addPlayer(PlayerData playerData) {
-		players.put(playerData.getId(), playerData);
-		listeners.forEach(l -> l.playerDataChanged(players));
+	public PlayerManager(Server server) {
+		this.server = server;
 	}
 
-	public void removePlayer(int id) {
-		players.remove(id);
+	public void addPlayer(int playerId) {
+		server.broadcast(new MessagePlayerAdded(playerId));
 	}
 
-	public void addListener(PlayerManagerListener playerManagerListener) {
-		listeners.add(playerManagerListener);
+	public void removePlayer(int playerId) {
+		server.broadcast(new MessagePlayerRemoved(playerId));
 	}
 
-	public Map<Integer, PlayerData> getPlayers() {
-		return players;
+	public void updatePlayer(int playerId, MessagePlayerUpdate messagePlayerUpdate) {
+		messagePlayerUpdate.setPlayerId(playerId); // make sure one player cannot update other player's items
+
+		//TODO add some validations
+
+		server.broadcast(messagePlayerUpdate);
 	}
+
 }

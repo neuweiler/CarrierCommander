@@ -2,10 +2,7 @@ package net.carriercommander.network.host;
 
 import com.jme3.app.Application;
 import com.jme3.math.Vector3f;
-import com.jme3.network.ConnectionListener;
-import com.jme3.network.HostedConnection;
-import com.jme3.network.Network;
-import com.jme3.network.Server;
+import com.jme3.network.*;
 import com.simsilica.lemur.ActionButton;
 import com.simsilica.lemur.CallMethodAction;
 import com.simsilica.lemur.Container;
@@ -24,6 +21,7 @@ public class StateNetworkHost extends WindowState implements ConnectionListener 
 	private final Logger logger = LoggerFactory.getLogger(StateNetworkHost.class);
 	private PlayerManager playerManager;
 	private Server server;
+	private PlayerMessageListener messageListener;
 
 	private final int port;
 
@@ -34,15 +32,13 @@ public class StateNetworkHost extends WindowState implements ConnectionListener 
 	@Override
 	protected void initialize(Application app) {
 		getApplication().setPauseOnLostFocus(false);
-		playerManager = new PlayerManager();
 		try {
 			server = Network.createServer(Constants.GAME_NAME, Constants.GAME_VERSION, port, port);
 			server.addConnectionListener(this);
 
-			ClientUpdater updater = new ClientUpdater(server);
-			playerManager.addListener(updater);
-
-			server.addMessageListener(new PlayerDataListener(playerManager));
+			playerManager = new PlayerManager(server);
+			messageListener = new PlayerMessageListener(playerManager);
+			server.addMessageListener(messageListener);
 			server.start();
 
 			logger.info("Server started...");
@@ -74,19 +70,23 @@ public class StateNetworkHost extends WindowState implements ConnectionListener 
 	protected void cleanup(Application app) {
 		getApplication().setPauseOnLostFocus(true);
 		if (server != null) {
+			server.removeConnectionListener(this);
+			server.removeMessageListener(messageListener);
 			server.close();
+			server = null;
 		}
 	}
 
 	@Override
-	public void connectionAdded(Server server, HostedConnection hostedConnection) {
-		logger.info("client {} connected to host", hostedConnection.getId());
+	public void connectionAdded(Server server, HostedConnection connection) {
+		logger.info("client {} connected to host", connection.getId());
+		playerManager.addPlayer(connection.getId());
 	}
 
 	@Override
-	public void connectionRemoved(Server server, HostedConnection hostedConnection) {
-		logger.info("client {} disconnected from host", hostedConnection.getId());
-		playerManager.removePlayer(hostedConnection.getId());
+	public void connectionRemoved(Server server, HostedConnection connection) {
+		logger.info("client {} disconnected from host", connection.getId());
+		playerManager.removePlayer(connection.getId());
 	}
 
 	private void joinGame() {

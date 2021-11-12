@@ -81,40 +81,30 @@ public class StateLoadGame extends WindowState {
 	private void load() {
 		switch (loadPart) {
 			case 0:
-/*				if (gameType == Constants.GameType.network) {
-					setProgress(0.0f, "connecting to server");
-					connectToServer();
-				}
-*/				break;
-			case 1:
-				setProgress(0.1f, "activate physics");
-				activatePhysics();
-				break;
-			case 2:
-				setProgress(0.3f, "creating terrain");
+				setProgress(0.2f, "creating terrain");
 				getStateManager().attach(stateTerrain);
 				break;
-			case 3:
-				setProgress(0.4f, "creating sky");
+			case 1:
+				setProgress(0.3f, "creating sky");
 				getStateManager().attach(stateSky);
 				break;
-			case 4:
+			case 2:
 				setProgress(0.4f, "creating lights");
 				getStateManager().attach(stateLights);
 				break;
-			case 5:
+			case 3:
 				setProgress(0.5f, "creating water");
 				getStateManager().attach(stateWater);
 				break;
-			case 6:
+			case 4:
 				setProgress(0.6f, "adding post process filter");
 				getStateManager().attach(stateViewFilter);
 				break;
-			case 7:
+			case 5:
 				setProgress(0.7f, "creating objects");
 				getStateManager().attach(statePlayer);
 				break;
-			case 8:
+			case 6:
 				setProgress(1.0f, "finished");
 				getStateManager().attach(stateMainControls);
 				getStateManager().detach(this);
@@ -128,21 +118,6 @@ public class StateLoadGame extends WindowState {
 		progressBar.setProgressPercent(progress);
 		progressBar.setMessage(Math.round(progress * 100) + "%");
 		statusText.setText(text);
-	}
-
-	private void activatePhysics() {
-		BulletAppState physicsState = new BulletAppState();
-		physicsState.setThreadingType(Constants.DEBUG ? BulletAppState.ThreadingType.SEQUENTIAL : BulletAppState.ThreadingType.PARALLEL);
-//		physicsState.setBroadphaseType(BroadphaseType.SIMPLE);
-
-		physicsState.setDebugEnabled(Constants.DEBUG);
-		if (Constants.DEBUG) {
-			physicsState.setDebugAxisLength(1f);
-			physicsState.setDebugAxisLineWidth(3f);
-		}
-
-		getStateManager().attach(physicsState);
-		physicsState.getPhysicsSpace().setMaxSubSteps(0); // prevent stutter and sudden stops in forward motion
 	}
 
 	private void configureCamera() {

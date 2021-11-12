@@ -10,7 +10,7 @@ import net.carriercommander.ui.hud.widgets.ToggleImageButton;
 import net.carriercommander.ui.hud.widgets.Window;
 
 public class StateWalrusNavigation extends NavigationState {
-	private int lastSelectedWalrus = 0;
+	private int lastSelectedWalrus = 1;
 	private ToggleImageButton buttonCanon, buttonMissile, buttonPod, buttonAutoPilot, buttonRearView,
 			buttonLink, buttonRadar;
 
@@ -78,19 +78,19 @@ public class StateWalrusNavigation extends NavigationState {
 	}
 
 	private void walrus1() {
-		selectWalrus(0);
-	}
-
-	private void walrus2() {
 		selectWalrus(1);
 	}
 
-	private void walrus3() {
+	private void walrus2() {
 		selectWalrus(2);
 	}
 
-	private void walrus4() {
+	private void walrus3() {
 		selectWalrus(3);
+	}
+
+	private void walrus4() {
+		selectWalrus(4);
 	}
 
 	private void weaponCanon() {

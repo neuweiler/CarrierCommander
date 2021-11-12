@@ -32,6 +32,7 @@
 package net.carriercommander;
 
 import com.jme3.app.SimpleApplication;
+import com.jme3.bullet.BulletAppState;
 import com.jme3.system.AppSettings;
 import com.simsilica.lemur.GuiGlobals;
 import com.simsilica.lemur.OptionPanelState;
@@ -97,12 +98,28 @@ public class CarrierCommander extends SimpleApplication {
 		setDisplayFps(Constants.DEBUG);
 		setDisplayStatView(Constants.DEBUG);
 		createUI();
+		activatePhysics();
 	}
 
 	private void createUI() {
 		GuiGlobals.initialize(this);
 		BaseStyles.loadStyleResources("Interface/styles.groovy");
 		GuiGlobals.getInstance().getStyles().setDefaultStyle("cc");
+	}
+
+	private void activatePhysics() {
+		BulletAppState physicsState = new BulletAppState();
+		physicsState.setThreadingType(Constants.DEBUG ? BulletAppState.ThreadingType.SEQUENTIAL : BulletAppState.ThreadingType.PARALLEL);
+//		physicsState.setBroadphaseType(BroadphaseType.SIMPLE);
+
+		physicsState.setDebugEnabled(Constants.DEBUG);
+		if (Constants.DEBUG) {
+			physicsState.setDebugAxisLength(1f);
+			physicsState.setDebugAxisLineWidth(3f);
+		}
+
+		getStateManager().attach(physicsState);
+		physicsState.getPhysicsSpace().setMaxSubSteps(0); // prevent stutter and sudden stops in forward motion
 	}
 
 }

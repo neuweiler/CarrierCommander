@@ -14,7 +14,7 @@ public class TextMessage extends AbstractMessage {
 
 	private String message;
 
-	public TextMessage() {
+	private TextMessage() {
 	}
 
 	public TextMessage(String message) {

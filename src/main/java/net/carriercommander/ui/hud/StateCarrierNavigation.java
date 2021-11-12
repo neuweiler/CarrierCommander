@@ -60,7 +60,7 @@ public class StateCarrierNavigation extends NavigationState {
 	@Override
 	protected void onEnable() {
 		super.onEnable();
-		setActiveUnit(getState(StatePlayer.class).setActiveUnit(StatePlayer.PlayerUnit.CARRIER, 0));
+		setActiveUnit(getState(StatePlayer.class).setActiveUnit(StatePlayer.PlayerUnit.CARRIER, 1));
 	}
 
 	@Override

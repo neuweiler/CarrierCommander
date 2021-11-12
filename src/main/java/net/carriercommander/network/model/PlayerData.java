@@ -1,50 +1,84 @@
 package net.carriercommander.network.model;
 
-import com.jme3.network.serializing.Serializable;
+import com.jme3.bullet.objects.PhysicsRigidBody;
+import com.jme3.math.Quaternion;
+import com.jme3.math.Vector3f;
+import net.carriercommander.objects.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Object holding all the necessary data required to transfer between client and server.
  *
  * @author Michael Neuweiler
  */
-@Serializable
 public class PlayerData {
 
-	public static final int NUM_WALRUS = 4;
-	public static final int NUM_MANTA = 4;
-
 	private int id;
-	private final CarrierData carrier;
-	private final List<WalrusData> walrus;
-	private final List<MantaData> manta;
+	private final Map<String, GameItemData> itemDatas = new HashMap<>(); //TODO check if thread safety is needed here
+	private final Vector3f tmpVec = new Vector3f(); // temporary storage to reduce object creation/destruction
+	private final Quaternion tmpQuat = new Quaternion(); // temporary storage to reduce object creation/destruction
+	private final List<GameItemData> updatedItems = new ArrayList<>();
 
 	public PlayerData() {
-		carrier = new CarrierData();
+	}
 
-		walrus = new ArrayList<>(NUM_WALRUS);
-		for (int i = 0; i < NUM_WALRUS; i++) {
-			walrus.add(new WalrusData());
+	public List<GameItemData> getModifiedItems() {
+		return updatedItems;
+	}
+
+	public void clear() {
+		updatedItems.stream().filter(GameItemData::isDestroy)
+				.forEach(itemDatas::remove);
+
+		updatedItems.clear();
+	}
+
+	public void update(GameItem item) {
+		GameItemData itemData = itemDatas.get(item.getName());
+		if (itemData == null) {
+			itemData = new GameItemData(item.getName(), getItemType(item));
+			itemDatas.put(item.getName(), itemData);
 		}
 
-		manta = new ArrayList<>(NUM_MANTA);
-		for (int i = 0; i < NUM_MANTA; i++) {
-			manta.add(new MantaData());
+		PhysicsRigidBody control = item.getControl();
+		boolean add = itemData.setLocation(control.getPhysicsLocation(tmpVec));
+		add |= itemData.setRotation(control.getPhysicsRotation(tmpQuat));
+		add |= itemData.setVelocity(control.getLinearVelocity(tmpVec));
+		if (add) {
+			updatedItems.add(itemData);
 		}
 	}
 
-	public boolean isModified() {
-		return carrier.isModified() |
-				walrus.stream().anyMatch(WalrusData::isModified) |
-				manta.stream().anyMatch(MantaData::isModified);
+	private ItemType getItemType(GameItem item) {
+		if (item instanceof Carrier) {
+			return ItemType.carrier;
+		}
+		if (item instanceof Walrus) {
+			return ItemType.walrus;
+		}
+		if (item instanceof Manta) {
+			return ItemType.manta;
+		}
+		if (item instanceof Missile) {
+			return ItemType.missile;
+		}
+		if (item instanceof Projectile) {
+			return ItemType.projectile;
+		}
+		return ItemType.unknown;
 	}
 
-	public void clean() {
-		carrier.clean();
-		walrus.forEach(WalrusData::clean);
-		manta.forEach(MantaData::clean);
+	public void remove(GameItem item) {
+		GameItemData itemData = itemDatas.get(item.getName());
+		if (itemData == null) {
+			return;
+		}
+		itemData.setDestroy(true);
+		updatedItems.add(itemData);
 	}
 
 	public int getId() {
@@ -55,25 +89,4 @@ public class PlayerData {
 		this.id = id;
 	}
 
-	public CarrierData getCarrier() {
-		return carrier;
-	}
-
-	public WalrusData getWalrus(int index) {
-		return walrus.get(index);
-	}
-
-	public MantaData getManta(int index) {
-		return manta.get(index);
-	}
-
-	@Override
-	public String toString() {
-		return "PlayerData{" +
-				"id=" + id +
-				", carrier=" + carrier +
-				", walrus=" + walrus +
-				", manta=" + manta +
-				'}';
-	}
 }

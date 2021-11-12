@@ -12,7 +12,7 @@ import net.carriercommander.ui.hud.widgets.*;
 public class StateMantaNavigation extends NavigationState {
 	private PaintedGauge altitudeGauge;
 	private QuadBackgroundComponent altitudeImage;
-	private int lastSelectedManta = 0;
+	private int lastSelectedManta = 1;
 	private ToggleImageButton buttonCanon, buttonMissile, buttonBomb, buttonAutoPilot,
 			buttonRearView, buttonRadar;
 
@@ -97,19 +97,19 @@ public class StateMantaNavigation extends NavigationState {
 	}
 
 	private void manta1() {
-		selectManta(0);
-	}
-
-	private void manta2() {
 		selectManta(1);
 	}
 
-	private void manta3() {
+	private void manta2() {
 		selectManta(2);
 	}
 
-	private void manta4() {
+	private void manta3() {
 		selectManta(3);
+	}
+
+	private void manta4() {
+		selectManta(4);
 	}
 
 	private void weaponCanon() {
