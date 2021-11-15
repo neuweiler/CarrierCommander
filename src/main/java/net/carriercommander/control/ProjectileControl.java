@@ -54,7 +54,7 @@ public class ProjectileControl extends PlayerControl {
 
 	public ProjectileControl(CollisionShape shape, float mass, Quaternion rotation) {
 		super(shape, mass);
-		velocity = rotation.mult(Vector3f.UNIT_Z).mult(200);
+		velocity = rotation.mult(Vector3f.UNIT_Z).mult(400);
 	}
 
 	@Override
@@ -77,7 +77,6 @@ public class ProjectileControl extends PlayerControl {
 		super.collision(event);
 		if (event.getObjectA() == this || event.getObjectB() == this) {
 			removeItem();
-//			player.removeItem((GameItem) getSpatial());
 		}
 	}
 }
