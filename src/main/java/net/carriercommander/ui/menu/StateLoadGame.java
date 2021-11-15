@@ -24,6 +24,11 @@ public class StateLoadGame extends WindowState {
 	private StateViewFilter stateViewFilter;
 	private StatePlayer statePlayer;
 	private StateMainControls stateMainControls;
+	private final Vector3f startPosition;
+
+	public StateLoadGame(Vector3f startPosition) {
+		this.startPosition = startPosition;
+	}
 
 	protected void initialize(Application app) {
 		window = new Container();
@@ -54,7 +59,7 @@ public class StateLoadGame extends WindowState {
 		stateLights =new StateLights();
 		stateWater = new StateWater();
 		stateViewFilter = new StateViewFilter();
-		statePlayer = new StatePlayer(camNode);
+		statePlayer = new StatePlayer(camNode, startPosition);
 		stateMainControls = new StateMainControls();
 	}
 

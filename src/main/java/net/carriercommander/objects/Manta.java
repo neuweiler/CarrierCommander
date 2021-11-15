@@ -62,7 +62,7 @@ public class Manta extends PlayerItem {
 		createCameraHooks();
 		CollisionShape collisionShape = createCollisionShape();
 
-		createPlaneControl(phsyicsState, collisionShape);
+		createPlaneControl(collisionShape);
 	}
 
 	public static Spatial loadModel(AssetManager assetManager) {
@@ -77,11 +77,10 @@ public class Manta extends PlayerItem {
 		return new BoxCollisionShape(new Vector3f(WIDTH, HEIGHT, LENGTH));
 	}
 
-	private void createPlaneControl(BulletAppState phsyicsState, CollisionShape collisionShape) {
+	private void createPlaneControl(CollisionShape collisionShape) {
 		PlaneControl control = new PlaneControl(collisionShape, MASS);
 		addControl(control);
 		control.setDamping(0.1f, 0.5f);
-		phsyicsState.getPhysicsSpace().add(control);
 	}
 
 	private void createCameraHooks() {

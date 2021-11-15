@@ -71,7 +71,7 @@ public class Carrier extends PlayerItem {
 		createCameraHooks();
 
 		CollisionShape collisionShape = createCollisionShape();
-		createShipControl(phsyicsState, collisionShape, water);
+		createShipControl(collisionShape, water);
 
 		createAudio(assetManager);
 	}
@@ -92,7 +92,7 @@ public class Carrier extends PlayerItem {
 		return comp;
 	}
 
-	private ShipControl createShipControl(BulletAppState phsyicsState, CollisionShape collisionShape, WaterFilter water) {
+	private ShipControl createShipControl(CollisionShape collisionShape, WaterFilter water) {
 		ShipControl shipControl = new ShipControl(collisionShape, MASS, water);
 
 		shipControl.setRudderPositionZ(LENGTH / 2);
@@ -104,7 +104,6 @@ public class Carrier extends PlayerItem {
 		shipControl.setFriction(0.5f);
 		shipControl.setDamping(0.2f, 0.3f);
 
-		phsyicsState.getPhysicsSpace().add(shipControl);
 		return shipControl;
 	}
 

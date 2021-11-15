@@ -10,6 +10,7 @@ import com.simsilica.lemur.Label;
 import com.simsilica.lemur.style.ElementId;
 import net.carriercommander.Constants;
 import net.carriercommander.network.client.StateNetworkClient;
+import net.carriercommander.network.messages.MessageInitPlayer;
 import net.carriercommander.ui.WindowState;
 import net.carriercommander.ui.menu.StateNetworkMenu;
 import org.slf4j.Logger;
@@ -81,6 +82,9 @@ public class StateNetworkHost extends WindowState implements ConnectionListener 
 	public void connectionAdded(Server server, HostedConnection connection) {
 		logger.info("client {} connected to host", connection.getId());
 		playerManager.addPlayer(connection.getId());
+
+		Vector3f startPosition = new Vector3f(300, 0, 1700 - connection.getId() * 300);
+		connection.send(new MessageInitPlayer(startPosition));
 	}
 
 	@Override

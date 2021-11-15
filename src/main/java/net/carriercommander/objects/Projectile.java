@@ -26,7 +26,7 @@ public class Projectile extends GameItem {
 
 		CollisionShape collisionShape = createCollisionShape();
 
-		createProjectileControl(physicsSpace, collisionShape, rotation);
+		createProjectileControl(collisionShape, rotation);
 	}
 
 	private static void initMaterial(AssetManager assetManager) {
@@ -49,9 +49,8 @@ public class Projectile extends GameItem {
 		return new BoxCollisionShape(new Vector3f(RADIUS, RADIUS, LENGTH));
 	}
 
-	private void createProjectileControl(PhysicsSpace physicsSpace, CollisionShape collisionShape, Quaternion rotation) {
+	private void createProjectileControl(CollisionShape collisionShape, Quaternion rotation) {
 		ProjectileControl control = new ProjectileControl(collisionShape, MASS, rotation);
 		addControl(control);
-		physicsSpace.add(control);
 	}
 }

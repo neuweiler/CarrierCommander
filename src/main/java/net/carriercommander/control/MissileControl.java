@@ -165,7 +165,6 @@ public class MissileControl extends BaseControl {
 						event.getLocalPointB(null));
 			}
 			removeItem();
-//			player.removeItem((GameItem) getSpatial());
 		}
 	}
 

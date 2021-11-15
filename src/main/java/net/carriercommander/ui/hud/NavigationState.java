@@ -13,6 +13,7 @@ import com.simsilica.lemur.Label;
 import com.simsilica.lemur.component.IconComponent;
 import com.simsilica.lemur.component.QuadBackgroundComponent;
 import net.carriercommander.Constants;
+import net.carriercommander.control.BaseControl;
 import net.carriercommander.control.PlayerControl;
 import net.carriercommander.objects.PlayerItem;
 import net.carriercommander.terrain.Island;
@@ -62,11 +63,13 @@ public abstract class NavigationState extends WindowState {
 				+ String.format("%.02f", activeUnit.getLocalTranslation().getX() / Constants.MAP_SCENE_FACTOR) + " "
 				+ String.format("%.02f", activeUnit.getLocalTranslation().getZ() / Constants.MAP_SCENE_FACTOR) +
 				"\nHeading: "
-				+ Math.round(FastMath.RAD_TO_DEG * angles[1]) + //TODO not correct heading yet
-				"\nIsland: " +
+				+ Math.round(FastMath.RAD_TO_DEG * angles[1]) //TODO not correct heading yet
+				+ "\nIsland: " +
 				(island.map(value -> value.getName() +
 								" (" + Math.round(value.getPosition().distance(activeUnit.getWorldTranslation()) / Constants.MAP_SCENE_FACTOR) + ")")
-						.orElse("-")));
+						.orElse("-"))
+				+ "\nStatus: " + Math.round(activeUnit.getControl(BaseControl.class).getHealth() * 100)
+		);
 	}
 
 	/**

@@ -101,9 +101,6 @@ public class StateNetworkClient extends AbstractState implements ClientStateList
 		playerData.setId(c.getId());
 		messagePlayerUpdate = new MessagePlayerUpdate();
 		sceneManager.setMyPlayerId(c.getId());
-		networkClient.send(new TextMessage("Hello Server! I'm ID" + c.getId()));
-
-		getStateManager().attach(new StateLoadGame());
 	}
 
 	@Override

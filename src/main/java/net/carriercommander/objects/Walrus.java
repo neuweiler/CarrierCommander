@@ -68,8 +68,8 @@ public class Walrus extends PlayerItem {
 		createCameraHooks();
 
 		CollisionShape collisionShape = createCollisionShape();
-		ShipControl shipControl = createShipControl(phsyicsState, collisionShape, water);
-		VehicleControl vehicleControl = createVehicleControl(phsyicsState, collisionShape);
+		ShipControl shipControl = createShipControl(collisionShape, water);
+		VehicleControl vehicleControl = createVehicleControl(collisionShape);
 		createAmphibiousControl(shipControl, vehicleControl, water);
 	}
 
@@ -89,7 +89,7 @@ public class Walrus extends PlayerItem {
 		return comp;
 	}
 
-	private ShipControl createShipControl(BulletAppState phsyicsState, CollisionShape collisionShape, WaterFilter water) {
+	private ShipControl createShipControl(CollisionShape collisionShape, WaterFilter water) {
 		ShipControl shipControl = new ShipControl(collisionShape, MASS, water);
 		shipControl.setRudderPositionZ(LENGTH / 2);
 		shipControl.setVerticalOffset(-2);
@@ -98,13 +98,12 @@ public class Walrus extends PlayerItem {
 		addControl(shipControl);
 
 		shipControl.setDamping(0.2f, 0.7f);
-		phsyicsState.getPhysicsSpace().add(shipControl);
 		shipControl.setEnabled(false); // we must enable vehicle first so the wheels get properly attached
 
 		return shipControl;
 	}
 
-	private VehicleControl createVehicleControl(BulletAppState phsyicsState, CollisionShape comp) {
+	private VehicleControl createVehicleControl(CollisionShape comp) {
 		float stiffness = 20.0f;
 		float compValue = 0.8f;
 		float dampValue = 0.9f;
@@ -156,7 +155,6 @@ public class Walrus extends PlayerItem {
 		Geometry wheelRearLeft2 = findGeom(this, "wheel_rearleft_2");
 		control.addWheel(wheelRearLeft2, new Vector3f(xOff, yOff, zOff4), direction, axle, restLength, radius, false);
 
-		phsyicsState.getPhysicsSpace().add(control);
 		return control;
 	}
 

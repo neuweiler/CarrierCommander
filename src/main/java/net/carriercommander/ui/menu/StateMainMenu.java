@@ -65,7 +65,7 @@ public class StateMainMenu extends WindowState {
 	}
 
 	public void startGame(Constants.GameType gameType) {
-		getStateManager().attach(new StateLoadGame());
+		getStateManager().attach(new StateLoadGame(new Vector3f(300, 0, 1700)));
 		setEnabled(false);
 	}
 

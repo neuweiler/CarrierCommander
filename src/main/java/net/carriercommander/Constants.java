@@ -32,7 +32,6 @@
 package net.carriercommander;
 
 import com.jme3.math.Vector3f;
-import net.carriercommander.network.model.PlayerData;
 
 /**
  * Carrier Commander Global Constants

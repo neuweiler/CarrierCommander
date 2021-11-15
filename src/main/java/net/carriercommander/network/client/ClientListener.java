@@ -3,6 +3,7 @@ package net.carriercommander.network.client;
 import com.jme3.network.Client;
 import com.jme3.network.Message;
 import com.jme3.network.MessageListener;
+import net.carriercommander.network.messages.MessageInitPlayer;
 import net.carriercommander.network.messages.MessagePlayerAdded;
 import net.carriercommander.network.messages.MessagePlayerRemoved;
 import net.carriercommander.network.messages.MessagePlayerUpdate;
@@ -30,6 +31,11 @@ public class ClientListener implements MessageListener<Client> {
 
 		if (message instanceof MessagePlayerRemoved) {
 			sceneManager.removePlayer(((MessagePlayerRemoved) message).getId());
+		}
+
+		if (message instanceof MessageInitPlayer) {
+			MessageInitPlayer messageInitPlayer = (MessageInitPlayer) message;
+			sceneManager.init(messageInitPlayer.getStartPosition());
 		}
 	}
 

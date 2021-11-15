@@ -58,7 +58,7 @@ public class Missile extends GameItem {
 		CollisionShape collisionShape = createCollisionShape();
 
 		ExplosionSmall explosion = new ExplosionSmall(assetManager, renderManager, rootNode);
-		createMissileControl(physicsSpace, collisionShape, target, explosion);
+		createMissileControl(collisionShape, target, explosion);
 	}
 
 	public static Spatial loadModel(AssetManager assetManager) {
@@ -69,10 +69,9 @@ public class Missile extends GameItem {
 		return new BoxCollisionShape(new Vector3f(WIDTH, HEIGHT, LENGTH));
 	}
 
-	private void createMissileControl(PhysicsSpace physicsSpace, CollisionShape collisionShape, Node target, ExplosionSmall explosion) {
+	private void createMissileControl(CollisionShape collisionShape, Node target, ExplosionSmall explosion) {
 		MissileControl control = new MissileControl(collisionShape, target, MASS, explosion);
 		addControl(control);
 		control.setDamping(0.7f, 0.7f);
-		physicsSpace.add(control);
 	}
 }

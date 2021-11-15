@@ -11,6 +11,7 @@ import net.carriercommander.control.BaseControl;
 import net.carriercommander.network.model.GameItemData;
 import net.carriercommander.network.model.ItemType;
 import net.carriercommander.objects.*;
+import net.carriercommander.ui.menu.StateLoadGame;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,7 +39,7 @@ public class SceneManager {
 			return null;
 		}
 		logger.info("adding new player {}", id);
-		Player player = new Player(id);
+		Player player = new Player(app, id);
 		players.put(id, player);
 
 		return player;
@@ -55,14 +56,7 @@ public class SceneManager {
 		}
 		if (players.containsKey(id)) {
 			Player player = players.get(id);
-			app.enqueue(() -> {
-				BulletAppState bulletAppState = app.getStateManager().getState(BulletAppState.class);
-				player.getItems().forEach(gameItem -> {
-					app.getRootNode().detachChild(gameItem);
-					bulletAppState.getPhysicsSpace().remove(gameItem);
-				});
-			});
-
+			app.enqueue(() -> player.getItems().forEach(player::removeItem));
 			players.remove(id);
 		}
 	}
@@ -140,13 +134,6 @@ public class SceneManager {
 		GameItem item = new GameItem(itemName);
 		item.attachChild(spatial);
 		item.addControl(control);
-
-		app.enqueue(() -> {
-			app.getRootNode().attachChild(item);
-			BulletAppState bulletAppState = app.getStateManager().getState(BulletAppState.class);
-			bulletAppState.getPhysicsSpace().addAll(item);
-		});
-
 		return item;
 	}
 
@@ -159,5 +146,9 @@ public class SceneManager {
 
 	public void setMyPlayerId(int myPlayerId) {
 		this.myPlayerId = myPlayerId;
+	}
+
+	public void init(Vector3f startPosition) {
+		app.getStateManager().attach(new StateLoadGame(startPosition));
 	}
 }

@@ -1,6 +1,7 @@
 package net.carriercommander;
 
 import com.jme3.app.Application;
+import com.jme3.app.SimpleApplication;
 import com.jme3.asset.AssetManager;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.control.VehicleControl;
@@ -37,10 +38,12 @@ public class StatePlayer extends AbstractState {
 
 	private boolean mouseGrabbed = false;
 	private PlayerItem activeUnit;
-	private final Player player = new Player(-1);
+	private Player player;
+	private final Vector3f startPosition;
 
-	public StatePlayer(CameraNode camNode) {
+	public StatePlayer(CameraNode camNode, Vector3f startPosition) {
 		this.camNode = camNode;
+		this.startPosition = startPosition;
 	}
 
 	@Override
@@ -49,6 +52,7 @@ public class StatePlayer extends AbstractState {
 		assetManager = app.getAssetManager();
 		water = getState(StateWater.class).getWater();
 		physicsState = getState(BulletAppState.class);
+		player = new Player((SimpleApplication) app, -1);
 
 		initPlayer();
 		initInput();
@@ -61,8 +65,6 @@ public class StatePlayer extends AbstractState {
 
 	@Override
 	protected void onEnable() {
-		activeUnit = (PlayerItem) getRootNode().getChild(Constants.CARRIER);
-		activeUnit.setCameraToFront();
 	}
 
 	@Override
@@ -81,53 +83,44 @@ public class StatePlayer extends AbstractState {
 
 	private void createCarrier() {
 		Carrier carrier = new Carrier(Constants.CARRIER, assetManager, physicsState, water, camNode);
-		carrier.getControl().setPhysicsLocation(new Vector3f(300, (water != null ? water.getWaterHeight() : 0), 1700));
+		carrier.getControl().setPhysicsLocation(startPosition);
 		player.addItem(carrier);
-		getRootNode().attachChild(carrier);
 	}
 
 	private void createWalrus() {
 		Walrus walrus = new Walrus(Constants.WALRUS + "_1", assetManager, physicsState, water, camNode);
-		walrus.getControl().setPhysicsLocation(new Vector3f(850, 5, 1700));
+		walrus.getControl().setPhysicsLocation(startPosition.add(300, 0, 0));
 		player.addItem(walrus);
-		getRootNode().attachChild(walrus);
 
 		walrus = new Walrus(Constants.WALRUS + "_2", assetManager, physicsState, water, camNode);
-		walrus.getControl().setPhysicsLocation(new Vector3f(550, 0, 1700));
+		walrus.getControl().setPhysicsLocation(startPosition.add(250, 0, 0));
 		player.addItem(walrus);
-		getRootNode().attachChild(walrus);
 
 		walrus = new Walrus(Constants.WALRUS + "_3", assetManager, physicsState, water, camNode);
-		walrus.getControl().setPhysicsLocation(new Vector3f(500, 0, 1700));
+		walrus.getControl().setPhysicsLocation(startPosition.add(200, 0, 0));
 		player.addItem(walrus);
-		getRootNode().attachChild(walrus);
 
 		walrus = new Walrus(Constants.WALRUS + "_4", assetManager, physicsState, water, camNode);
-		walrus.getControl().setPhysicsLocation(new Vector3f(450, 0, 1700));
+		walrus.getControl().setPhysicsLocation(startPosition.add(150, 0, 0));
 		player.addItem(walrus);
-		getRootNode().attachChild(walrus);
 	}
 
 	private void createManta() {
 		Manta manta = new Manta(Constants.MANTA + "_1", assetManager, physicsState, camNode);
-		manta.getControl().setPhysicsLocation(new Vector3f(850, (water != null ? water.getWaterHeight() : 0) + 15, 1700));
+		manta.getControl().setPhysicsLocation(startPosition.add(300, 20, -100));
 		player.addItem(manta);
-		getRootNode().attachChild(manta);
 
 		manta = new Manta(Constants.MANTA + "_2", assetManager, physicsState, camNode);
-		manta.getControl().setPhysicsLocation(new Vector3f(550, 20, 1600));
+		manta.getControl().setPhysicsLocation(startPosition.add(250, 20, -100));
 		player.addItem(manta);
-		getRootNode().attachChild(manta);
 
 		manta = new Manta(Constants.MANTA + "_3", assetManager, physicsState, camNode);
-		manta.getControl().setPhysicsLocation(new Vector3f(500, 20, 1600));
+		manta.getControl().setPhysicsLocation(startPosition.add(200, 20, -100));
 		player.addItem(manta);
-		getRootNode().attachChild(manta);
 
 		manta = new Manta(Constants.MANTA + "_4", assetManager, physicsState, camNode);
-		manta.getControl().setPhysicsLocation(new Vector3f(450, 20, 1600));
+		manta.getControl().setPhysicsLocation(startPosition.add(150, 20, -100));
 		player.addItem(manta);
-		getRootNode().attachChild(manta);
 	}
 
 	private void initInput() {
@@ -179,7 +172,7 @@ public class StatePlayer extends AbstractState {
 							}
 							break;
 					}
-					VehicleControl vehicleControl = activeUnit.getControl(VehicleControl.class);
+					VehicleControl vehicleControl = (activeUnit != null ? activeUnit.getControl(VehicleControl.class) : null);
 					if (vehicleControl != null) {
 						vehicleControl.steer(getActiveUnitControl().getRudder());
 						vehicleControl.accelerate(getActiveUnitControl().getThrottle() * vehicleControl.getMass());
@@ -283,7 +276,6 @@ public class StatePlayer extends AbstractState {
 		control.setPhysicsLocation(getActiveUnitControl().getPhysicsLocation().add(rotation.mult(Vector3f.UNIT_Z).mult(15)));
 		control.setPhysicsRotation(rotation);
 		player.addItem(projectile);
-		getRootNode().attachChild(projectile);
 	}
 
 	private void fireMissile() {
@@ -297,7 +289,6 @@ public class StatePlayer extends AbstractState {
 			missileControl.setPhysicsLocation(location);
 			missileControl.setPhysicsRotation(getActiveUnitControl().getPhysicsRotation().mult(new Quaternion().fromAngles(0, FastMath.PI, 0)));
 			player.addItem(missile);
-			getRootNode().attachChild(missile);
 		}
 	}
 
