@@ -7,13 +7,16 @@ import net.carriercommander.network.messages.MessageInitPlayer;
 import net.carriercommander.network.messages.MessagePlayerAdded;
 import net.carriercommander.network.messages.MessagePlayerRemoved;
 import net.carriercommander.network.messages.MessagePlayerUpdate;
+import net.carriercommander.network.model.PlayerData;
 
 public class ClientListener implements MessageListener<Client> {
 
 	private final SceneManager sceneManager;
+	private final PlayerData playerData;
 
-	public ClientListener(SceneManager sceneManager) {
+	public ClientListener(SceneManager sceneManager, PlayerData playerData) {
 		this.sceneManager = sceneManager;
+		this.playerData = playerData;
 	}
 
 	@Override
@@ -26,6 +29,7 @@ public class ClientListener implements MessageListener<Client> {
 
 		if (message instanceof MessagePlayerAdded) {
 			sceneManager.addPlayer(((MessagePlayerAdded) message).getId());
+			source.send(new MessagePlayerUpdate(playerData.getId(), playerData.getAllItems()));
 			return;
 		}
 

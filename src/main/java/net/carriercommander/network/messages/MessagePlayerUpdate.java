@@ -17,7 +17,12 @@ public class MessagePlayerUpdate extends AbstractMessage {
 	private List<GameItemData> itemData;
 	private int playerId;
 
-	public MessagePlayerUpdate() {
+	private MessagePlayerUpdate() { // required for Serializer
+	}
+
+	public MessagePlayerUpdate(int playerId, List<GameItemData> itemData) {
+		this.itemData = itemData;
+		this.playerId = playerId;
 	}
 
 	public void setItemData(List<GameItemData> itemData) {
@@ -30,9 +35,5 @@ public class MessagePlayerUpdate extends AbstractMessage {
 
 	public int getPlayerId() {
 		return playerId;
-	}
-
-	public void setPlayerId(int playerId) {
-		this.playerId = playerId;
 	}
 }

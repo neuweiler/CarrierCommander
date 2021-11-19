@@ -5,10 +5,7 @@ import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import net.carriercommander.objects.*;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Object holding all the necessary data required to transfer between client and server.
@@ -24,6 +21,10 @@ public class PlayerData {
 	private final List<GameItemData> updatedItems = new ArrayList<>();
 
 	public PlayerData() {
+	}
+
+	public List<GameItemData> getAllItems() {
+		return new ArrayList<>(itemDatas.values());
 	}
 
 	public List<GameItemData> getModifiedItems() {

@@ -9,11 +9,9 @@ import net.carriercommander.Constants;
 import net.carriercommander.Player;
 import net.carriercommander.StatePlayer;
 import net.carriercommander.network.messages.MessagePlayerUpdate;
-import net.carriercommander.network.messages.TextMessage;
 import net.carriercommander.network.model.GameItemData;
 import net.carriercommander.network.model.PlayerData;
 import net.carriercommander.ui.AbstractState;
-import net.carriercommander.ui.menu.StateLoadGame;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -57,7 +55,7 @@ public class StateNetworkClient extends AbstractState implements ClientStateList
 			logger.info("connecting to {}, port {}", host, port);
 			networkClient = Network.connectToServer(Constants.GAME_NAME, Constants.GAME_VERSION, host, port, port);
 			logger.info("connected !");
-			networkClient.addMessageListener(new ClientListener(sceneManager));
+			networkClient.addMessageListener(new ClientListener(sceneManager, playerData));
 			networkClient.addClientStateListener(this);
 			networkClient.start();
 		} catch (IOException e) {
@@ -99,7 +97,7 @@ public class StateNetworkClient extends AbstractState implements ClientStateList
 	@Override
 	public void clientConnected(Client c) {
 		playerData.setId(c.getId());
-		messagePlayerUpdate = new MessagePlayerUpdate();
+		messagePlayerUpdate = new MessagePlayerUpdate(c.getId(), null);
 		sceneManager.setMyPlayerId(c.getId());
 	}
 
