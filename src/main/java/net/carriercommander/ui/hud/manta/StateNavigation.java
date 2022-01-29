@@ -1,4 +1,4 @@
-package net.carriercommander.ui.hud;
+package net.carriercommander.ui.hud.manta;
 
 import com.jme3.app.Application;
 import com.simsilica.lemur.Container;
@@ -7,9 +7,10 @@ import com.simsilica.lemur.component.IconComponent;
 import com.simsilica.lemur.component.QuadBackgroundComponent;
 import net.carriercommander.StatePlayer;
 import net.carriercommander.control.PlayerControl;
+import net.carriercommander.ui.hud.NavigationState;
 import net.carriercommander.ui.hud.widgets.*;
 
-public class StateMantaNavigation extends NavigationState {
+public class StateNavigation extends NavigationState {
 	private PaintedGauge altitudeGauge;
 	private QuadBackgroundComponent altitudeImage;
 	private int lastSelectedManta = 1;
@@ -23,19 +24,19 @@ public class StateMantaNavigation extends NavigationState {
 		Container base = window.addChild(new Container(), 1);
 		Container container = base.addChild(new Container());
 		ToggleGroup group = container.addChild(new ToggleGroup(), 0);
-		group.addChild(new ToggleImageButton("/Interface/hud/manta_small.png", this, "manta1"), 0).setSelected(true);
-		group.addChild(new ToggleImageButton("/Interface/hud/manta_small.png", this, "manta2"), 1);
-		group.addChild(new ToggleImageButton("/Interface/hud/manta_small.png", this, "manta3"), 2);
-		group.addChild(new ToggleImageButton("/Interface/hud/manta_small.png", this, "manta4"), 3);
-		container.addChild(new ImageButton("/Interface/hud/centerRudder.png", this, "centerRudder"), 1);
+		group.addChild(new ToggleImageButton("/Interface/hud/manta/manta_small.png", this, "manta1"), 0).setSelected(true);
+		group.addChild(new ToggleImageButton("/Interface/hud/manta/manta_small.png", this, "manta2"), 1);
+		group.addChild(new ToggleImageButton("/Interface/hud/manta/manta_small.png", this, "manta3"), 2);
+		group.addChild(new ToggleImageButton("/Interface/hud/manta/manta_small.png", this, "manta4"), 3);
+		container.addChild(new ImageButton("/Interface/hud/shared/centerRudder.png", this, "centerRudder"), 1);
 
 		container = base.addChild(new Container());
 		group = container.addChild(new ToggleGroup(), 0);
-		buttonCanon = group.addChild(new ToggleImageButton("/Interface/hud/laser_small.png", this, "weaponCanon"), 0);
-		buttonMissile = group.addChild(new ToggleImageButton("/Interface/hud/missile.png", this, "weaponMissile"), 1);
-		buttonBomb = group.addChild(new ToggleImageButton("/Interface/hud/pod.png", this, "weaponBomb"), 2);
-		buttonAutoPilot = container.addChild(new ToggleImageButton("/Interface/hud/autoPilot.png", this, "autoPilot"), 1);
-		container.addChild(new ImageButton("/Interface/hud/level.png", this, "levelOff"), 2);
+		buttonCanon = group.addChild(new ToggleImageButton("/Interface/hud/shared/laser_small.png", this, "weaponCanon"), 0);
+		buttonMissile = group.addChild(new ToggleImageButton("/Interface/hud/shared/missile.png", this, "weaponMissile"), 1);
+		buttonBomb = group.addChild(new ToggleImageButton("/Interface/hud/shared/pod.png", this, "weaponBomb"), 2);
+		buttonAutoPilot = container.addChild(new ToggleImageButton("/Interface/hud/shared/autoPilot.png", this, "autoPilot"), 1);
+		container.addChild(new ImageButton("/Interface/hud/manta/level.png", this, "levelOff"), 2);
 		window.addChild(createInfoBox(), 2);
 
 		window.addChild(createAltitudeGauge(), 3);
@@ -43,8 +44,8 @@ public class StateMantaNavigation extends NavigationState {
 		window.addChild(createThrottleGauge(), 5);
 
 		container = window.addChild(new Container(), 6);
-		buttonRadar = container.addChild(new ToggleImageButton("/Interface/hud/radar_small.png", this, "radar"));
-		buttonRearView = container.addChild(new ToggleImageButton("/Interface/hud/rearView.png", this, "rearView"));
+		buttonRadar = container.addChild(new ToggleImageButton("/Interface/hud/shared/radar_small.png", this, "radar"));
+		buttonRearView = container.addChild(new ToggleImageButton("/Interface/hud/shared/rearView.png", this, "rearView"));
 
 		window.addChild(createRadar(), 7);
 	}
@@ -68,7 +69,7 @@ public class StateMantaNavigation extends NavigationState {
 
 	private Label createAltitudeGauge() {
 		Label label = new Label("");
-		label.setIcon(new IconComponent("/Interface/hud/altitude.png"));
+		label.setIcon(new IconComponent("/Interface/hud/manta/altitude.png"));
 		altitudeGauge = new PaintedGauge();
 		altitudeImage = new QuadBackgroundComponent();
 		label.setBackground(altitudeImage);

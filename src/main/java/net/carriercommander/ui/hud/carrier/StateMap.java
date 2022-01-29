@@ -1,10 +1,10 @@
-package net.carriercommander.ui.hud;
+package net.carriercommander.ui.hud.carrier;
 
 import com.jme3.app.Application;
 import net.carriercommander.ui.WindowState;
 import net.carriercommander.ui.hud.widgets.Window;
 
-public class StateWeaponsMissile extends WindowState {
+public class StateMap extends WindowState {
 	@Override
 	protected void initialize(Application app) {
 		window = new Window(0, 100);

@@ -1,4 +1,4 @@
-package net.carriercommander.ui.hud;
+package net.carriercommander.ui.hud.carrier;
 
 import com.jme3.app.Application;
 import com.simsilica.lemur.Container;
@@ -8,12 +8,13 @@ import com.simsilica.lemur.component.QuadBackgroundComponent;
 import com.simsilica.lemur.style.ElementId;
 import net.carriercommander.StatePlayer;
 import net.carriercommander.control.PlayerControl;
+import net.carriercommander.ui.hud.NavigationState;
 import net.carriercommander.ui.hud.widgets.ImageButton;
 import net.carriercommander.ui.hud.widgets.PaintedGauge;
 import net.carriercommander.ui.hud.widgets.ToggleImageButton;
 import net.carriercommander.ui.hud.widgets.Window;
 
-public class StateCarrierNavigation extends NavigationState {
+public class StateNavigation extends NavigationState {
 	private PaintedGauge depthGauge;
 	private QuadBackgroundComponent depthImage;
 
@@ -24,14 +25,14 @@ public class StateCarrierNavigation extends NavigationState {
 		window.addChild(createRadar(), 1);
 
 		Container container = window.addChild(new Container(), 2);
-		container.addChild(new ImageButton("/Interface/hud/zoomIn.png", this, "zoomIn"));
-		container.addChild(new ImageButton("/Interface/hud/zoomOut.png", this, "zoomOut"));
+		container.addChild(new ImageButton("/Interface/hud/carrier/zoomIn.png", this, "zoomIn"));
+		container.addChild(new ImageButton("/Interface/hud/carrier/zoomOut.png", this, "zoomOut"));
 
-		window.addChild(new ImageButton("/Interface/hud/stop.png", this, "stop"), 3);
+		window.addChild(new ImageButton("/Interface/hud/carrier/stop.png", this, "stop"), 3);
 
 		container = window.addChild(new Container(), 4);
-		container.addChild(new ImageButton("/Interface/hud/centerRudder.png", this, "centerRudder"));
-		container.addChild(new ToggleImageButton("/Interface/hud/autoPilot.png", this, "autoPilot"));
+		container.addChild(new ImageButton("/Interface/hud/shared/centerRudder.png", this, "centerRudder"));
+		container.addChild(new ToggleImageButton("/Interface/hud/shared/autoPilot.png", this, "autoPilot"));
 
 		window.addChild(createInfoBox(), 5);
 
@@ -40,8 +41,8 @@ public class StateCarrierNavigation extends NavigationState {
 		window.addChild(createThrottleGauge(), 8);
 
 		container = window.addChild(new Container(), 9);
-		container.addChild(new ImageButton("/Interface/hud/speedIncrease.png", this, "increaseSpeed", new ElementId("repeatButton")));
-		container.addChild(new ImageButton("/Interface/hud/speedDecrease.png", this, "decreaseSpeed", new ElementId("repeatButton")));
+		container.addChild(new ImageButton("/Interface/hud/carrier/speedIncrease.png", this, "increaseSpeed", new ElementId("repeatButton")));
+		container.addChild(new ImageButton("/Interface/hud/carrier/speedDecrease.png", this, "decreaseSpeed", new ElementId("repeatButton")));
 	}
 
 	@Override
@@ -50,7 +51,7 @@ public class StateCarrierNavigation extends NavigationState {
 
 	private Label createDepthGauge() {
 		Label label = new Label("");
-		label.setIcon(new IconComponent("/Interface/hud/depth.png"));
+		label.setIcon(new IconComponent("/Interface/hud/carrier/depth.png"));
 		depthGauge = new PaintedGauge();
 		depthImage = new QuadBackgroundComponent();
 		label.setBackground(depthImage);

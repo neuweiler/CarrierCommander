@@ -102,7 +102,7 @@ public abstract class NavigationState extends WindowState {
 	 */
 	protected Label createRadar() {
 		Label label = new Label("");
-		label.setIcon(new IconComponent("/Interface/hud/radarScreen.png"));
+		label.setIcon(new IconComponent("/Interface/hud/shared/radarScreen.png"));
 		radar = new PaintedRadar(86, 90, 42, 46, 39, getRootNode());
 		radarImage = new QuadBackgroundComponent();
 		label.setBackground(radarImage);
@@ -130,7 +130,7 @@ public abstract class NavigationState extends WindowState {
 	 */
 	protected Label createFuelGauge() {
 		Label label = new Label("");
-		label.setIcon(new IconComponent("/Interface/hud/fuel.png"));
+		label.setIcon(new IconComponent("/Interface/hud/shared/fuel.png"));
 		fuelGauge = new PaintedGauge();
 		fuelImage = new QuadBackgroundComponent();
 		label.setBackground(fuelImage);
@@ -144,7 +144,7 @@ public abstract class NavigationState extends WindowState {
 	 */
 	protected Label createThrottleGauge() {
 		Label label = new Label("");
-		label.setIcon(new IconComponent("/Interface/hud/speed.png"));
+		label.setIcon(new IconComponent("/Interface/hud/shared/speed.png"));
 		throttleGauge = new PaintedGauge();
 		throttleImage = new QuadBackgroundComponent();
 		label.setBackground(throttleImage);
