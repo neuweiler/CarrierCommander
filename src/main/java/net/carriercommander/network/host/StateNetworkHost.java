@@ -2,7 +2,11 @@ package net.carriercommander.network.host;
 
 import com.jme3.app.Application;
 import com.jme3.math.Vector3f;
-import com.jme3.network.*;
+import com.jme3.network.ConnectionListener;
+import com.jme3.network.HostedConnection;
+import com.jme3.network.Network;
+import com.jme3.network.Server;
+import com.jme3.network.serializing.Serializer;
 import com.simsilica.lemur.ActionButton;
 import com.simsilica.lemur.CallMethodAction;
 import com.simsilica.lemur.Container;
@@ -42,11 +46,12 @@ public class StateNetworkHost extends WindowState implements ConnectionListener 
 			server.addMessageListener(messageListener);
 			server.start();
 
-			logger.info("Server started...");
+			logger.info("Server started on port {}...", port);
 
 			window = new Container();
 
 			window.addChild(new Label("Hosting Control", new ElementId("title")));
+			window.addChild(new Label("Server running on port " + port));
 			window.addChild(new ActionButton(new CallMethodAction("Join Game", this, "joinGame")));
 			window.addChild(new ActionButton(new CallMethodAction("Stop Hosting", this, "stopHosting")));
 
@@ -75,7 +80,9 @@ public class StateNetworkHost extends WindowState implements ConnectionListener 
 			server.removeMessageListener(messageListener);
 			server.close();
 			server = null;
+			Serializer.initialize();
 		}
+		logger.info("Server stopped...");
 	}
 
 	@Override
@@ -102,5 +109,4 @@ public class StateNetworkHost extends WindowState implements ConnectionListener 
 		getStateManager().getState(StateNetworkMenu.class).setEnabled(true);
 		getStateManager().detach(this);
 	}
-
 }

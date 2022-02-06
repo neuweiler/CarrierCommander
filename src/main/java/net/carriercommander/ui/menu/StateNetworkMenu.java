@@ -12,6 +12,9 @@ import net.carriercommander.ui.WindowState;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
+import java.net.ServerSocket;
+
 public class StateNetworkMenu extends WindowState {
 	private static final Logger logger = LoggerFactory.getLogger(StateNetworkMenu.class);
 
@@ -46,7 +49,7 @@ public class StateNetworkMenu extends WindowState {
 
 		props = hostPanel.addChild(new Container(new SpringGridLayout(Axis.Y, Axis.X, FillMode.None, FillMode.Last)));
 		props.addChild(new Label("Port:"));
-		hostPort = props.addChild(new TextField(String.valueOf(Constants.DEFAULT_PORT)), 1);
+		hostPort = props.addChild(new TextField(String.valueOf(findPort(Constants.DEFAULT_PORT))), 1);
 
 		hostPanel.addChild(new ActionButton(new CallMethodAction("Begin Hosting", this, "host")));
 
@@ -87,6 +90,24 @@ public class StateNetworkMenu extends WindowState {
 
 	protected void showError( String title, String error ) {
 		getState(OptionPanelState.class).show(title, error);
+	}
+
+	private int findPort(int port) {
+		try (ServerSocket socket = new ServerSocket(port)) {
+			socket.close();
+			return port;
+		} catch (IOException e) {
+			logger.warn("unable to open port {}, trying to find other free port", port);
+		}
+
+		try (ServerSocket socket = new ServerSocket(0)) {
+			port = socket.getLocalPort();
+			socket.close();
+			return port;
+		} catch (IOException e) {
+			logger.error("unable to find free port", e);
+		}
+		return 0;
 	}
 
 	private void connect() {

@@ -5,6 +5,8 @@ import com.jme3.app.SimpleApplication;
 import com.jme3.network.Client;
 import com.jme3.network.ClientStateListener;
 import com.jme3.network.Network;
+import com.simsilica.lemur.CallMethodAction;
+import com.simsilica.lemur.OptionPanelState;
 import net.carriercommander.Constants;
 import net.carriercommander.Player;
 import net.carriercommander.StatePlayer;
@@ -12,6 +14,7 @@ import net.carriercommander.network.messages.MessagePlayerUpdate;
 import net.carriercommander.network.model.GameItemData;
 import net.carriercommander.network.model.PlayerData;
 import net.carriercommander.ui.AbstractState;
+import net.carriercommander.ui.menu.StateNetworkMenu;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -59,9 +62,11 @@ public class StateNetworkClient extends AbstractState implements ClientStateList
 			networkClient.addClientStateListener(this);
 			networkClient.start();
 		} catch (IOException e) {
-			logger.error("unable to connect", e);
+			logger.error("unable to connect to {}:{}", host, port);
+			getState(OptionPanelState.class).show("Error", "Unable to connect to " + host + ":" + port +
+					"\nReason: " + e.getMessage(),
+					new CallMethodAction("Ok", this, "reopenNetworkMenu"));
 		}
-
 	}
 
 	@Override
@@ -105,7 +110,11 @@ public class StateNetworkClient extends AbstractState implements ClientStateList
 	public void clientDisconnected(Client arg0, DisconnectInfo arg1) {
 		logger.warn("client disconnected!");
 		//TODO either re-connect or stop game
+		reopenNetworkMenu();
 		messagePlayerUpdate = null;
 	}
 
+	private void reopenNetworkMenu() {
+		getStateManager().getState(StateNetworkMenu.class).setEnabled(true);
+	}
 }
