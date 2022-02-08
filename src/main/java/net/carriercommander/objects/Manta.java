@@ -42,6 +42,7 @@ import com.jme3.scene.CameraNode;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import net.carriercommander.control.PlaneControl;
+import net.carriercommander.objects.resources.ResourceManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -51,15 +52,16 @@ import org.slf4j.LoggerFactory;
  * @author Michael Neuweiler
  */
 public class Manta extends PlayerItem {
-	private static final Logger logger = LoggerFactory.getLogger(PlayerItem.class);
+	private static final Logger logger = LoggerFactory.getLogger(Manta.class);
 	public static final float WIDTH = 4.8f, LENGTH = 5.4f, HEIGHT = 2f, MASS = 5f;
+	private ResourceManager resourceManager = new ResourceManager();
 
 	public Manta(String name, AssetManager assetManager, BulletAppState phsyicsState, CameraNode camNode) {
 		super(name, camNode);
 
 		attachChild(loadModel(assetManager));
 
-		createCameraHooks();
+		createCameraHooks(new Vector3f(0, 2.5f, -2), new Vector3f(0, 2.5f, -2));
 		CollisionShape collisionShape = createCollisionShape();
 
 		createPlaneControl(collisionShape);
@@ -83,14 +85,7 @@ public class Manta extends PlayerItem {
 		control.setDamping(0.1f, 0.5f);
 	}
 
-	private void createCameraHooks() {
-		camHookFront = new Node();
-		attachChild(camHookFront);
-		camHookFront.setLocalTranslation(0, 2.5f, -2);
-
-		camHookRear = new Node();
-		attachChild(camHookRear);
-		camHookRear.setLocalTranslation(0, 2.5f, -2);
-		camHookRear.rotate(0, FastMath.PI, 0);
+	public ResourceManager getResourceManager() {
+		return resourceManager;
 	}
 }

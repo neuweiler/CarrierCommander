@@ -5,6 +5,7 @@ import com.jme3.bullet.BulletAppState;
 import com.jme3.scene.Node;
 import net.carriercommander.control.BaseControl;
 import net.carriercommander.objects.GameItem;
+import net.carriercommander.objects.resources.ResourceManager;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -17,6 +18,7 @@ public class Player {
 	private final int id;
 	private final Map<String, GameItem> items = new HashMap<>();
 	private final SimpleApplication app;
+	private ResourceManager resourceManager = new ResourceManager(); // stockpile items
 
 	public Player(SimpleApplication app, int id) {
 		this.app = app;
@@ -64,4 +66,7 @@ public class Player {
 		return items.values();
 	}
 
+	public ResourceManager getResourceManager() {
+		return resourceManager;
+	}
 }

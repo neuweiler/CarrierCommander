@@ -55,6 +55,7 @@ public interface Constants {
 	String MANTA = "manta";
 	String MISSILE = "missile";
 	String PROJECTILE = "projectile";
+	String SUPPLY_DRONE = "supplyDrone";
 
 	// input mappings
 	String INPUT_LEFT = "left";
@@ -71,6 +72,7 @@ public interface Constants {
 	String INPUT_MOUSE_Y_NEGATIVE = "mouse-y";
 
 	int MAP_SCENE_FACTOR = 100; // by how much the map coordinates are multiplied for the scene graph
+	float MENU_MAGNIFICATION = 1.3f;
 
 	Vector3f LIGHT_DIRECTION = new Vector3f(-4.9236743f, -1.27054665f, 5.896916f);
 

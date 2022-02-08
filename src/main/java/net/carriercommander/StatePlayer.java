@@ -21,14 +21,19 @@ import net.carriercommander.control.MissileControl;
 import net.carriercommander.control.PlayerControl;
 import net.carriercommander.control.ProjectileControl;
 import net.carriercommander.objects.*;
+import net.carriercommander.objects.Manta;
+import net.carriercommander.objects.Walrus;
+import net.carriercommander.objects.resources.*;
 import net.carriercommander.ui.AbstractState;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Arrays;
+
 public class StatePlayer extends AbstractState {
 	Logger logger = LoggerFactory.getLogger(StatePlayer.class);
 
-	public enum PlayerUnit { CARRIER, WALRUS, MANTA }
+	public enum PlayerUnit {CARRIER, WALRUS, MANTA}
 
 	private final CameraNode camNode;
 	private WaterFilter water;
@@ -75,6 +80,7 @@ public class StatePlayer extends AbstractState {
 		createCarrier();
 		createWalrus();
 		createManta();
+		createSupplyDrone();
 	}
 
 	public Player getPlayer() {
@@ -85,22 +91,43 @@ public class StatePlayer extends AbstractState {
 		Carrier carrier = new Carrier(Constants.CARRIER, assetManager, physicsState, water, camNode);
 		carrier.getControl().setPhysicsLocation(startPosition);
 		player.addItem(carrier);
+		addCarrierResources(carrier);
+	}
+
+	private void addCarrierResources(Carrier carrier) {
+		carrier.getResourceManager().addContainer(Arrays.asList(
+				new ResourceContainer(new AssassinMissile(), 32),
+				new ResourceContainer(new HarbingerMissile(), 24),
+				new ResourceContainer(new HammerHeadMissile(), 4),
+				new ResourceContainer(new FragmenationBomb(), 8),
+				new ResourceContainer(new QuasarLaser(), 4),
+				new ResourceContainer(new PulseLaser(), 4),
+				new ResourceContainer(new DefenseDrone(), 12),
+				new ResourceContainer(new CommPod(), 2),
+				new ResourceContainer(new VirusBomb(), 8),
+				new ResourceContainer(new CommandCenter(), 4),
+				new ResourceContainer(new DecoyFlare(), 10),
+				new ResourceContainer(new ReconDrone(), 4),
+				new ResourceContainer(new FuelPod(), 4),
+				new ResourceContainer(new net.carriercommander.objects.resources.Manta(), 4),
+				new ResourceContainer(new net.carriercommander.objects.resources.Walrus(), 4)
+		));
 	}
 
 	private void createWalrus() {
-		Walrus walrus = new Walrus(Constants.WALRUS + "_1", assetManager, physicsState, water, camNode);
+		Walrus walrus = new Walrus(Constants.WALRUS + "_1", assetManager, water, camNode);
 		walrus.getControl().setPhysicsLocation(startPosition.add(300, 0, 0));
 		player.addItem(walrus);
 
-		walrus = new Walrus(Constants.WALRUS + "_2", assetManager, physicsState, water, camNode);
+		walrus = new Walrus(Constants.WALRUS + "_2", assetManager, water, camNode);
 		walrus.getControl().setPhysicsLocation(startPosition.add(250, 0, 0));
 		player.addItem(walrus);
 
-		walrus = new Walrus(Constants.WALRUS + "_3", assetManager, physicsState, water, camNode);
+		walrus = new Walrus(Constants.WALRUS + "_3", assetManager, water, camNode);
 		walrus.getControl().setPhysicsLocation(startPosition.add(200, 0, 0));
 		player.addItem(walrus);
 
-		walrus = new Walrus(Constants.WALRUS + "_4", assetManager, physicsState, water, camNode);
+		walrus = new Walrus(Constants.WALRUS + "_4", assetManager, water, camNode);
 		walrus.getControl().setPhysicsLocation(startPosition.add(150, 0, 0));
 		player.addItem(walrus);
 	}
@@ -121,6 +148,12 @@ public class StatePlayer extends AbstractState {
 		manta = new Manta(Constants.MANTA + "_4", assetManager, physicsState, camNode);
 		manta.getControl().setPhysicsLocation(startPosition.add(150, 20, -100));
 		player.addItem(manta);
+	}
+
+	private void createSupplyDrone() {
+		SupplyDrone supplyDrone = new SupplyDrone(Constants.SUPPLY_DRONE, assetManager, water, camNode);
+		supplyDrone.getControl().setPhysicsLocation(startPosition.add(150, 20, -150));
+		player.addItem(supplyDrone);
 	}
 
 	private void initInput() {

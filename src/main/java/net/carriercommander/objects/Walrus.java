@@ -48,6 +48,7 @@ import com.jme3.scene.Spatial;
 import com.jme3.water.WaterFilter;
 import net.carriercommander.control.AmphibiousControl;
 import net.carriercommander.control.ShipControl;
+import net.carriercommander.objects.resources.ResourceManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -59,13 +60,14 @@ import org.slf4j.LoggerFactory;
 public class Walrus extends PlayerItem {
 	private static final Logger logger = LoggerFactory.getLogger(Walrus.class);
 	public static final float WIDTH = 3.8f, LENGTH = 8.5f, HEIGHT = 2.2f, MASS = 5f;
+	private ResourceManager resourceManager = new ResourceManager();
 
-	public Walrus(String name, AssetManager assetManager, BulletAppState phsyicsState, WaterFilter water, CameraNode camNode) {
+	public Walrus(String name, AssetManager assetManager, WaterFilter water, CameraNode camNode) {
 		super(name, camNode);
 
 		Spatial model = loadModel(assetManager);
 		attachChild(model);
-		createCameraHooks();
+		createCameraHooks(new Vector3f(0, 7, -.7f), new Vector3f(0, 7, -.7f));
 
 		CollisionShape collisionShape = createCollisionShape();
 		ShipControl shipControl = createShipControl(collisionShape, water);
@@ -90,16 +92,9 @@ public class Walrus extends PlayerItem {
 	}
 
 	private ShipControl createShipControl(CollisionShape collisionShape, WaterFilter water) {
-		ShipControl shipControl = new ShipControl(collisionShape, MASS, water);
-		shipControl.setRudderPositionZ(LENGTH / 2);
-		shipControl.setVerticalOffset(-2);
-		shipControl.setDimensions(WIDTH, LENGTH, HEIGHT);
-
-		addControl(shipControl);
-
+		ShipControl shipControl = super.createShipControl(collisionShape, water, LENGTH, WIDTH, HEIGHT, MASS, -2);
 		shipControl.setDamping(0.2f, 0.7f);
 		shipControl.setEnabled(false); // we must enable vehicle first so the wheels get properly attached
-
 		return shipControl;
 	}
 
@@ -184,20 +179,12 @@ public class Walrus extends PlayerItem {
 		return null;
 	}
 
-	private void createCameraHooks() {
-		camHookFront = new Node();
-		attachChild(camHookFront);
-		camHookFront.setLocalTranslation(0, 7, -.7f);
-
-		camHookRear = new Node();
-		attachChild(camHookRear);
-		camHookRear.setLocalTranslation(0, 7, -.7f);
-		camHookRear.rotate(0, FastMath.PI, 0);
-	}
-
 	@Override
 	public PhysicsRigidBody getControl() {
 		return (getControl(ShipControl.class).isEnabled() ? getControl(ShipControl.class) : getControl(VehicleControl.class));
 	}
 
+	public ResourceManager getResourceManager() {
+		return resourceManager;
+	}
 }

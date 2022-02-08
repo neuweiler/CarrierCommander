@@ -7,6 +7,11 @@ import com.simsilica.lemur.CallMethodAction;
 import com.simsilica.lemur.Container;
 import com.simsilica.lemur.Label;
 import com.simsilica.lemur.component.IconComponent;
+import net.carriercommander.Constants;
+import net.carriercommander.Player;
+import net.carriercommander.objects.Carrier;
+import net.carriercommander.objects.SupplyDrone;
+import net.carriercommander.objects.resources.ResourceContainer;
 import net.carriercommander.objects.resources.ResourceItem;
 import net.carriercommander.ui.WindowState;
 import net.carriercommander.ui.hud.widgets.ToggleButton;
@@ -14,16 +19,28 @@ import net.carriercommander.ui.hud.widgets.ToggleGroup;
 import net.carriercommander.ui.hud.widgets.Window;
 
 public class StateResourceEditor extends WindowState {
-	private ResourceItem item = null;
+	private ResourceContainer container;
+	private ResourceItem item;
+	private Class itemClass;
+	private Player player;
+	private Carrier carrier;
+	private SupplyDrone supplyDrone;
+
 	private Label bluePrint;
 	private Label name, description;
 	private Label amountCarrier, amountStock, amountDrone;
 	private Label maxProduction;
 	private ToggleButton prioLow, prioMedium, prioHigh;
 
+	public StateResourceEditor(Player player) {
+		this.player = player;
+		this.carrier = (Carrier) player.getItem(Constants.CARRIER);
+		this.supplyDrone = (SupplyDrone) player.getItem(Constants.SUPPLY_DRONE);
+	}
+
 	@Override
 	protected void initialize(Application app) {
-		window = new Window(500, 400);
+		window = new Window();
 
 		Container infoPanel = window.addChild(new Container());
 		bluePrint = new Label(null);
@@ -32,8 +49,8 @@ public class StateResourceEditor extends WindowState {
 		name = new Label(null);
 		textPanel.addChild(name);
 		description = new Label(null);
-		description.setMaxWidth(400);
-		description.setPreferredSize(new Vector3f(400, 50, 0));
+		description.setMaxWidth(300);
+		description.setPreferredSize(new Vector3f(300, 50, 0));
 		textPanel.addChild(description);
 
 		Container productionPanel = window.addChild((new Container()));
@@ -62,6 +79,8 @@ public class StateResourceEditor extends WindowState {
 		transferPanel.addChild(amountDrone, 6);
 		transferPanel.addChild(new ActionButton(new CallMethodAction("+", this, "addItem")), 7);
 		transferPanel.addChild(new ActionButton(new CallMethodAction("-", this, "removeItem")), 8);
+
+		scaleAndPosition(app.getCamera(), .6f, .65f);
 	}
 
 	@Override
@@ -69,17 +88,19 @@ public class StateResourceEditor extends WindowState {
 	}
 
 	private void addItem() {
-		if (item.getAmountStock() > 0 && item.getAmountCarrier() < item.getMaxAmountCarrier()) {
-			item.setAmountStock(item.getAmountStock() - 1);
-			item.setAmountDrone(item.getAmountDrone() + 1);
+		if (player.getResourceManager().add(itemClass, -1)) {
+			if (!supplyDrone.getResourceManager().add(itemClass, 1)) {
+				player.getResourceManager().add(itemClass, 1);
+			}
 		}
 		updateItem();
 	}
 
 	private void removeItem() {
-		if (item.getAmountDrone() > 0) {
-			item.setAmountStock(item.getAmountStock() + 1);
-			item.setAmountDrone(item.getAmountDrone() - 1);
+		if (supplyDrone.getResourceManager().add(itemClass, -1)) {
+			if (!player.getResourceManager().add(itemClass, 1)) {
+				supplyDrone.getResourceManager().add(itemClass, 1);
+			}
 		}
 		updateItem();
 	}
@@ -111,16 +132,18 @@ public class StateResourceEditor extends WindowState {
 	}
 
 	private void updateItem() {
-		amountCarrier.setText(Integer.toString(item.getAmountCarrier()));
-		amountStock.setText(Integer.toString(item.getAmountStock()));
-		amountDrone.setText(Integer.toString(item.getAmountDrone()));
+		amountCarrier.setText(Integer.toString(container.getAmount()));
+		amountStock.setText(Integer.toString(player.getResourceManager().getAmount(itemClass)));
+		amountDrone.setText(Integer.toString(supplyDrone.getResourceManager().getAmount(itemClass)));
 		maxProduction.setText(Integer.toString(item.getMaxProduction()));
 	}
 
-	public void setResourceItem(ResourceItem item) {
-		this.item = item;
+	public void selectResource(int index) {
+		this.container = carrier.getResourceManager().getContainer(index);
+		item = container.getItem();
+		itemClass = item.getClass();
 
-		bluePrint.setIcon(new IconComponent("/Interface/hud/carrier/resources/" + item.getIconFileName())); // TODO use blueprint
+		bluePrint.setIcon(new IconComponent("/Interface/hud/carrier/resources/" + item.getBluePrintFileName()));
 		name.setText(item.getName());
 		description.setText(item.getDescription());
 		prioLow.setSelected(false);

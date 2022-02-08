@@ -32,13 +32,21 @@
 package net.carriercommander.objects;
 
 import com.jme3.audio.AudioNode;
+import com.jme3.bullet.collision.shapes.CollisionShape;
+import com.jme3.math.FastMath;
+import com.jme3.math.Vector3f;
 import com.jme3.scene.CameraNode;
 import com.jme3.scene.Node;
+import com.jme3.water.WaterFilter;
+import net.carriercommander.control.ShipControl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Michael Neuweiler
  */
 public abstract class PlayerItem extends GameItem {
+	private static final Logger logger = LoggerFactory.getLogger(PlayerItem.class);
 
 	protected CameraNode camNode;
 	private boolean rearView = false;
@@ -49,6 +57,28 @@ public abstract class PlayerItem extends GameItem {
 	PlayerItem(String name, CameraNode camNode) {
 		super(name);
 		this.camNode = camNode;
+	}
+
+	protected ShipControl createShipControl(CollisionShape collisionShape, WaterFilter water, float length, float width, float height, float mass, float veritcalOffset) {
+		ShipControl shipControl = new ShipControl(collisionShape, mass, water);
+
+		shipControl.setRudderPositionZ(length / 2);
+		shipControl.setVerticalOffset(veritcalOffset);
+		shipControl.setDimensions(width, length, height);
+
+		addControl(shipControl);
+		return shipControl;
+	}
+
+	protected void createCameraHooks(Vector3f positionFront, Vector3f positionRear) {
+		camHookFront = new Node();
+		attachChild(camHookFront);
+		camHookFront.setLocalTranslation(positionFront);
+
+		camHookRear = new Node();
+		attachChild(camHookRear);
+		camHookRear.setLocalTranslation(positionRear);
+		camHookRear.rotate(0, FastMath.PI, 0);
 	}
 
 	protected void setCameraNode(Node node) {

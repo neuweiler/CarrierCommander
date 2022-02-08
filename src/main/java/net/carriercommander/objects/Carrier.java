@@ -38,15 +38,16 @@ import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.collision.shapes.BoxCollisionShape;
 import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.collision.shapes.CompoundCollisionShape;
-import com.jme3.renderer.queue.RenderQueue.ShadowMode;
 import com.jme3.math.FastMath;
 import com.jme3.math.Vector3f;
+import com.jme3.renderer.queue.RenderQueue.ShadowMode;
 import com.jme3.scene.CameraNode;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.water.WaterFilter;
 import net.carriercommander.control.PlayerControl;
 import net.carriercommander.control.ShipControl;
+import net.carriercommander.objects.resources.ResourceManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -63,6 +64,7 @@ public class Carrier extends PlayerItem {
 	private Node camHookLaser = null;
 	private Node camHookFlareLauncher = null;
 	private Node camHookSurfaceMissile = null;
+	private ResourceManager resourceManager = new ResourceManager();
 
 	public Carrier(String name, AssetManager assetManager, BulletAppState phsyicsState, WaterFilter water, CameraNode camNode) {
 		super(name, camNode);
@@ -93,17 +95,9 @@ public class Carrier extends PlayerItem {
 	}
 
 	private ShipControl createShipControl(CollisionShape collisionShape, WaterFilter water) {
-		ShipControl shipControl = new ShipControl(collisionShape, MASS, water);
-
-		shipControl.setRudderPositionZ(LENGTH / 2);
-		shipControl.setVerticalOffset(3.7f);
-		shipControl.setDimensions(WIDTH, LENGTH, HEIGHT);
-
-		addControl(shipControl);
-
+		ShipControl shipControl = super.createShipControl(collisionShape, water, LENGTH, WIDTH, HEIGHT, MASS, 3.7f);
 		shipControl.setFriction(0.5f);
 		shipControl.setDamping(0.2f, 0.3f);
-
 		return shipControl;
 	}
 
@@ -120,15 +114,7 @@ public class Carrier extends PlayerItem {
 	}
 
 	private void createCameraHooks() {
-		camHookFront = new Node();
-		attachChild(camHookFront);
-//		camHookFront.setLocalTranslation(0, 40, 0);
-		camHookFront.setLocalTranslation(0, 40, -280);
-
-		camHookRear = new Node();
-		attachChild(camHookRear);
-		camHookRear.setLocalTranslation(-40, 10, 170);
-		camHookRear.rotate(0, FastMath.DEG_TO_RAD * 310, 0);
+		super.createCameraHooks(new Vector3f(0, 40, -280), new Vector3f(-40, 10, 170));
 
 		camHookFlightDeck = new Node();
 		attachChild(camHookFlightDeck);
@@ -171,5 +157,9 @@ public class Carrier extends PlayerItem {
 			audio.setPitch(1.0f + FastMath.abs(getControl(PlayerControl.class).getThrottle()) / 1.5f);
 			audio.setVolume(0.25f + FastMath.abs(getControl(PlayerControl.class).getThrottle()));
 		}
+	}
+
+	public ResourceManager getResourceManager() {
+		return resourceManager;
 	}
 }
