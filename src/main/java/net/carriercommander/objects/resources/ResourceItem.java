@@ -5,16 +5,40 @@ public abstract class ResourceItem {
 
 	private PRIORITY priority = PRIORITY.LOW;
 	private int maxProduction = 0;
-	private int amountStock = 10; //TODO set to 0
-	private int amountCarrier = 5; //TODO set to 0
-	private int amountDrone = 0;
 
-	public abstract String getName();
-	public abstract String getDescription();
-	public abstract String getIconFileName();
-	public abstract String getBluePrintFileName();
-	public abstract int getMaxAmountCarrier();
-	public abstract int getWeight();
+	private final String name;
+	private final String description;
+	private final String iconFilename;
+	private final String bluePrintFilename;
+	private final int weight;
+
+	protected ResourceItem(String name, String description, String iconFilename, String bluePrintFilename, int weight) {
+		this.name = name;
+		this.description = description;
+		this.iconFilename = iconFilename;
+		this.bluePrintFilename = bluePrintFilename;
+		this.weight = weight;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public String getIconFileName() {
+		return iconFilename;
+	}
+
+	public String getBluePrintFileName() {
+		return bluePrintFilename;
+	}
+
+	public int getWeight() {
+		return weight;
+	}
 
 	public PRIORITY getPriority() {
 		return priority;
@@ -30,29 +54,5 @@ public abstract class ResourceItem {
 
 	public void setMaxProduction(int maxProduction) {
 		this.maxProduction = maxProduction;
-	}
-
-	public int getAmountStock() {
-		return amountStock;
-	}
-
-	public void setAmountStock(int amountStock) {
-		this.amountStock = amountStock;
-	}
-
-	public int getAmountCarrier() {
-		return amountCarrier;
-	}
-
-	public void setAmountCarrier(int amountCarrier) {
-		this.amountCarrier = amountCarrier;
-	}
-
-	public int getAmountDrone() {
-		return amountDrone;
-	}
-
-	public void setAmountDrone(int amountDrone) {
-		this.amountDrone = amountDrone;
 	}
 }
