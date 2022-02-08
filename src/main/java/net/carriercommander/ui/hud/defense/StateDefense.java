@@ -13,7 +13,7 @@ public class StateDefense extends ControlState {
 		super.initialize(app, StateLaser.class, StateFlare.class,
 				StateMissile.class, StateDrone.class, StateStatus.class);
 
-		window = new Window(getApplication().getCamera().getWidth() - 55, getApplication().getCamera().getHeight());
+		window = new Window();
 
 		ToggleGroup group = window.addChild(new ToggleGroup());
 		group.addChild(new ToggleImageButton("/Interface/hud/defense/laser.png", this, "laser")).setSelected(true);
@@ -21,6 +21,8 @@ public class StateDefense extends ControlState {
 		group.addChild(new ToggleImageButton("/Interface/hud/defense/missileCarrier.png", this, "missile"));
 		group.addChild(new ToggleImageButton("/Interface/hud/defense/drones.png", this, "drone"));
 		group.addChild(new ToggleImageButton("/Interface/hud/shared/status.png", this, "status"));
+
+		scaleAndPosition(app.getCamera(), 1, 1);
 	}
 
 	private void laser() {

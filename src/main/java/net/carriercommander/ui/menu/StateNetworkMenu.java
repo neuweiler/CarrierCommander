@@ -9,6 +9,7 @@ import net.carriercommander.Constants;
 import net.carriercommander.network.client.StateNetworkClient;
 import net.carriercommander.network.host.StateNetworkHost;
 import net.carriercommander.ui.WindowState;
+import net.carriercommander.ui.hud.widgets.Window;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,7 +27,7 @@ public class StateNetworkMenu extends WindowState {
 
 	@Override
 	protected void initialize(Application app) {
-		window = new Container();
+		window = new Window();
 
 		Label title = window.addChild(new Label("Network Game"));
 		title.setFontSize(24);
@@ -56,16 +57,7 @@ public class StateNetworkMenu extends WindowState {
 		ActionButton backButton = window.addChild(new ActionButton(new CallMethodAction("Back", this, "back")));
 		backButton.setInsets(new Insets3f(10, 10, 10, 10));
 
-		int height = app.getCamera().getHeight();
-		Vector3f pref = window.getPreferredSize().clone();
-
-		float standardScale = getStandardScale();
-		pref.multLocal(1.5f * standardScale);
-
-		float y = height * 0.6f + pref.y * 0.5f;
-
-		window.setLocalTranslation(100 * standardScale, y, 0);
-		window.setLocalScale(1.5f * standardScale);
+		scaleAndPosition(app.getCamera(), .2f, .6f, Constants.MENU_MAGNIFICATION);
 	}
 
 	@Override

@@ -19,7 +19,7 @@ public class StateNavigation extends NavigationState {
 
 	@Override
 	protected void initialize(Application app) {
-		window = new Window(0, 100);
+		window = new Window();
 
 		Container base = window.addChild(new Container(), 1);
 		Container container = base.addChild(new Container());
@@ -48,6 +48,8 @@ public class StateNavigation extends NavigationState {
 		buttonRearView = container.addChild(new ToggleImageButton("/Interface/hud/shared/rearView.png", this, "rearView"));
 
 		window.addChild(createRadar(), 7);
+
+		scaleAndPosition(app.getCamera(), 0.5f, 0);
 	}
 
 	@Override

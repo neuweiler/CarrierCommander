@@ -14,7 +14,7 @@ public class StateWalrus extends ControlState {
 		super.initialize(app, StateNavigation.class, StateMap.class,
 				StateEquip.class, StateHangar.class, StateStatus.class);
 
-		window = new Window(getApplication().getCamera().getWidth() - 55, getApplication().getCamera().getHeight());
+		window = new Window();
 
 		ToggleGroup group = window.addChild(new ToggleGroup());
 		group.addChild(new ToggleImageButton("/Interface/hud/shared/control.png", this, "navigation")).setSelected(true);
@@ -22,6 +22,8 @@ public class StateWalrus extends ControlState {
 		group.addChild(new ToggleImageButton("/Interface/hud/walrus/walrusEquip.png", this, "equip"));
 		group.addChild(new ToggleImageButton("/Interface/hud/walrus/walrusHangar.png", this, "hangar"));
 		group.addChild(new ToggleImageButton("/Interface/hud/shared/status.png", this, "status"));
+
+		scaleAndPosition(app.getCamera(), 1, 1);
 	}
 
 	private void navigation() {

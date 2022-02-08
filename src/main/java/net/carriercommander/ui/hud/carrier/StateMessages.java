@@ -7,7 +7,8 @@ import net.carriercommander.ui.hud.widgets.Window;
 public class StateMessages extends WindowState {
 	@Override
 	protected void initialize(Application app) {
-		window = new Window(0, 100);
+		window = new Window();
+		scaleAndPosition(app.getCamera(), 0.5f, 0.5f);
 	}
 
 

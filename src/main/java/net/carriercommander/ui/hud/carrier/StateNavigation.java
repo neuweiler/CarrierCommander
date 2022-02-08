@@ -20,7 +20,7 @@ public class StateNavigation extends NavigationState {
 
 	@Override
 	protected void initialize(Application app) {
-		window = new Window(0, 100);
+		window = new Window();
 
 		window.addChild(createRadar(), 1);
 
@@ -43,6 +43,8 @@ public class StateNavigation extends NavigationState {
 		container = window.addChild(new Container(), 9);
 		container.addChild(new ImageButton("/Interface/hud/carrier/speedIncrease.png", this, "increaseSpeed", new ElementId("repeatButton")));
 		container.addChild(new ImageButton("/Interface/hud/carrier/speedDecrease.png", this, "decreaseSpeed", new ElementId("repeatButton")));
+
+		scaleAndPosition(app.getCamera(), .5f, 0f);
 	}
 
 	@Override

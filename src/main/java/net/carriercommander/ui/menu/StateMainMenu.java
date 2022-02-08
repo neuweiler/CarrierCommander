@@ -5,12 +5,13 @@ import com.jme3.math.Vector3f;
 import com.simsilica.lemur.*;
 import net.carriercommander.Constants;
 import net.carriercommander.ui.WindowState;
+import net.carriercommander.ui.hud.widgets.Window;
 
 public class StateMainMenu extends WindowState {
 
 	@Override
 	protected void initialize(Application app) {
-		window = new Container();
+		window = new Window();
 
 		Label title = window.addChild(new Label("Carrier Commander"));
 		title.setFontSize(24); // TODO move to styles
@@ -25,16 +26,7 @@ public class StateMainMenu extends WindowState {
 		ActionButton exit = window.addChild(new ActionButton(new CallMethodAction("Exit Game", app, "stop")));
 		exit.setInsets(new Insets3f(10, 10, 10, 10)); // TODO move to styles
 
-		int height = app.getCamera().getHeight();
-		Vector3f pref = window.getPreferredSize().clone();
-
-		float standardScale = getStandardScale();
-		pref.multLocal(1.5f * standardScale);
-
-		float y = height * 0.6f + pref.y * 0.5f;
-
-		window.setLocalTranslation(100 * standardScale, y, 0);
-		window.setLocalScale(1.5f * standardScale);
+		scaleAndPosition(app.getCamera(), .2f, .6f, Constants.MENU_MAGNIFICATION);
 	}
 
 	@Override

@@ -14,7 +14,7 @@ public class StateCarrier extends ControlState {
 		super.initialize(app, StateNavigation.class, StateMap.class,
 				StateRepair.class, StateResources.class, StateMessages.class);
 
-		window = new Window(getApplication().getCamera().getWidth() - 55, getApplication().getCamera().getHeight());
+		window = new Window();
 
 		ToggleGroup group = window.addChild(new ToggleGroup());
 		group.addChild(new ToggleImageButton("/Interface/hud/shared/control.png", this, "navigation")).setSelected(true);
@@ -22,6 +22,8 @@ public class StateCarrier extends ControlState {
 		group.addChild(new ToggleImageButton("/Interface/hud/carrier/repair.png", this, "repair"));
 		group.addChild(new ToggleImageButton("/Interface/hud/carrier/resources.png", this, "resources"));
 		group.addChild(new ToggleImageButton("/Interface/hud/carrier/messages.png", this, "messages"));
+
+		scaleAndPosition(app.getCamera(), 1, 1);
 	}
 
 	private void navigation() {

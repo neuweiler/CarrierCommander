@@ -16,6 +16,7 @@ import net.carriercommander.Constants;
 import net.carriercommander.network.client.StateNetworkClient;
 import net.carriercommander.network.messages.MessageInitPlayer;
 import net.carriercommander.ui.WindowState;
+import net.carriercommander.ui.hud.widgets.Window;
 import net.carriercommander.ui.menu.StateNetworkMenu;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,24 +49,14 @@ public class StateNetworkHost extends WindowState implements ConnectionListener 
 
 			logger.info("Server started on port {}...", port);
 
-			window = new Container();
+			window = new Window();
 
 			window.addChild(new Label("Hosting Control", new ElementId("title")));
 			window.addChild(new Label("Server running on port " + port));
 			window.addChild(new ActionButton(new CallMethodAction("Join Game", this, "joinGame")));
 			window.addChild(new ActionButton(new CallMethodAction("Stop Hosting", this, "stopHosting")));
 
-			int height = app.getCamera().getHeight();
-			Vector3f pref = window.getPreferredSize().clone();
-
-			float standardScale = getStandardScale();
-			pref.multLocal(1.5f * standardScale);
-
-			float y = height * 0.6f + pref.y * 0.5f;
-
-			window.setLocalTranslation(100 * standardScale, y, 0);
-			window.setLocalScale(1.5f * standardScale);
-
+			scaleAndPosition(app.getCamera(), .2f, .6f, Constants.MENU_MAGNIFICATION);
 		} catch (IOException e) {
 			logger.error("failed to start the server", e);
 		}

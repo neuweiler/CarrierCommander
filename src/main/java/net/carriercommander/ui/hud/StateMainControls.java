@@ -16,7 +16,7 @@ public class StateMainControls extends ControlState {
 	protected void initialize(Application app) {
 		super.initialize(app, StateCarrier.class, StateDefense.class, StateWalrus.class, StateManta.class);
 
-		window = new Window(0, getApplication().getCamera().getHeight());
+		window = new Window();
 
 		ToggleGroup group = window.addChild(new ToggleGroup());
 		group.addChild(new ToggleImageButton("/Interface/hud/carrier/carrier.png", this, "carrier")).setSelected(true);
@@ -24,6 +24,8 @@ public class StateMainControls extends ControlState {
 		group.addChild(new ToggleImageButton("/Interface/hud/walrus/walrus.png", this, "walrus"));
 		group.addChild(new ToggleImageButton("/Interface/hud/manta/manta.png", this, "manta"));
 		group.addChild(new ToggleImageButton("/Interface/hud/game/game.png", this, "game"));
+
+		scaleAndPosition(app.getCamera(), 0, 1);
 	}
 
 	private void carrier() {

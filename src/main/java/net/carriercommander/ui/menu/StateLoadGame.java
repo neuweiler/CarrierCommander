@@ -9,6 +9,7 @@ import com.simsilica.lemur.*;
 import net.carriercommander.*;
 import net.carriercommander.ui.WindowState;
 import net.carriercommander.ui.hud.StateMainControls;
+import net.carriercommander.ui.hud.widgets.Window;
 
 public class StateLoadGame extends WindowState {
 	private int loadPart = 0;
@@ -31,7 +32,7 @@ public class StateLoadGame extends WindowState {
 	}
 
 	protected void initialize(Application app) {
-		window = new Container();
+		window = new Window();
 
 		Label title = window.addChild(new Label("Starting Game"));
 		title.setFontSize(24);
@@ -41,16 +42,7 @@ public class StateLoadGame extends WindowState {
 		statusText = window.addChild(new Label(""));
 		statusText.setFontSize(12);
 
-		int height = app.getCamera().getHeight();
-		Vector3f pref = window.getPreferredSize().clone();
-
-		float standardScale = getStandardScale();
-		pref.multLocal(1.5f * standardScale);
-
-		float y = height * 0.6f + pref.y * 0.5f;
-
-		window.setLocalTranslation(100 * standardScale, y, 0);
-		window.setLocalScale(1.5f * standardScale);
+		scaleAndPosition(app.getCamera(), .3f, .6f, Constants.MENU_MAGNIFICATION);
 
 		configureCamera();
 
