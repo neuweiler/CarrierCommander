@@ -14,8 +14,9 @@ jobs:
           java-version: '11'
           distribution: 'adopt'
       - name: Build
-      - run: mvn --batch-mode --update-snapshots verify
-      - run: mkdir staging && cp target/*.jar staging/carrier-commander-`date "+%Y-%m-%d"`.jar
+        run: mvn --batch-mode --update-snapshots verify
+      - name: Prepare Release
+        run: mkdir staging && cp target/*.jar staging/carrier-commander-`date "+%Y-%m-%d"`.jar
       - name: Upload artifact
         uses: actions/upload-artifact@v2
         with:
