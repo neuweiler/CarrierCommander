@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>net.carriercommander</groupId>
 	<artifactId>carrier-commander</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.0.1</version>
 	<name>Carrier Commander</name>
 
 	<repositories>
