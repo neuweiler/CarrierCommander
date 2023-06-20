@@ -1,0 +1,52 @@
+{
+  "islands": [
+    {
+      "name": "Vulcan",
+      "x": 253,
+      "z": -292,
+      "y": -0.1,
+      "area": 12.9,
+      "model": 1
+    },
+    {
+      "name": "Fulcrum",
+      "x": 19,
+      "z": 19,
+      "y": -0.1,
+      "area": 12.9,
+      "model": 1
+    },
+    {
+      "name": "Nemesis",
+      "x": 410,
+      "z": 331,
+      "y": -0.1,
+      "area": 12.9,
+      "model": 1
+    }
+  ],
+
+  "connections": [
+    ["Fulcrum", "Nemesis", "Vulcan"]
+  ],
+
+  "gameTypes": [
+    {
+      "name": "Battle",
+      "player": [
+        {
+          "islands": ["Vulcan"],
+          "x": 220,
+          "z": 270,
+          "heading": 90
+        },
+        {
+          "islands": ["Nemesis"],
+          "x": 400,
+          "z": 320,
+          "heading": 90
+        }
+      ]
+    }
+  ]
+}

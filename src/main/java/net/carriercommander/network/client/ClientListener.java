@@ -7,7 +7,7 @@ import net.carriercommander.network.messages.MessageInitPlayer;
 import net.carriercommander.network.messages.MessagePlayerAdded;
 import net.carriercommander.network.messages.MessagePlayerRemoved;
 import net.carriercommander.network.messages.MessagePlayerUpdate;
-import net.carriercommander.network.model.PlayerData;
+import net.carriercommander.network.model.player.PlayerData;
 
 public class ClientListener implements MessageListener<Client> {
 
@@ -39,7 +39,7 @@ public class ClientListener implements MessageListener<Client> {
 
 		if (message instanceof MessageInitPlayer) {
 			MessageInitPlayer messageInitPlayer = (MessageInitPlayer) message;
-			sceneManager.init(messageInitPlayer.getStartPosition());
+			sceneManager.init(messageInitPlayer.getStartPosition(), messageInitPlayer.getIslands(), messageInitPlayer.getConnections());
 		}
 	}
 

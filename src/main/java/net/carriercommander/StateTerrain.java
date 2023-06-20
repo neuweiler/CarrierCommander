@@ -11,7 +11,7 @@ import com.jme3.terrain.geomipmap.TerrainQuad;
 import com.jme3.terrain.heightmap.AbstractHeightMap;
 import com.jme3.terrain.heightmap.ImageBasedHeightMap;
 import com.jme3.texture.Texture;
-import net.carriercommander.terrain.IslandMap;
+import net.carriercommander.network.model.config.Island;
 import net.carriercommander.ui.AbstractState;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,6 +24,11 @@ public class StateTerrain extends AbstractState {
 	private final List<TerrainQuad> terrains = new ArrayList<>();
 	private AssetManager assetManager;
 	private BulletAppState physicsState;
+	private final List<Island> islands;
+
+	public StateTerrain(List<Island> islands) {
+		this.islands = islands;
+	}
 
 	@Override
 	protected void initialize(Application app) {
@@ -32,9 +37,9 @@ public class StateTerrain extends AbstractState {
 
 		Material matRock = createMaterial();
 
-		IslandMap.getInstance().getIslands().forEach(island -> {
-			logger.debug("creating island {}", island.getName());
-			Texture heightMapImage = assetManager.loadTexture("Textures/Terrain/islands/" + island.getName() + ".png");
+		islands.forEach(island -> {
+			logger.debug("creating island {}", island.toString());
+			Texture heightMapImage = assetManager.loadTexture("Textures/Terrain/islands/" + island.getModel() + "_height.png");
 			AbstractHeightMap heightmap = new ImageBasedHeightMap(heightMapImage.getImage(), 0.25f);
 			heightmap.load();
 
@@ -42,11 +47,11 @@ public class StateTerrain extends AbstractState {
 			terrain.setName(island.getName());
 
 			Material mat = matRock.clone();
-			mat.setTexture("AlphaMap", assetManager.loadTexture("Textures/Terrain/islands/" + island.getName() + "_alpha.png"));
+			mat.setTexture("AlphaMap", assetManager.loadTexture("Textures/Terrain/islands/" + island.getModel() + "_alpha.png"));
 
 			terrain.setMaterial(mat);
 			terrain.setLocalScale(new Vector3f(5, 5, 5));
-			terrain.setLocalTranslation(island.getPosition());
+			terrain.setLocalTranslation(new Vector3f(island.getX(), island.getY(), island.getZ()).multLocal(Constants.MAP_SCENE_FACTOR));
 			terrain.setLocked(false); // unlock it so we can edit the height
 
 			RigidBodyControl rbc = new RigidBodyControl(0);

@@ -7,9 +7,12 @@ import com.jme3.scene.CameraNode;
 import com.jme3.scene.control.CameraControl;
 import com.simsilica.lemur.*;
 import net.carriercommander.*;
+import net.carriercommander.network.model.config.Island;
 import net.carriercommander.ui.WindowState;
 import net.carriercommander.ui.hud.StateMainControls;
 import net.carriercommander.ui.hud.widgets.Window;
+
+import java.util.List;
 
 public class StateLoadGame extends WindowState {
 	private int loadPart = 0;
@@ -26,9 +29,13 @@ public class StateLoadGame extends WindowState {
 	private StatePlayer statePlayer;
 	private StateMainControls stateMainControls;
 	private final Vector3f startPosition;
+	private final List<Island> islands;
+	private final List<List<String>> connections;
 
-	public StateLoadGame(Vector3f startPosition) {
+	public StateLoadGame(Vector3f startPosition, List<Island> islands, List<List<String>> connections) {
 		this.startPosition = startPosition;
+		this.islands = islands;
+		this.connections = connections;
 	}
 
 	protected void initialize(Application app) {
@@ -46,7 +53,7 @@ public class StateLoadGame extends WindowState {
 
 		configureCamera();
 
-		stateTerrain = new StateTerrain();
+		stateTerrain = new StateTerrain(islands);
 		stateSky = new StateSky();
 		stateLights =new StateLights();
 		stateWater = new StateWater();

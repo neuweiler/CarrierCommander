@@ -9,7 +9,6 @@ import com.jme3.network.Server;
 import com.jme3.network.serializing.Serializer;
 import com.simsilica.lemur.ActionButton;
 import com.simsilica.lemur.CallMethodAction;
-import com.simsilica.lemur.Container;
 import com.simsilica.lemur.Label;
 import com.simsilica.lemur.style.ElementId;
 import net.carriercommander.Constants;
@@ -26,6 +25,7 @@ import java.io.IOException;
 public class StateNetworkHost extends WindowState implements ConnectionListener {
 	private final Logger logger = LoggerFactory.getLogger(StateNetworkHost.class);
 	private PlayerManager playerManager;
+	private IslandManager islandManager;
 	private Server server;
 	private PlayerMessageListener messageListener;
 
@@ -42,6 +42,9 @@ public class StateNetworkHost extends WindowState implements ConnectionListener 
 			server = Network.createServer(Constants.GAME_NAME, Constants.GAME_VERSION, port, port);
 			server.addConnectionListener(this);
 
+			islandManager = new IslandManager(server);
+			islandManager.initialize(getClass().getClassLoader().getResource("GameConfigs/Mini.json").getFile());
+
 			playerManager = new PlayerManager(server);
 			messageListener = new PlayerMessageListener(playerManager);
 			server.addMessageListener(messageListener);
@@ -56,7 +59,7 @@ public class StateNetworkHost extends WindowState implements ConnectionListener 
 			window.addChild(new ActionButton(new CallMethodAction("Join Game", this, "joinGame")));
 			window.addChild(new ActionButton(new CallMethodAction("Stop Hosting", this, "stopHosting")));
 
-			scaleAndPosition(app.getCamera(), .2f, .6f, Constants.MENU_MAGNIFICATION);
+			scaleAndPosition(app.getCamera(), 1, 0);
 		} catch (IOException e) {
 			logger.error("failed to start the server", e);
 		}
@@ -82,7 +85,7 @@ public class StateNetworkHost extends WindowState implements ConnectionListener 
 		playerManager.addPlayer(connection.getId());
 
 		Vector3f startPosition = new Vector3f(300, 0, 1700 - connection.getId() * 300);
-		connection.send(new MessageInitPlayer(startPosition));
+		connection.send(new MessageInitPlayer(startPosition, islandManager.getGameConfig().getIslands(), islandManager.getGameConfig().getConnections()));
 	}
 
 	@Override

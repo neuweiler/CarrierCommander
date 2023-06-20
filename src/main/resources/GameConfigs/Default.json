@@ -1,0 +1,592 @@
+{
+  "islands": [
+    {
+      "name": "Vulcan",
+      "x": -4432,
+      "z": -4276,
+      "y": -0.1,
+      "area": 12.9,
+      "model": 1
+    },
+    {
+      "name": "Elwood",
+      "x": -4198,
+      "z": -3651,
+      "y": -0.1,
+      "area": 5.2,
+      "model": 1
+    },
+    {
+      "name": "Byrne",
+      "x": -3886,
+      "z": -3886,
+      "y": -0.1,
+      "area": 4.6,
+      "model": 1
+    },
+    {
+      "name": "Cerebus",
+      "x": -3651,
+      "z": -4471,
+      "y": -0.1,
+      "area": 3.6,
+      "model": 1
+    },
+    {
+      "name": "Charissa",
+      "x": -3183,
+      "z": -4042,
+      "y": -0.1,
+      "area": 3.0,
+      "model": 1
+    },
+    {
+      "name": "Magma",
+      "x": -2597,
+      "z": -4042,
+      "y": -0.1,
+      "area": 2.8,
+      "model": 1
+    },
+    {
+      "name": "Duessa",
+      "x": -3573,
+      "z": -3339,
+      "y": -0.1,
+      "area": 5.7,
+      "model": 1
+    },
+    {
+      "name": "Tokamak",
+      "x": -2831,
+      "z": -3339,
+      "y": -0.1,
+      "area": 7.8,
+      "model": 1
+    },
+    {
+      "name": "Edgeley",
+      "x": -2948,
+      "z": -2948,
+      "y": -0.1,
+      "area": 6.4,
+      "model": 1
+    },
+    {
+      "name": "Avernus",
+      "x": -3026,
+      "z": -2284,
+      "y": -0.1,
+      "area": 7.2,
+      "model": 1
+    },
+    {
+      "name": "Acheron",
+      "x": -2401,
+      "z": -2597,
+      "y": -0.1,
+      "area": 8.9,
+      "model": 1
+    },
+    {
+      "name": "Beacon",
+      "x": -1659,
+      "z": -27530,
+      "y": -0.1,
+      "area": 3.6,
+      "model": 1
+    },
+    {
+      "name": "Naiades",
+      "x": -2011,
+      "z": -20890,
+      "y": -0.1,
+      "area": 5.7,
+      "model": 1
+    },
+    {
+      "name": "Igneous",
+      "x": -1933,
+      "z": -4315,
+      "y": -0.1,
+      "area": 2.6,
+      "model": 1
+    },
+    {
+      "name": "Genetix",
+      "x": -3651,
+      "z": -2480,
+      "y": -0.1,
+      "area": 4.0,
+      "model": 1
+    },
+    {
+      "name": "Socrates",
+      "x": -4237,
+      "z": -2480,
+      "y": -0.1,
+      "area": 3.6,
+      "model": 1
+    },
+    {
+      "name": "Acheron",
+      "x": -2401,
+      "z": -2597,
+      "y": -0.1,
+      "area": 8.9,
+      "model": 1
+    },
+    {
+      "name": "Bacchus",
+      "x": -2011,
+      "z": -1347,
+      "y": -0.1,
+      "area": 7.9,
+      "model": 1
+    },
+    {
+      "name": "Beltempest",
+      "x": -2323,
+      "z": -683,
+      "y": -0.1,
+      "area": 4.3,
+      "model": 1
+    },
+    {
+      "name": "Bardland",
+      "x": -2909,
+      "z": -214,
+      "y": -0.1,
+      "area": 3.6,
+      "model": 1
+    },
+    {
+      "name": "Bedrock",
+      "x": -2987,
+      "z": 410,
+      "y": -0.1,
+      "area": 4.3,
+      "model": 1
+    },
+    {
+      "name": "Bountybar",
+      "x": -2089,
+      "z": 331,
+      "y": -0.1,
+      "area": 12.9,
+      "model": 1
+    },
+    {
+      "name": "Granite",
+      "x": -3651,
+      "z": 1034,
+      "y": -0.1,
+      "area": 4.3,
+      "model": 1
+    },
+    {
+      "name": "Hytac",
+      "x": -2597,
+      "z": 1191,
+      "y": -0.1,
+      "area": 7.2,
+      "model": 1
+    },
+    {
+      "name": "Mnemonic",
+      "x": -1737,
+      "z": 1464,
+      "y": -0.1,
+      "area": 4.3,
+      "model": 1
+    },
+    {
+      "name": "Outcrop",
+      "x": -1152,
+      "z": 839,
+      "y": -0.1,
+      "area": 5.2,
+      "model": 1
+    },
+    {
+      "name": "Endymion",
+      "x": -566,
+      "z": 1347,
+      "y": -0.1,
+      "area": 3.2,
+      "model": 1
+    },
+    {
+      "name": "Somnus",
+      "x": -97,
+      "z": 2050,
+      "y": -0.1,
+      "area": 3.3,
+      "model": 1
+    },
+    {
+      "name": "Splinter",
+      "x": -1230,
+      "z": 3964,
+      "y": -0.1,
+      "area": 12.9,
+      "model": 1
+    },
+    {
+      "name": "Outpost",
+      "x": 683,
+      "z": 2519,
+      "y": -0.1,
+      "area": 3.9,
+      "model": 1
+    },
+    {
+      "name": "Frontier",
+      "x": 917,
+      "z": 1503,
+      "y": -0.1,
+      "area": 7.6,
+      "model": 1
+    },
+    {
+      "name": "Fornax",
+      "x": 253,
+      "z": 1269,
+      "y": -0.1,
+      "area": 7.6,
+      "model": 1
+    },
+    {
+      "name": "Cherenkov",
+      "x": -97,
+      "z": 527,
+      "y": -0.1,
+      "area": 8.6,
+      "model": 1
+    },
+    {
+      "name": "Steadfast",
+      "x": 839,
+      "z": 722,
+      "y": -0.1,
+      "area": 5.7,
+      "model": 1
+    },
+    {
+      "name": "Judgement",
+      "x": 410,
+      "z": 331,
+      "y": -0.1,
+      "area": 6.0,
+      "model": 1
+    },
+    {
+      "name": "Evergreen",
+      "x": -488,
+      "z": 214,
+      "y": -0.1,
+      "area": 12.2,
+      "model": 1
+    },
+    {
+      "name": "Fulcrum",
+      "x": 19,
+      "z": 19,
+      "y": -0.1,
+      "area": 12.9,
+      "model": 1
+    },
+    {
+      "name": "Vattland",
+      "x": 253,
+      "z": -292,
+      "y": -0.1,
+      "area": 6.2,
+      "model": 1
+    },
+    {
+      "name": "Taksaven",
+      "x": 917,
+      "z": -292,
+      "y": -0.1,
+      "area": 6.8,
+      "model": 1
+    },
+    {
+      "name": "Lingard",
+      "x": -97,
+      "z": -410,
+      "y": -0.1,
+      "area": 7.2,
+      "model": 1
+    },
+    {
+      "name": "Stavros",
+      "x": -566,
+      "z": -292,
+      "y": -0.1,
+      "area": 10.8,
+      "model": 1
+    },
+    {
+      "name": "Thermopylae",
+      "x": -995,
+      "z": -917,
+      "y": -0.1,
+      "area": 9.6,
+      "model": 1
+    },
+    {
+      "name": "Storm",
+      "x": -1503,
+      "z": -1152,
+      "y": -0.1,
+      "area": 7.2,
+      "model": 1
+    },
+    {
+      "name": "Terminus",
+      "x": -1152,
+      "z": -1464,
+      "y": -0.1,
+      "area": 3.2,
+      "model": 1
+    },
+    {
+      "name": "Dyonysius",
+      "x": -1152,
+      "z": -2167,
+      "y": -0.1,
+      "area": 3.6,
+      "model": 1
+    },
+    {
+      "name": "Medusa",
+      "x": -175,
+      "z": -2011,
+      "y": -0.1,
+      "area": 9.0,
+      "model": 1
+    },
+    {
+      "name": "Serrano",
+      "x": 566,
+      "z": -2480,
+      "y": -0.1,
+      "area": 8.4,
+      "model": 1
+    },
+    {
+      "name": "Charibdis",
+      "x": 253,
+      "z": -3339,
+      "y": -0.1,
+      "area": 8.1,
+      "model": 1
+    },
+    {
+      "name": "Isolus",
+      "x": 566,
+      "z": -1230,
+      "y": -0.1,
+      "area": 10.0,
+      "model": 1
+    },
+    {
+      "name": "Obsidian",
+      "x": 1581,
+      "z": 1503,
+      "y": -0.1,
+      "area": 7.0,
+      "model": 1
+    },
+    {
+      "name": "Twilight",
+      "x": 2167,
+      "z": 1191,
+      "y": -0.1,
+      "area": 10.2,
+      "model": 1
+    },
+    {
+      "name": "Arachnid",
+      "x": 2089,
+      "z": 527,
+      "y": -0.1,
+      "area": 6.7,
+      "model": 1
+    },
+    {
+      "name": "Deadlock",
+      "x": 1425,
+      "z": 956,
+      "y": -0.1,
+      "area": 2.8,
+      "model": 1
+    },
+    {
+      "name": "Ursula",
+      "x": 1425,
+      "z": 253,
+      "y": -0.1,
+      "area": 4.7,
+      "model": 1
+    },
+    {
+      "name": "Sanctuary",
+      "x": 1581,
+      "z": -253,
+      "y": -0.1,
+      "area": 7.0,
+      "model": 1
+    },
+    {
+      "name": "Treasure",
+      "x": 2675,
+      "z": -371,
+      "y": -0.1,
+      "area": 7.0,
+      "model": 1
+    },
+    {
+      "name": "Fears Edge",
+      "x": 2753,
+      "z": 956,
+      "y": -0.1,
+      "area": 7.2,
+      "model": 1
+    },
+    {
+      "name": "Traffic",
+      "x": 3417,
+      "z": 1034,
+      "y": -0.1,
+      "area": 6.1,
+      "model": 1
+    },
+    {
+      "name": "Milestone",
+      "x": 2753,
+      "z": 1503,
+      "y": -0.1,
+      "area": 10.8,
+      "model": 1
+    },
+    {
+      "name": "Hades",
+      "x": 3339,
+      "z": 1894,
+      "y": -0.1,
+      "area": 74.0,
+      "model": 1
+    },
+    {
+      "name": "Inferno",
+      "x": 2597,
+      "z": 2206,
+      "y": -0.1,
+      "area": 5.2,
+      "model": 1
+    },
+    {
+      "name": "Styx",
+      "x": 3261,
+      "z": 2362,
+      "y": -0.1,
+      "area": 10.2,
+      "model": 1
+    },
+    {
+      "name": "Kouyate",
+      "x": 3847,
+      "z": 1737,
+      "y": -0.1,
+      "area": 7.9,
+      "model": 1
+    },
+    {
+      "name": "Nemesis",
+      "x": 4159,
+      "z": 2519,
+      "y": -0.1,
+      "area": 12.9,
+      "model": 1
+    }
+  ],
+
+  "connections": [
+    ["Vulcan", "Cerebus", "Elwood"],
+    ["Byrne", "Cerebus", "Elwood"],
+    ["Charissa", "Cerebus", "Magma"],
+    ["Igneous", "Magma"],
+    ["Duessa", "Elwood", "Byrne", "Genetix", "Tokamak"],
+    ["Genetix", "Socrates", "Avernus"],
+    ["Edgeley", "Avernus", "Tokamak", "Acheron"],
+    ["Acheron", "Tokamak", "Beacon"],
+    ["Naiades", "Acheron", "Beacon", "Dionysius", "Bacchus", "Odracir"],
+    ["Dionysius", "Beacon", "Charibdis", "Terminus"],
+    ["Bacchus", "Odracir", "Storm"],
+    ["Storm", "Terminus"],
+    ["Thermopylae", "Storm", "Terminus", "Stavros"],
+    ["Serrano", "Isolus", "Charibdis", "Lingard"],
+    ["Medusa", "Charibdis"],
+    ["Fulcrum", "Cherenkov", "Judgement", "Vattland", "Lingard", "Stavros", "Evergreen"],
+    ["Evergreen", "Stavros", "Cherenkov"],
+    ["Judgement", "Cherenkov", "Vattland", "Steadfast"],
+    ["Deadlock", "Steadfast", "Ursula"],
+    ["Stavros", "Lingard"],
+    ["Vattland", "Lingard", "Judgement", "Taksaven"],
+    ["Sanctuary", "Taksaven", "Arachnid"],
+    ["Twilight", "Arachnid", "Obsidian", "Milestone"],
+    ["Frontier", "Obsidian", "Fornax", "Outpost"],
+    ["Cherenkov", "Fornax"],
+    ["Somnus", "Outpost", "Endymion"],
+    ["Outcrop", "Endymion", "Mnemonic"],
+    ["Hytac", "Mnemonic"],
+    ["Bedrock", "Hytac", "Granite", "Bardland"],
+    ["Beltempest", "Bardland", "Bountybar", "Bacchus"],
+    ["Fears Edge", "Treasure", "Trafic", "Hades", "Milestone"],
+    ["Inferno", "Styx", "Milestone"],
+    ["Hades", "Styx", "Fears Edge", "Kouyate"],
+    ["Traffic", "Koyuate"],
+    ["Namesis", "Styx", "Koyuate"],
+    ["Splinter", "Endymion"]
+  ],
+
+  "gameTypes": [
+    {
+      "name": "Action",
+      "player": [
+        {
+          "islands": ["a", "b", "c"],
+          "x": 0,
+          "z": 0,
+          "heading": 90
+        },
+        {
+          "islands": ["x", "z", "y"],
+          "x": 90,
+          "z": 90,
+          "heading": 90
+        }
+      ]
+    },
+    {
+      "name": "Strategy",
+      "player": [
+        {
+          "islands": ["Vulcan"],
+          "x": -4400,
+          "z": -4200,
+          "heading": 90
+        },
+        {
+          "islands": ["Nemesis"],
+          "x": 4100,
+          "z": 2500,
+          "heading": 90
+        }
+      ]
+    }
+  ]
+}

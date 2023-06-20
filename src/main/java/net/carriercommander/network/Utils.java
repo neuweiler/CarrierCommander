@@ -2,7 +2,8 @@ package net.carriercommander.network;
 
 import com.jme3.network.serializing.Serializer;
 import net.carriercommander.network.messages.*;
-import net.carriercommander.network.model.GameItemData;
+import net.carriercommander.network.model.config.Island;
+import net.carriercommander.network.model.player.GameItemData;
 
 public class Utils {
 
@@ -12,8 +13,8 @@ public class Utils {
 				MessagePlayerRemoved.class,
 				MessagePlayerUpdate.class,
 				MessageInitPlayer.class,
-				TextMessage.class,
-				GameItemData.class
+				GameItemData.class,
+				Island.class
 		);
 	}
 }

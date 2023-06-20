@@ -11,8 +11,8 @@ import net.carriercommander.Constants;
 import net.carriercommander.Player;
 import net.carriercommander.StatePlayer;
 import net.carriercommander.network.messages.MessagePlayerUpdate;
-import net.carriercommander.network.model.GameItemData;
-import net.carriercommander.network.model.PlayerData;
+import net.carriercommander.network.model.player.GameItemData;
+import net.carriercommander.network.model.player.PlayerData;
 import net.carriercommander.ui.AbstractState;
 import net.carriercommander.ui.menu.StateNetworkMenu;
 import org.slf4j.Logger;
@@ -102,7 +102,7 @@ public class StateNetworkClient extends AbstractState implements ClientStateList
 	@Override
 	public void clientConnected(Client c) {
 		playerData.setId(c.getId());
-		messagePlayerUpdate = new MessagePlayerUpdate(c.getId(), null);
+		messagePlayerUpdate = new MessagePlayerUpdate(c.getId());
 		sceneManager.setMyPlayerId(c.getId());
 	}
 

@@ -17,7 +17,6 @@ import net.carriercommander.control.BaseControl;
 import net.carriercommander.control.PlayerControl;
 import net.carriercommander.objects.PlayerItem;
 import net.carriercommander.terrain.Island;
-import net.carriercommander.terrain.IslandMap;
 import net.carriercommander.ui.WindowState;
 import net.carriercommander.ui.hud.widgets.PaintedGauge;
 import net.carriercommander.ui.hud.widgets.PaintedRadar;
@@ -58,16 +57,16 @@ public abstract class NavigationState extends WindowState {
 
 	private void updateInfoBox() {
 		float[] angles = activeUnit.getWorldRotation().toAngles(null);
-		Optional<Island> island = IslandMap.getInstance().getClosestIsland(activeUnit.getWorldTranslation());
+//		Optional<Island> island = IslandMap.getInstance().getClosestIsland(activeUnit.getWorldTranslation());
 		infoBox.setText("Position: "
 				+ String.format("%.02f", activeUnit.getLocalTranslation().getX() / Constants.MAP_SCENE_FACTOR) + " "
 				+ String.format("%.02f", activeUnit.getLocalTranslation().getZ() / Constants.MAP_SCENE_FACTOR) +
 				"\nHeading: "
 				+ Math.round(FastMath.RAD_TO_DEG * angles[1]) //TODO not correct heading yet
-				+ "\nIsland: " +
-				(island.map(value -> value.getName() +
-								" (" + Math.round(value.getPosition().distance(activeUnit.getWorldTranslation()) / Constants.MAP_SCENE_FACTOR) + ")")
-						.orElse("-"))
+				+ "\nIsland: "
+//				+ (island.map(value -> value.getName()
+//				+   (" + Math.round(value.getPosition().distance(activeUnit.getWorldTranslation()) / Constants.MAP_SCENE_FACTOR) + ")")
+//						.orElse("-"))
 				+ "\nStatus: " + Math.round(activeUnit.getControl(BaseControl.class).getHealth() * 100)
 		);
 	}

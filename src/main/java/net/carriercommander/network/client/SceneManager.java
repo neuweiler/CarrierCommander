@@ -8,8 +8,9 @@ import com.jme3.math.Vector3f;
 import com.jme3.scene.Spatial;
 import net.carriercommander.Player;
 import net.carriercommander.control.BaseControl;
-import net.carriercommander.network.model.GameItemData;
-import net.carriercommander.network.model.ItemType;
+import net.carriercommander.network.model.config.Island;
+import net.carriercommander.network.model.player.GameItemData;
+import net.carriercommander.network.model.player.ItemType;
 import net.carriercommander.objects.*;
 import net.carriercommander.ui.menu.StateLoadGame;
 import org.slf4j.Logger;
@@ -17,6 +18,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -148,7 +150,7 @@ public class SceneManager {
 		this.myPlayerId = myPlayerId;
 	}
 
-	public void init(Vector3f startPosition) {
-		app.getStateManager().attach(new StateLoadGame(startPosition));
+	public void init(Vector3f startPosition, List<Island> islands, List<List<String>> connections) {
+		app.getStateManager().attach(new StateLoadGame(startPosition, islands, connections));
 	}
 }
