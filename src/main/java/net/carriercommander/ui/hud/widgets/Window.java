@@ -3,7 +3,6 @@ package net.carriercommander.ui.hud.widgets;
 import com.jme3.scene.Spatial;
 import com.simsilica.lemur.Container;
 import com.simsilica.lemur.Label;
-import com.simsilica.lemur.component.SpringGridLayout;
 import com.simsilica.lemur.core.GuiLayout;
 import com.simsilica.lemur.event.CursorEventControl;
 import com.simsilica.lemur.event.DragHandler;
@@ -75,8 +74,7 @@ public class Window extends Container {
 		}
 
 		if (draggable) {
-			DragHandler dragHandler = new DragHandler();
-			dragHandler.setDraggableLocator(Spatial::getParent);
+			DragHandler dragHandler = new DragHandler(Spatial::getParent);
 			CursorEventControl.addListenersToSpatial(label, dragHandler);
 		}
 
