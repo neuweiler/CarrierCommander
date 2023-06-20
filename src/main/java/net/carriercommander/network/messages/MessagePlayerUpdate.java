@@ -2,7 +2,8 @@ package net.carriercommander.network.messages;
 
 import com.jme3.network.AbstractMessage;
 import com.jme3.network.serializing.Serializable;
-import net.carriercommander.network.model.GameItemData;
+import lombok.*;
+import net.carriercommander.network.model.player.GameItemData;
 
 import java.util.List;
 
@@ -12,28 +13,12 @@ import java.util.List;
  * @author Michael Neuweiler
  */
 @Serializable
+@Getter
+@AllArgsConstructor
+@RequiredArgsConstructor
+@NoArgsConstructor(force = true) // required for serializer
 public class MessagePlayerUpdate extends AbstractMessage {
-
+	private final int playerId;
+	@Setter
 	private List<GameItemData> itemData;
-	private int playerId;
-
-	private MessagePlayerUpdate() { // required for Serializer
-	}
-
-	public MessagePlayerUpdate(int playerId, List<GameItemData> itemData) {
-		this.itemData = itemData;
-		this.playerId = playerId;
-	}
-
-	public void setItemData(List<GameItemData> itemData) {
-		this.itemData = itemData;
-	}
-
-	public List<GameItemData> getItemData() {
-		return itemData;
-	}
-
-	public int getPlayerId() {
-		return playerId;
-	}
 }
