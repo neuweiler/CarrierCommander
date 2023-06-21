@@ -1,4 +1,4 @@
-package net.carriercommander.network.model;
+package net.carriercommander.network.model.player;
 
 import com.jme3.bullet.objects.PhysicsRigidBody;
 import com.jme3.math.Quaternion;
