@@ -1,19 +1,21 @@
-package net.carriercommander.network.model;
+package net.carriercommander.network.model.player;
 
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.network.serializing.Serializable;
+import lombok.Getter;
+import lombok.ToString;
 
 /**
  * Data objects which hold the necessary data to exchange with server.
  */
 @Serializable
+@Getter
+@ToString
 public class GameItemData {
 
 	private final ItemType type;
-
 	private final String id;
-
 	private boolean destroy;
 
 	/**
@@ -39,40 +41,16 @@ public class GameItemData {
 		this.type = type;
 	}
 
-	public String getId() {
-		return id;
-	}
-
-	public ItemType getType() {
-		return type;
-	}
-
-	public Vector3f getLocation() {
-		return location;
-	}
-
 	public boolean setLocation(Vector3f location) {
 		return updateVector(location, this.location);
-	}
-
-	public Quaternion getRotation() {
-		return rotation;
 	}
 
 	public boolean setRotation(Quaternion rotation) {
 		return updateQuaternion(rotation, this.rotation);
 	}
 
-	public Vector3f getVelocity() {
-		return velocity;
-	}
-
 	public boolean setVelocity(Vector3f velocity) {
 		return updateVector(velocity, this.velocity);
-	}
-
-	public boolean isDestroy() {
-		return destroy;
 	}
 
 	public void setDestroy(boolean destroy) {
@@ -105,16 +83,5 @@ public class GameItemData {
 			return true;
 		}
 		return false;
-	}
-
-	@Override
-	public String toString() {
-		return this.getClass().getSimpleName() + "{" +
-				"id=" + id +
-				", type=" + type +
-				", location=" + location +
-				", rotation=" + rotation +
-				", velocity=" + velocity +
-				'}';
 	}
 }
