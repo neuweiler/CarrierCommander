@@ -35,7 +35,6 @@ import com.jme3.app.SimpleApplication;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.system.AppSettings;
 import com.simsilica.lemur.GuiGlobals;
-import com.simsilica.lemur.OptionPanelState;
 import com.simsilica.lemur.style.BaseStyles;
 import net.carriercommander.network.Utils;
 import net.carriercommander.ui.menu.StateMainMenu;
@@ -43,6 +42,9 @@ import net.carriercommander.ui.menu.StateNetworkMenu;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 import java.util.prefs.BackingStoreException;
 
 /**
@@ -53,6 +55,8 @@ import java.util.prefs.BackingStoreException;
 public class CarrierCommander extends SimpleApplication {
 	private static final Logger logger = LoggerFactory.getLogger(CarrierCommander.class);
 
+	private static final String SETTINGS_TOKEN = "net/carriercommander";
+
 	public static void main(String... args) {
 		Utils.initSerializers();
 		CarrierCommander app = new CarrierCommander();
@@ -62,34 +66,41 @@ public class CarrierCommander extends SimpleApplication {
 		settings.setResolution(1280, 720);
 		settings.setFullscreen(false);
 		settings.setVSync(true);
+//		settings.setSamples(8);
+		settings.setGammaCorrection(true);
+
 		try {
-			settings.load("Carrier Commander");
+			settings.load(SETTINGS_TOKEN);
 		} catch (BackingStoreException e) {
 			logger.error("unable to load previous settings", e);
 		}
 		settings.setSettingsDialogImage("/Interface/splash-512.png");
 		settings.setTitle("Carrier Commander");
-
-		        /*
-        try {
-            BufferedImage[] icons = new BufferedImage[] {
-                    ImageIO.read( TreeEditor.class.getResource( "/-icon-128.png" ) ),
-                    ImageIO.read( TreeEditor.class.getResource( "/-icon-32.png" ) ),
-                    ImageIO.read( TreeEditor.class.getResource( "/-icon-16.png" ) )
-                };
-            settings.setIcons(icons);
-        } catch( IOException e ) {
-            log.warn( "Error loading globe icons", e );
-        }*/
+		settings.setIcons(loadIcons());
 
 		app.setShowSettings(!Constants.AUTOSTART);
 		app.setSettings(settings);
 		app.start();
 	}
 
+	private static BufferedImage[] loadIcons() {
+		ArrayList<BufferedImage> icons = new ArrayList<>();
+		try {
+			icons.add(ImageIO.read(CarrierCommander.class.getResource("/Icons/icon-128.png")));
+			icons.add(ImageIO.read(CarrierCommander.class.getResource("/Icons/icon-32.png")));
+			icons.add(ImageIO.read(CarrierCommander.class.getResource("/Icons/icon-16.png")));
+		} catch (Exception e) {
+			logger.warn("Error loading globe icons", e);
+		}
+		return icons.toArray(new BufferedImage[0]);
+	}
+
 	public CarrierCommander() {
-		super(new StateMainMenu(), new StateSpinningCarrier(),
-				new OptionPanelState(), new StateNetworkMenu()
+		super(
+				new StateMainMenu()
+				, new StateSpinningCarrier()
+				//, new OptionPanelState()
+				, new StateNetworkMenu()
 		);
 	}
 
@@ -110,7 +121,7 @@ public class CarrierCommander extends SimpleApplication {
 	private void activatePhysics() {
 		BulletAppState physicsState = new BulletAppState();
 		physicsState.setThreadingType(Constants.DEBUG ? BulletAppState.ThreadingType.SEQUENTIAL : BulletAppState.ThreadingType.PARALLEL);
-//		physicsState.setBroadphaseType(BroadphaseType.SIMPLE);
+//		physicsState.setBroadphaseType(PhysicsSpace.BroadphaseType.SIMPLE);
 
 		physicsState.setDebugEnabled(Constants.DEBUG);
 		if (Constants.DEBUG) {
