@@ -6,6 +6,7 @@ import java.util.List;
 
 @Data
 public class GameConfig {
+	private String name;
 	private List<Island> islands;
 	private List<List<String>> connections;
 	private List<GameType> gameTypes;

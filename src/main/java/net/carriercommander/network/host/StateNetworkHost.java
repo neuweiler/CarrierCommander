@@ -14,6 +14,8 @@ import com.simsilica.lemur.style.ElementId;
 import net.carriercommander.Constants;
 import net.carriercommander.network.client.StateNetworkClient;
 import net.carriercommander.network.messages.MessageInitPlayer;
+import net.carriercommander.network.model.config.GameConfig;
+import net.carriercommander.network.model.config.GameType;
 import net.carriercommander.ui.WindowState;
 import net.carriercommander.ui.hud.widgets.Window;
 import net.carriercommander.ui.menu.StateNetworkMenu;
@@ -30,9 +32,13 @@ public class StateNetworkHost extends WindowState implements ConnectionListener 
 	private PlayerMessageListener messageListener;
 
 	private final int port;
+	private final GameConfig gameConfig;
+	private final GameType gameType;
 
-	public StateNetworkHost(int port) {
+	public StateNetworkHost(GameConfig gameConfig, GameType gameType, int port) {
 		this.port = port;
+		this.gameConfig = gameConfig;
+		this.gameType = gameType;
 	}
 
 	@Override
@@ -42,8 +48,7 @@ public class StateNetworkHost extends WindowState implements ConnectionListener 
 			server = Network.createServer(Constants.GAME_NAME, Constants.GAME_VERSION, port, port);
 			server.addConnectionListener(this);
 
-			islandManager = new IslandManager(server);
-			islandManager.initialize(getClass().getClassLoader().getResource("GameConfigs/Mini.json").getFile());
+			islandManager = new IslandManager();
 
 			playerManager = new PlayerManager(server);
 			messageListener = new PlayerMessageListener(playerManager);
@@ -85,7 +90,7 @@ public class StateNetworkHost extends WindowState implements ConnectionListener 
 		playerManager.addPlayer(connection.getId());
 
 		Vector3f startPosition = new Vector3f(300, 0, 1700 - connection.getId() * 300);
-		connection.send(new MessageInitPlayer(startPosition, islandManager.getGameConfig().getIslands(), islandManager.getGameConfig().getConnections()));
+		connection.send(new MessageInitPlayer(startPosition, gameConfig.getIslands(), gameConfig.getConnections()));
 	}
 
 	@Override

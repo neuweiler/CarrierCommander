@@ -19,7 +19,7 @@ import java.net.ServerSocket;
 public class StateNetworkMenu extends WindowState {
 	private static final Logger logger = LoggerFactory.getLogger(StateNetworkMenu.class);
 
-	private TextField hostPort, connectPort, connectHost;
+	private TextField connectPort, connectHost;
 
 	public StateNetworkMenu() {
 		setEnabled(false);
@@ -28,10 +28,6 @@ public class StateNetworkMenu extends WindowState {
 	@Override
 	protected void initialize(Application app) {
 		window = new Window();
-
-		Label title = window.addChild(new Label("Network Game"));
-		title.setFontSize(24);
-		title.setInsets(new Insets3f(10, 10, 0, 10));
 
 		Container joinPanel = window.addChild(new Container());
 		joinPanel.setInsets(new Insets3f(10, 10, 10, 10));
@@ -43,16 +39,6 @@ public class StateNetworkMenu extends WindowState {
 		props.addChild(new Label("Port:"));
 		connectPort = props.addChild(new TextField(String.valueOf(Constants.DEFAULT_PORT)), 1);
 		joinPanel.addChild(new ActionButton(new CallMethodAction("Connect", this, "connect")));
-
-		Container hostPanel = window.addChild(new Container());
-		hostPanel.setInsets(new Insets3f(10, 10, 10, 10));
-		hostPanel.addChild(new Label("Host a Game Server", new ElementId("title")));
-
-		props = hostPanel.addChild(new Container(new SpringGridLayout(Axis.Y, Axis.X, FillMode.None, FillMode.Last)));
-		props.addChild(new Label("Port:"));
-		hostPort = props.addChild(new TextField(String.valueOf(findPort(Constants.DEFAULT_PORT))), 1);
-
-		hostPanel.addChild(new ActionButton(new CallMethodAction("Begin Hosting", this, "host")));
 
 		ActionButton backButton = window.addChild(new ActionButton(new CallMethodAction("Back", this, "back")));
 		backButton.setInsets(new Insets3f(10, 10, 10, 10));
@@ -116,26 +102,6 @@ public class StateNetworkMenu extends WindowState {
 
 		getStateManager().attach(new StateNetworkClient(host, port));
 		setEnabled(false);
-	}
-
-	private void host() {
-		int port = validatePort("Hosting", hostPort.getText());
-		if (port < 0) {
-			return;
-		}
-
-		try {
-			getStateManager().attach(new StateNetworkHost(port));
-			setEnabled(false);
-		} catch( RuntimeException e ) {
-			logger.error("Error attaching host state", e);
-			String message = "Error hosting game on port:" + port;
-			Throwable cause = e.getCause();
-			if( cause != null ) {
-				message += "\n" + cause.getClass().getSimpleName() + ":" + cause.getMessage();
-			}
-			showError("Hosting", message);
-		}
 	}
 
 	private void back() {

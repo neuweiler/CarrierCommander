@@ -9,28 +9,20 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 
 public class IslandManager {
 	private final Logger logger = LoggerFactory.getLogger(PlayerManager.class);
-	private final Server server;
-	@Getter
-	private GameConfig gameConfig;
 
-	public IslandManager(Server server) {
-		this.server = server;
+	public IslandManager() {
 	}
 
-	public void initialize(String fileName) {
-		ObjectMapper mapper = new ObjectMapper();
-		File file = new File(fileName);
-		try {
-			gameConfig = mapper.readValue(file, GameConfig.class);
-			logger.info("successfully loaded config from {}", fileName);
-		} catch (IOException e) {
-			logger.error("unable to load island config from {}", fileName, e);
-		}
-
-	}
 /*
 	public void updateIsland(String name, MessagePlayerUpdate messagePlayerUpdate) {
 		server.broadcast(messagePlayerUpdate);

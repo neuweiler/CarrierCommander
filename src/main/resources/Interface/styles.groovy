@@ -28,7 +28,7 @@ def border2 = TbtQuadBackgroundComponent.create(
 def doubleGradient = new QuadBackgroundComponent(color(0.5, 0.75, 0.85, 0.5))
 doubleGradient.texture = texture(name: "/com/simsilica/lemur/icons/double-gradient-128.png", generateMips: false)
 
-def backgroundColor = color(0.25, 0.5, 0.5, 0.5)
+def backgroundColor = color(0.25, 0.3, 0.5, 0.5)
 
 selector("cc") {
     fontSize = 14
@@ -40,7 +40,6 @@ selector( "optionPanel", "cc" ) {
 }
 
 selector( "optionPanel.container", "cc" ) {
-
     background = gradient.clone()
     background.color = color(0.25, 0.4, 0.6, 0.25)
     background.setMargin(10, 10)
@@ -48,6 +47,11 @@ selector( "optionPanel.container", "cc" ) {
 }
 
 selector( "title.label", "cc" ) {
+    fontSize = 34
+    insets = (new Insets3f(0, 10, 0, 10))
+}
+
+selector( "header.label", "cc" ) {
     color = color(0.8, 0.9, 1, 0.85f)
     highlightColor = color(1, 0.8, 1, 0.85f)
     shadowColor = color(0, 0, 0, 0.75f)
@@ -148,11 +152,11 @@ selector("title", "cc") {
 
 
 selector("button", "cc") {
-    background = gradient.clone()
     color = color(0.8, 0.9, 1, 0.85f)
+    background = gradient.clone()
     background.setColor(color(0, 0.75, 0.75, 0.5))
-    insets = new Insets3f(2, 2, 2, 2)
-
+    insets = new Insets3f(0, 1, 0, 1)
+    textHAlignment = HAlignment.Center
     buttonCommands = stdButtonCommands
 }
 
