@@ -54,11 +54,11 @@ public class MissileControl extends BaseControl {
 	private final Node target;
 	private final ExplosionSmall explosion;
 
-	private static final float deltaGainFactor = 0.1f;
-	private static final float errorGainFactor = 0.1f;
+	private static final float deltaGainFactor = .1f;
+	private static final float errorGainFactor = .5f;
 	private static final Vector3f missileOrientation = new Vector3f(0, 0, -1);
 
-	// some re-usable variables to reduce unnecessary allocation/gc
+	// some re-usable variables to prevent unnecessary allocation/gc
 	private static final Vector3f gravity = Vector3f.ZERO;
 	private final Vector3f actualDirection = new Vector3f();
 	private final Vector3f error = new Vector3f();
@@ -164,7 +164,7 @@ public class MissileControl extends BaseControl {
 				rbc.applyImpulse(event.getLateralFrictionDir2(null).mult(-100),
 						event.getLocalPointB(null));
 			}
-			removeItem();
+			destroyItem();
 		}
 	}
 
@@ -172,7 +172,7 @@ public class MissileControl extends BaseControl {
 	public void update(float tpf) {
 		super.update(tpf);
 		if (fuel < 0) {
-			removeItem();
+			destroyItem();
 		}
 	}
 }

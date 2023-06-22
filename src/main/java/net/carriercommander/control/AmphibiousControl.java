@@ -9,13 +9,21 @@ import com.jme3.water.WaterFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * A physics controller for objects which can float on water and drive on the ground (Walrus).
+ * If the object is below or above the water height, it switches from VehicleControl to @shipControl and vice versa.
+ */
+
 public class AmphibiousControl extends AbstractControl {
 	private static final Logger logger = LoggerFactory.getLogger(AmphibiousControl.class);
 
 	private final ShipControl shipControl;
 	private final VehicleControl vehicleControl;
 	private final WaterFilter water;
+	/** use the current throttle to accelerate the new controller **/
 	private float throttle = 0;
+	/** transfer the velocity of the current controller to the other controller **/
+	private Vector3f velocity = new Vector3f();
 
 	public AmphibiousControl(ShipControl shipControl, VehicleControl vehicleControl, WaterFilter water) {
 		this.shipControl = shipControl;
@@ -23,7 +31,6 @@ public class AmphibiousControl extends AbstractControl {
 		this.water = water;
 	}
 
-	Vector3f velocity = new Vector3f();
 	@Override
 	protected void controlUpdate(float tpf) {
 		float waterHeight = (water != null ? water.getWaterHeight() : 0);

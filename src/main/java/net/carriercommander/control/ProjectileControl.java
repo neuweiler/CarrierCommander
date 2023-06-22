@@ -36,8 +36,6 @@ import com.jme3.bullet.collision.PhysicsCollisionEvent;
 import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
-import net.carriercommander.Player;
-import net.carriercommander.objects.GameItem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -68,7 +66,7 @@ public class ProjectileControl extends PlayerControl {
 	public void update(float tpf) {
 		super.update(tpf);
 		if (fuel < 0) {
-			removeItem();
+			destroyItem();
 		}
 	}
 
@@ -76,7 +74,7 @@ public class ProjectileControl extends PlayerControl {
 	public void collision(PhysicsCollisionEvent event) {
 		super.collision(event);
 		if (event.getObjectA() == this || event.getObjectB() == this) {
-			removeItem();
+			destroyItem();
 		}
 	}
 }

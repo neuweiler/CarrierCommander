@@ -28,7 +28,7 @@ public class BaseControl extends RigidBodyControl implements PhysicsCollisionLis
 				oldSpace.removeCollisionListener(this);
 				oldSpace.removeTickListener(this);
 			}
-			super.setPhysicsSpace(newSpace);
+			super.setPhysicsSpace(null);
 		} else {
 			super.setPhysicsSpace(newSpace);
 			newSpace.addCollisionListener(this);
@@ -50,7 +50,7 @@ public class BaseControl extends RigidBodyControl implements PhysicsCollisionLis
 			logger.info("collision between {} and {} with impulse {}", event.getObjectA(), event.getObjectB(), event.getAppliedImpulse());
 			health -= event.getAppliedImpulse() / getMass();
 			if (health < 0) {
-				removeItem();
+				destroyItem();
 			}
 		}
 	}
@@ -63,7 +63,7 @@ public class BaseControl extends RigidBodyControl implements PhysicsCollisionLis
 		this.health = health;
 	}
 
-	protected void removeItem() {
+	protected void destroyItem() {
 		if (player != null) {
 			player.removeItem((GameItem) getSpatial());
 		} else {
