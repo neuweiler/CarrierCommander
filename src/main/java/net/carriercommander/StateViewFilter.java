@@ -29,13 +29,8 @@ public class StateViewFilter extends AbstractState {
 		lsf.setLightDensity(1.0f);
 		fpp.addFilter(lsf);
 
-/*		DepthOfFieldFilter dof = new DepthOfFieldFilter();
-		dof.setFocusDistance(1000);
-		dof.setFocusRange(1000);
-		fpp.addFilter(dof);
-*/
 		fpp.addFilter(new TranslucentBucketFilter());
-		fpp.setNumSamples(4);
+//		fpp.setNumSamples(4);
 	}
 
 	@Override
