@@ -10,21 +10,21 @@ import com.jme3.math.FastMath;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.RenderManager;
 import com.jme3.scene.Node;
+import net.carriercommander.ui.AbstractState;
 
-public class ExplosionSmall extends Node {
+public class ExplosionVehicle extends Node {
 	private static final boolean POINT_SPRITE = true;
 	private static final ParticleMesh.Type EMITTER_TYPE = POINT_SPRITE ? ParticleMesh.Type.Point : ParticleMesh.Type.Triangle;
 	private static final float FX_TIME = 6f;
 
+	private final AbstractState state;
 	private final AssetManager assetManager;
-	private final Node rootNode;
 	private ParticleEmitter flame, flash, spark, smoketrail, debris, shockwave;
 	private float curTime = -1.0f;
-	private boolean flameStarted = false;
 
-	public ExplosionSmall(AssetManager assetManager, RenderManager renderManager, Node rootNode) {
-		this.assetManager = assetManager;
-		this.rootNode = rootNode;
+	public ExplosionVehicle(AbstractState state) {
+		this.state = state;
+		this.assetManager = state.getApplication().getAssetManager();
 
 		createFlame();
 		createFlash();
@@ -33,14 +33,15 @@ public class ExplosionSmall extends Node {
 		createDebris();
 		createShockwave();
 
-		renderManager.preloadScene(this);
+		state.getApplication().getRenderManager().preloadScene(this);
 	}
 
 	public void play(Vector3f position) {
 		curTime = 0;
 		setLocalTranslation(position);
-		rootNode.attachChild(this);
+		state.getRootNode().attachChild(this);
 
+		flame.emitAllParticles();
 		flash.emitAllParticles();
 		spark.emitAllParticles();
 		smoketrail.emitAllParticles();
@@ -50,20 +51,14 @@ public class ExplosionSmall extends Node {
 
 	@Override
 	public void updateLogicalState(float tpf) {
-		if (curTime >= 0) {
-			curTime += tpf;
-			if (curTime > .05f && !flameStarted){
-				flame.emitAllParticles();
-				flameStarted = true;
-			}
-			if (curTime > FX_TIME) {
-				curTime = -1;
-				removeFromParent();
-			}
+		curTime += tpf;
+		if (curTime > FX_TIME) {
+			curTime = -1;
+			removeFromParent();
 		}
 	}
 
-	private void createFlame(){
+	private void createFlame() {
 		flame = new ParticleEmitter("Flame", EMITTER_TYPE, 32);
 		flame.setSelectRandomImage(true);
 		flame.setStartColor(new ColorRGBA(1f, 0.4f, 0.05f, 1f));
@@ -86,7 +81,7 @@ public class ExplosionSmall extends Node {
 		attachChild(flame);
 	}
 
-	private void createFlash(){
+	private void createFlash() {
 		flash = new ParticleEmitter("Flash", EMITTER_TYPE, 24);
 		flash.setSelectRandomImage(true);
 		flash.setStartColor(new ColorRGBA(1f, 0.8f, 0.36f, 1f));
@@ -109,7 +104,7 @@ public class ExplosionSmall extends Node {
 		attachChild(flash);
 	}
 
-	private void createSpark(){
+	private void createSpark() {
 		spark = new ParticleEmitter("Spark", ParticleMesh.Type.Triangle, 30);
 		spark.setStartColor(new ColorRGBA(1f, 0.8f, 0.36f, 1.0f));
 		spark.setEndColor(new ColorRGBA(1f, 0.8f, 0.36f, 0f));
@@ -130,7 +125,7 @@ public class ExplosionSmall extends Node {
 		attachChild(spark);
 	}
 
-	private void createSmokeTrail(){
+	private void createSmokeTrail() {
 		smoketrail = new ParticleEmitter("SmokeTrail", ParticleMesh.Type.Triangle, 50);
 		smoketrail.setStartColor(new ColorRGBA(1f, 0.8f, 0.36f, 1.0f));
 		smoketrail.setEndColor(new ColorRGBA(1f, 0.8f, 0.36f, 0f));
@@ -152,7 +147,7 @@ public class ExplosionSmall extends Node {
 		attachChild(smoketrail);
 	}
 
-	private void createDebris(){
+	private void createDebris() {
 		debris = new ParticleEmitter("Debris", ParticleMesh.Type.Triangle, 15);
 		debris.setSelectRandomImage(true);
 		debris.setRandomAngle(true);
@@ -176,15 +171,15 @@ public class ExplosionSmall extends Node {
 		attachChild(debris);
 	}
 
-	private void createShockwave(){
+	private void createShockwave() {
 		shockwave = new ParticleEmitter("Shockwave", ParticleMesh.Type.Triangle, 1);
 //		shockwave.setRandomAngle(true);
 //		shockwave.setFaceNormal(Vector3f.UNIT_Y);
 		shockwave.setStartColor(new ColorRGBA(.48f, 0.17f, 0.01f, .8f));
 		shockwave.setEndColor(new ColorRGBA(.48f, 0.17f, 0.01f, 0f));
 
-		shockwave.setStartSize(.1f);
-		shockwave.setEndSize(30f);
+		shockwave.setStartSize(.01f);
+		shockwave.setEndSize(100f);
 
 		shockwave.setParticlesPerSec(0);
 		shockwave.setGravity(0, 0, 0);

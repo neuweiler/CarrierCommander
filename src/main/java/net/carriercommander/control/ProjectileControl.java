@@ -36,6 +36,7 @@ import com.jme3.bullet.collision.PhysicsCollisionEvent;
 import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
+import net.carriercommander.effects.ImpactProjectile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,19 +48,24 @@ import org.slf4j.LoggerFactory;
 public class ProjectileControl extends PlayerControl {
 	private static final Logger logger = LoggerFactory.getLogger(ProjectileControl.class);
 
+	private static final int INITIAL_SPEED = 100;
+	private static final float FUEL_CONSUMPTION_PER_CYCLE = 0.1f;
+
 	private static final Vector3f gravity = Vector3f.ZERO;
 	private final Vector3f velocity;
+	private final ImpactProjectile effectImpact;
 
-	public ProjectileControl(CollisionShape shape, float mass, Quaternion rotation) {
+	public ProjectileControl(CollisionShape shape, float mass, Quaternion rotation, ImpactProjectile effectImpact) {
 		super(shape, mass);
-		velocity = rotation.mult(Vector3f.UNIT_Z).mult(400);
+		this.effectImpact = effectImpact;
+		velocity = rotation.mult(Vector3f.UNIT_Z).mult(INITIAL_SPEED);
 	}
 
 	@Override
 	public void prePhysicsTick(PhysicsSpace arg0, float tpf) {
 		setGravity(gravity);
 		setLinearVelocity(velocity);
-		fuel -= 0.004;
+		fuel -= FUEL_CONSUMPTION_PER_CYCLE * tpf;
 	}
 
 	@Override
@@ -75,6 +81,10 @@ public class ProjectileControl extends PlayerControl {
 		super.collision(event);
 		if (event.getObjectA() == this || event.getObjectB() == this) {
 			destroyItem();
+
+			if (effectImpact != null && getSpatial().getParent() != null) {
+				effectImpact.play(getSpatial().getWorldTranslation());
+			}
 		}
 	}
 }
