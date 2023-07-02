@@ -32,15 +32,15 @@
 package net.carriercommander.objects;
 
 import com.jme3.asset.AssetManager;
-import com.jme3.bullet.PhysicsSpace;
 import com.jme3.bullet.collision.shapes.BoxCollisionShape;
 import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.math.Vector3f;
-import com.jme3.renderer.RenderManager;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import net.carriercommander.control.MissileControl;
-import net.carriercommander.effects.ExplosionSmall;
+import net.carriercommander.effects.ImpactMissile;
+import net.carriercommander.effects.TrailMissile;
+import net.carriercommander.ui.AbstractState;
 
 /**
  * Missile
@@ -50,14 +50,26 @@ import net.carriercommander.effects.ExplosionSmall;
 public class Missile extends GameItem {
 	public static final float WIDTH = .2f, LENGTH = 1.1f, HEIGHT = .2f, MASS = .1f;
 
-	public Missile(String name, AssetManager assetManager, PhysicsSpace physicsSpace, RenderManager renderManager, Node rootNode, Node target) {
+	private TrailMissile trail;
+
+	@Override
+	protected void finalize() throws Throwable {
+		System.out.println("*****************************************************");
+		System.out.println("*******************finalize missile *****************");
+		System.out.println("*****************************************************");
+		super.finalize();
+	}
+
+	public Missile(AbstractState state, String name, Node target) {
 		super(name);
 
-		attachChild(loadModel(assetManager));
+		attachChild(loadModel(state.getApplication().getAssetManager()));
 
 		CollisionShape collisionShape = createCollisionShape();
 
-		ExplosionSmall explosion = new ExplosionSmall(assetManager, renderManager, rootNode);
+		ImpactMissile explosion = new ImpactMissile(state);
+		trail = new TrailMissile(state, this);
+		trail.play();
 		createMissileControl(collisionShape, target, explosion);
 	}
 
@@ -69,9 +81,16 @@ public class Missile extends GameItem {
 		return new BoxCollisionShape(new Vector3f(WIDTH, HEIGHT, LENGTH));
 	}
 
-	private void createMissileControl(CollisionShape collisionShape, Node target, ExplosionSmall explosion) {
+	private void createMissileControl(CollisionShape collisionShape, Node target, ImpactMissile explosion) {
 		MissileControl control = new MissileControl(collisionShape, target, MASS, explosion);
 		addControl(control);
 		control.setDamping(0.7f, 0.7f);
+	}
+
+	@Override
+	public void destroy() {
+		trail.stop();
+		trail = null;
+		super.destroy();
 	}
 }

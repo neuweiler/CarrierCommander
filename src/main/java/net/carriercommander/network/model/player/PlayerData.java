@@ -46,11 +46,13 @@ public class PlayerData {
 		}
 
 		PhysicsRigidBody control = item.getControl();
-		boolean add = itemData.setLocation(control.getPhysicsLocation(tmpVec));
-		add |= itemData.setRotation(control.getPhysicsRotation(tmpQuat));
-		add |= itemData.setVelocity(control.getLinearVelocity(tmpVec));
-		if (add) {
-			updatedItems.add(itemData);
+		if (control != null) {
+			boolean add = itemData.setLocation(control.getPhysicsLocation(tmpVec));
+			add |= itemData.setRotation(control.getPhysicsRotation(tmpQuat));
+			add |= itemData.setVelocity(control.getLinearVelocity(tmpVec));
+			if (add) {
+				updatedItems.add(itemData);
+			}
 		}
 	}
 

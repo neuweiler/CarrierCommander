@@ -13,4 +13,8 @@ public class GameItem extends Node {
 	public PhysicsRigidBody getControl() {
 		return getControl(BaseControl.class);
 	}
+
+	public void destroy() {
+		removeControl(BaseControl.class);
+	}
 }

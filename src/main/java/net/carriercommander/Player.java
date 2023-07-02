@@ -52,6 +52,7 @@ public class Player {
 		app.enqueue(() -> {
 			BulletAppState bulletAppState = app.getStateManager().getState(BulletAppState.class);
 			bulletAppState.getPhysicsSpace().removeAll(gameItem);
+			gameItem.destroy();
 			gameItem.removeFromParent();
 		});
 
