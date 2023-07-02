@@ -1,6 +1,7 @@
 package net.carriercommander.control;
 
 import com.jme3.bullet.collision.shapes.CollisionShape;
+import net.carriercommander.Config;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,27 +18,27 @@ public class PlayerControl extends BaseControl {
 	}
 
 	public void steerLeft(float tpf) {
-		setRudder(rudder += 0.5f * tpf);
+		setRudder(rudder += Config.sensitivityRudder * tpf);
 	}
 
 	public void steerRight(float tpf) {
-		setRudder(rudder -= 0.5f * tpf);
+		setRudder(rudder -= Config.sensitivityRudder * tpf);
 	}
 
 	public void steerUp(float tpf) {
-		setAttitude(attitude -= 0.5f * tpf);
+		setAttitude(attitude -= Config.sensitivityAttitude * tpf);
 	}
 
 	public void steerDown(float tpf) {
-		setAttitude(attitude += 0.5f * tpf);
+		setAttitude(attitude += Config.sensitivityAttitude * tpf);
 	}
 
 	public void increaseSpeed(float tpf) {
-		setThrottle(throttle += 0.5f * tpf);
+		setThrottle(throttle += Config.sensitivityThrottle * tpf);
 	}
 
 	public void decreaseSpeed(float tpf) {
-		setThrottle(throttle -= 0.5f * tpf);
+		setThrottle(throttle -= Config.sensitivityThrottle * tpf);
 	}
 
 	public float getAttitude() {
@@ -76,7 +77,7 @@ public class PlayerControl extends BaseControl {
 	}
 
 	public void setFuel(float fuel) {
-		this.fuel = fuel;
+		this.fuel = constrain(fuel, 0.0f, 1.0f);
 	}
 
 	public WeaponType getWeaponType() {
