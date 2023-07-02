@@ -56,7 +56,7 @@ public class PlaneControl extends PlayerControl {
 	public void prePhysicsTick(PhysicsSpace arg0, float tpf) {
 		setGravity(gravity);
 
-		heading += rudder / 50;
+		heading += rudder * tpf;
 
 		velocity.setX(FastMath.sin(heading) * throttle * 100);
 		velocity.setZ(FastMath.cos(heading) * throttle * 100);
