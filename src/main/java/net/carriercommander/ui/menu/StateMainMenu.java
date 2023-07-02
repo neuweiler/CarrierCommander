@@ -2,11 +2,8 @@ package net.carriercommander.ui.menu;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jme3.app.Application;
-import com.jme3.math.Vector3f;
 import com.simsilica.lemur.*;
 import com.simsilica.lemur.component.SpringGridLayout;
-import com.simsilica.lemur.event.ConsumingMouseListener;
-import com.simsilica.lemur.event.MouseEventControl;
 import com.simsilica.lemur.style.ElementId;
 import net.carriercommander.Constants;
 import net.carriercommander.network.client.StateNetworkClient;
@@ -31,7 +28,7 @@ public class StateMainMenu extends WindowState {
 	private static final Logger logger = LoggerFactory.getLogger(StateMainMenu.class);
 	private List<GameConfig> gameConfigs;
 
-	private ListBox listWorld, listType;
+	private ListBox listGameConfigs, listGameTypes;
 	private TextField humanPlayers, aiPlayers, teams, port, minimumPlayers;
 
 	@Override
@@ -50,27 +47,27 @@ public class StateMainMenu extends WindowState {
 
 		Container worldPanel = gameSelectionPanel.addChild(new Container());
 		worldPanel.addChild(new Label("Select World", new ElementId("window.header.label")));
-		listWorld = worldPanel.addChild(new ListBox());
-		listWorld.setVisibleItems(4);
-		listWorld.setCellRenderer(new GameConfigCellRenderer());
-		gameConfigs.forEach(config -> listWorld.getModel().add(config));
-		listWorld.getSelectionModel().setSelection(0);
-		listWorld.addCommands(ListBox.ListAction.Click, new Command<ListBox>() {
+		listGameConfigs = worldPanel.addChild(new ListBox());
+		listGameConfigs.setVisibleItems(4);
+		listGameConfigs.setCellRenderer(new GameConfigCellRenderer());
+		gameConfigs.forEach(config -> listGameConfigs.getModel().add(config));
+		listGameConfigs.getSelectionModel().setSelection(0);
+		listGameConfigs.addCommands(ListBox.ListAction.Click, new Command<ListBox>() {
 			@Override
 			public void execute(ListBox source) {
-				listType.getModel().clear();
-				((GameConfig)source.getSelectedItem()).getGameTypes().forEach(gameType -> listType.getModel().add(gameType));
-				listType.getSelectionModel().setSelection(0);
+				listGameTypes.getModel().clear();
+				((GameConfig)source.getSelectedItem()).getGameTypes().forEach(gameType -> listGameTypes.getModel().add(gameType));
+				listGameTypes.getSelectionModel().setSelection(0);
 			}
 		});
 
 		Container gamePanel = gameSelectionPanel.addChild(new Container());
 		gamePanel.addChild(new Label("Select Game Type", new ElementId("window.header.label")));
-		listType = gamePanel.addChild(new ListBox());
-		listType.setVisibleItems(3);
-		listType.setCellRenderer(new GameTypeCellRenderer());
-		gameConfigs.get(0).getGameTypes().forEach(type -> listType.getModel().add(type));
-		listType.getSelectionModel().setSelection(0);
+		listGameTypes = gamePanel.addChild(new ListBox());
+		listGameTypes.setVisibleItems(3);
+		listGameTypes.setCellRenderer(new GameTypeCellRenderer());
+		gameConfigs.get(0).getGameTypes().forEach(type -> listGameTypes.getModel().add(type));
+		listGameTypes.getSelectionModel().setSelection(0);
 
 		Container gameParamsPanel = middleRow.addChild(new Container(new SpringGridLayout(Axis.Y, Axis.X, FillMode.None, FillMode.Last)), 1);
 		gameParamsPanel.addChild(new Label("Options", new ElementId("window.header.label")));
@@ -116,7 +113,7 @@ public class StateMainMenu extends WindowState {
 				humanPlayers.getText(), aiPlayers.getText(), teams.getText(),
 				port.getText(), minimumPlayers.getText());
 
-		startGame((GameConfig) listWorld.getSelectedItem(), (GameType) listType.getSelectedItem());
+		startGame((GameConfig) listGameConfigs.getSelectedItem(), (GameType) listGameTypes.getSelectedItem());
 	}
 
 	protected void connect() {
