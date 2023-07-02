@@ -13,8 +13,9 @@ jobs:
         with:
           java-version: '17'
           distribution: 'temurin'
+          cache: maven
       - name: Build
-        run: mvn --batch-mode --update-snapshots verify
+        run: mvn --batch-mode --update-snapshots package
       - name: Prepare Release
         run: mkdir staging && cp target/*.jar staging/carrier-commander-`date "+%Y-%m-%d"`.jar
       - name: Upload artifact
