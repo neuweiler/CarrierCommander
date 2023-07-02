@@ -40,7 +40,7 @@ import com.jme3.math.Matrix3f;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import jme3utilities.math.MyVector3f;
-import net.carriercommander.effects.ExplosionSmall;
+import net.carriercommander.effects.ImpactMissile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -51,8 +51,11 @@ import org.slf4j.LoggerFactory;
  */
 public class MissileControl extends BaseControl {
 	private static final Logger logger = LoggerFactory.getLogger(MissileControl.class);
+
+	private static final float FUEL_CONSUMPTION_PER_CYCLE = 0.001f;
+
 	private final Node target;
-	private final ExplosionSmall explosion;
+	private final ImpactMissile explosion;
 
 	private static final float deltaGainFactor = .1f;
 	private static final float errorGainFactor = .5f;
@@ -70,7 +73,7 @@ public class MissileControl extends BaseControl {
 	private final Vector3f rudderOffset = new Vector3f();
 	private float fuel = 1f;
 
-	public MissileControl(CollisionShape shape, Node target, float mass, ExplosionSmall explosion) {
+	public MissileControl(CollisionShape shape, Node target, float mass, ImpactMissile explosion) {
 		super(shape, mass);
 		this.explosion = explosion;
 		this.target = target;
@@ -87,12 +90,12 @@ public class MissileControl extends BaseControl {
 		}
 
 		float currentSpeed = -1 * getLinearVelocity().dot(getPhysicsRotation().getRotationColumn(2));
-		float thrust = 150 - currentSpeed;
+		float thrust = 200 - currentSpeed;
 		if (Math.round(thrust) > 0) {
 			getPhysicsRotation().getRotationColumn(2, thrustForce);
 			thrustForce.multLocal(thrust * tpf * -10);
 			applyForce(thrustForce, rudderOffset);
-			fuel -= FastMath.abs(thrust) * 0.0001f * tpf; //TODO find correct factor
+			fuel -= FastMath.abs(thrust) * FUEL_CONSUMPTION_PER_CYCLE * tpf;
 		}
 	}
 

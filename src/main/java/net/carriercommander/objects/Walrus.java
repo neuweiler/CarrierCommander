@@ -32,7 +32,6 @@
 package net.carriercommander.objects;
 
 import com.jme3.asset.AssetManager;
-import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.collision.shapes.BoxCollisionShape;
 import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.collision.shapes.CompoundCollisionShape;
@@ -46,9 +45,11 @@ import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.water.WaterFilter;
+import net.carriercommander.StateWater;
 import net.carriercommander.control.AmphibiousControl;
 import net.carriercommander.control.ShipControl;
 import net.carriercommander.objects.resources.ResourceManager;
+import net.carriercommander.ui.AbstractState;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -60,15 +61,16 @@ import org.slf4j.LoggerFactory;
 public class Walrus extends PlayerItem {
 	private static final Logger logger = LoggerFactory.getLogger(Walrus.class);
 	public static final float WIDTH = 3.8f, LENGTH = 8.5f, HEIGHT = 2.2f, MASS = 5f;
-	private ResourceManager resourceManager = new ResourceManager();
+	private final ResourceManager resourceManager = new ResourceManager();
 
-	public Walrus(String name, AssetManager assetManager, WaterFilter water, CameraNode camNode) {
+	public Walrus(AbstractState state, String name, CameraNode camNode) {
 		super(name, camNode);
 
-		Spatial model = loadModel(assetManager);
+		Spatial model = loadModel(state.getApplication().getAssetManager());
 		attachChild(model);
 		createCameraHooks(new Vector3f(0, 7, -.7f), new Vector3f(0, 7, -.7f));
 
+		WaterFilter water = state.getState(StateWater.class).getWater();
 		CollisionShape collisionShape = createCollisionShape();
 		ShipControl shipControl = createShipControl(collisionShape, water);
 		VehicleControl vehicleControl = createVehicleControl(collisionShape);

@@ -20,9 +20,9 @@ import com.jme3.water.WaterFilter;
 import net.carriercommander.control.MissileControl;
 import net.carriercommander.control.PlayerControl;
 import net.carriercommander.control.ProjectileControl;
-import net.carriercommander.objects.*;
 import net.carriercommander.objects.Manta;
 import net.carriercommander.objects.Walrus;
+import net.carriercommander.objects.*;
 import net.carriercommander.objects.resources.*;
 import net.carriercommander.ui.AbstractState;
 import org.slf4j.Logger;
@@ -88,7 +88,7 @@ public class StatePlayer extends AbstractState {
 	}
 
 	private void createCarrier() {
-		Carrier carrier = new Carrier(Constants.CARRIER, assetManager, physicsState, water, camNode);
+		Carrier carrier = new Carrier(this, Constants.CARRIER, camNode);
 		carrier.getControl().setPhysicsLocation(startPosition);
 		player.addItem(carrier);
 		addCarrierResources(carrier);
@@ -115,43 +115,43 @@ public class StatePlayer extends AbstractState {
 	}
 
 	private void createWalrus() {
-		Walrus walrus = new Walrus(Constants.WALRUS + "_1", assetManager, water, camNode);
+		Walrus walrus = new Walrus(this, Constants.WALRUS + "_1", camNode);
 		walrus.getControl().setPhysicsLocation(startPosition.add(300, 0, 0));
 		player.addItem(walrus);
 
-		walrus = new Walrus(Constants.WALRUS + "_2", assetManager, water, camNode);
+		walrus = new Walrus(this, Constants.WALRUS + "_2", camNode);
 		walrus.getControl().setPhysicsLocation(startPosition.add(250, 0, 0));
 		player.addItem(walrus);
 
-		walrus = new Walrus(Constants.WALRUS + "_3", assetManager, water, camNode);
+		walrus = new Walrus(this, Constants.WALRUS + "_3", camNode);
 		walrus.getControl().setPhysicsLocation(startPosition.add(200, 0, 0));
 		player.addItem(walrus);
 
-		walrus = new Walrus(Constants.WALRUS + "_4", assetManager, water, camNode);
+		walrus = new Walrus(this, Constants.WALRUS + "_4", camNode);
 		walrus.getControl().setPhysicsLocation(startPosition.add(150, 0, 0));
 		player.addItem(walrus);
 	}
 
 	private void createManta() {
-		Manta manta = new Manta(Constants.MANTA + "_1", assetManager, physicsState, camNode);
+		Manta manta = new Manta(this, Constants.MANTA + "_1", camNode);
 		manta.getControl().setPhysicsLocation(startPosition.add(300, 20, -100));
 		player.addItem(manta);
 
-		manta = new Manta(Constants.MANTA + "_2", assetManager, physicsState, camNode);
+		manta = new Manta(this, Constants.MANTA + "_2", camNode);
 		manta.getControl().setPhysicsLocation(startPosition.add(250, 20, -100));
 		player.addItem(manta);
 
-		manta = new Manta(Constants.MANTA + "_3", assetManager, physicsState, camNode);
+		manta = new Manta(this, Constants.MANTA + "_3", camNode);
 		manta.getControl().setPhysicsLocation(startPosition.add(200, 20, -100));
 		player.addItem(manta);
 
-		manta = new Manta(Constants.MANTA + "_4", assetManager, physicsState, camNode);
+		manta = new Manta(this, Constants.MANTA + "_4", camNode);
 		manta.getControl().setPhysicsLocation(startPosition.add(150, 20, -100));
 		player.addItem(manta);
 	}
 
 	private void createSupplyDrone() {
-		SupplyDrone supplyDrone = new SupplyDrone(Constants.SUPPLY_DRONE, assetManager, water, camNode);
+		SupplyDrone supplyDrone = new SupplyDrone(this, Constants.SUPPLY_DRONE, camNode);
 		supplyDrone.getControl().setPhysicsLocation(startPosition.add(150, 20, -150));
 		player.addItem(supplyDrone);
 	}
@@ -304,7 +304,7 @@ public class StatePlayer extends AbstractState {
 
 	private void fireCanon() {
 		Quaternion rotation = getActiveUnitControl().getPhysicsRotation();
-		Projectile projectile = new Projectile("projectile" + System.currentTimeMillis(), assetManager, physicsState.getPhysicsSpace(), rotation);
+		Projectile projectile = new Projectile(this, "projectile" + System.currentTimeMillis(), rotation);
 		ProjectileControl control = projectile.getControl(ProjectileControl.class);
 		control.setPhysicsLocation(getActiveUnitControl().getPhysicsLocation().add(rotation.mult(Vector3f.UNIT_Z).mult(15)));
 		control.setPhysicsRotation(rotation);
@@ -315,7 +315,7 @@ public class StatePlayer extends AbstractState {
 		GameItem target = findTarget(camNode.getWorldTranslation(), camNode.getWorldRotation(), getRootNode());
 		if (target != null) {
 			logger.info("fire missile at {}", target.getName());
-			Missile missile = new Missile(Constants.MISSILE + System.currentTimeMillis(), assetManager, physicsState.getPhysicsSpace(), getApplication().getRenderManager(), getRootNode(), target);
+			Missile missile = new Missile(this, Constants.MISSILE + System.currentTimeMillis(), target);
 			MissileControl missileControl = missile.getControl(MissileControl.class);
 			Vector3f location = getActiveUnitControl().getPhysicsLocation();
 			location.y -= 5; // TODO respect the attitude and angle

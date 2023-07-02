@@ -14,7 +14,7 @@ import org.slf4j.LoggerFactory;
 public class BaseControl extends RigidBodyControl implements PhysicsCollisionListener, PhysicsTickListener {
 	private static final Logger logger = LoggerFactory.getLogger(BaseControl.class);
 	protected float health = 1.0f;
-	private Player player = null;
+	protected Player player = null;
 
 	public BaseControl(CollisionShape shape, float mass) {
 		super(shape, mass);

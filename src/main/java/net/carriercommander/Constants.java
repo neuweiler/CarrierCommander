@@ -78,6 +78,4 @@ public interface Constants {
 
 	int NUM_WALRUS = 4;
 	int NUM_MANTA = 4;
-
-	enum GameType {strategy, action, network}
 }

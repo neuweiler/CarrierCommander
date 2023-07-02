@@ -32,17 +32,15 @@
 package net.carriercommander.objects;
 
 import com.jme3.asset.AssetManager;
-import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.collision.shapes.BoxCollisionShape;
 import com.jme3.bullet.collision.shapes.CollisionShape;
-import com.jme3.math.FastMath;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.queue.RenderQueue.ShadowMode;
 import com.jme3.scene.CameraNode;
-import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import net.carriercommander.control.PlaneControl;
 import net.carriercommander.objects.resources.ResourceManager;
+import net.carriercommander.ui.AbstractState;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -54,12 +52,12 @@ import org.slf4j.LoggerFactory;
 public class Manta extends PlayerItem {
 	private static final Logger logger = LoggerFactory.getLogger(Manta.class);
 	public static final float WIDTH = 4.8f, LENGTH = 5.4f, HEIGHT = 2f, MASS = 5f;
-	private ResourceManager resourceManager = new ResourceManager();
+	private final ResourceManager resourceManager = new ResourceManager();
 
-	public Manta(String name, AssetManager assetManager, BulletAppState phsyicsState, CameraNode camNode) {
+	public Manta(AbstractState state, String name, CameraNode camNode) {
 		super(name, camNode);
 
-		attachChild(loadModel(assetManager));
+		attachChild(loadModel(state.getApplication().getAssetManager()));
 
 		createCameraHooks(new Vector3f(0, 2.5f, -2), new Vector3f(0, 2.5f, -2));
 		CollisionShape collisionShape = createCollisionShape();
@@ -80,7 +78,7 @@ public class Manta extends PlayerItem {
 	}
 
 	private void createPlaneControl(CollisionShape collisionShape) {
-		PlaneControl control = new PlaneControl(collisionShape, MASS);
+		PlaneControl control = new 	PlaneControl(collisionShape, MASS);
 		addControl(control);
 		control.setDamping(0.1f, 0.5f);
 	}

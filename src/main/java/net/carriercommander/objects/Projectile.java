@@ -1,7 +1,6 @@
 package net.carriercommander.objects;
 
 import com.jme3.asset.AssetManager;
-import com.jme3.bullet.PhysicsSpace;
 import com.jme3.bullet.collision.shapes.BoxCollisionShape;
 import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.material.Material;
@@ -13,20 +12,23 @@ import com.jme3.scene.Spatial;
 import com.jme3.scene.shape.Cylinder;
 import net.carriercommander.Constants;
 import net.carriercommander.control.ProjectileControl;
+import net.carriercommander.effects.ImpactProjectile;
+import net.carriercommander.ui.AbstractState;
 
 public class Projectile extends GameItem {
 	private static Material material = null;
 	public static final float RADIUS = .1f, LENGTH = .9f, MASS = .0005f;
 	private static final Cylinder cylinder = new Cylinder(2, 6, RADIUS, LENGTH, true);
 
-	public Projectile(String name, AssetManager assetManager, PhysicsSpace physicsSpace, Quaternion rotation) {
+	public Projectile(AbstractState state, String name, Quaternion rotation) {
 		super(name);
 
-		attachChild(loadModel(assetManager));
+		attachChild(loadModel(state.getApplication().getAssetManager()));
 
 		CollisionShape collisionShape = createCollisionShape();
 
-		createProjectileControl(collisionShape, rotation);
+		ImpactProjectile explosion = new ImpactProjectile(state);
+		createProjectileControl(collisionShape, rotation, explosion);
 	}
 
 	private static void initMaterial(AssetManager assetManager) {
@@ -49,8 +51,8 @@ public class Projectile extends GameItem {
 		return new BoxCollisionShape(new Vector3f(RADIUS, RADIUS, LENGTH));
 	}
 
-	private void createProjectileControl(CollisionShape collisionShape, Quaternion rotation) {
-		ProjectileControl control = new ProjectileControl(collisionShape, MASS, rotation);
+	private void createProjectileControl(CollisionShape collisionShape, Quaternion rotation, ImpactProjectile explosion) {
+		ProjectileControl control = new ProjectileControl(collisionShape, MASS, rotation, explosion);
 		addControl(control);
 	}
 }

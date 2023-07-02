@@ -39,8 +39,10 @@ import com.jme3.renderer.queue.RenderQueue.ShadowMode;
 import com.jme3.scene.CameraNode;
 import com.jme3.scene.Spatial;
 import com.jme3.water.WaterFilter;
+import net.carriercommander.StateWater;
 import net.carriercommander.control.ShipControl;
 import net.carriercommander.objects.resources.ResourceManager;
+import net.carriercommander.ui.AbstractState;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -52,15 +54,15 @@ import org.slf4j.LoggerFactory;
 public class SupplyDrone extends GameItem {
 	private static final Logger logger = LoggerFactory.getLogger(SupplyDrone.class);
 	public static final float WIDTH = 10f, LENGTH = 10f, HEIGHT = 5f, MASS = 50f;
-	private ResourceManager resourceManager = new ResourceManager();
+	private final ResourceManager resourceManager = new ResourceManager();
 
-	public SupplyDrone(String name, AssetManager assetManager, WaterFilter water, CameraNode camNode) {
+	public SupplyDrone(AbstractState state, String name, CameraNode camNode) {
 		super(name);
 
-		attachChild(loadModel(assetManager));
+		attachChild(loadModel(state.getApplication().getAssetManager()));
 
 		CollisionShape collisionShape = createCollisionShape();
-		createShipControl(collisionShape, water);
+		createShipControl(collisionShape, state.getState(StateWater.class).getWater());
 	}
 
 	public static Spatial loadModel(AssetManager assetManager) {

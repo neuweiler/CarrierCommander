@@ -22,7 +22,7 @@ public abstract class AbstractState extends BaseAppState {
 	 * Retrieve the scene graph's root node.
 	 * @return the root node
 	 */
-	protected Node getRootNode() {
+	public Node getRootNode() {
 		return ((SimpleApplication) getApplication()).getRootNode();
 	}
 

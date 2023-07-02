@@ -34,7 +34,6 @@ package net.carriercommander.objects;
 import com.jme3.asset.AssetManager;
 import com.jme3.audio.AudioData;
 import com.jme3.audio.AudioNode;
-import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.collision.shapes.BoxCollisionShape;
 import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.collision.shapes.CompoundCollisionShape;
@@ -45,9 +44,11 @@ import com.jme3.scene.CameraNode;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.water.WaterFilter;
+import net.carriercommander.StateWater;
 import net.carriercommander.control.PlayerControl;
 import net.carriercommander.control.ShipControl;
 import net.carriercommander.objects.resources.ResourceManager;
+import net.carriercommander.ui.AbstractState;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -64,18 +65,18 @@ public class Carrier extends PlayerItem {
 	private Node camHookLaser = null;
 	private Node camHookFlareLauncher = null;
 	private Node camHookSurfaceMissile = null;
-	private ResourceManager resourceManager = new ResourceManager();
+	private final ResourceManager resourceManager = new ResourceManager();
 
-	public Carrier(String name, AssetManager assetManager, BulletAppState phsyicsState, WaterFilter water, CameraNode camNode) {
+	public Carrier(AbstractState state, String name, CameraNode camNode) {
 		super(name, camNode);
 
-		attachChild(loadModel(assetManager));
+		attachChild(loadModel(state.getApplication().getAssetManager()));
 		createCameraHooks();
 
 		CollisionShape collisionShape = createCollisionShape();
-		createShipControl(collisionShape, water);
+		createShipControl(collisionShape, state.getState(StateWater.class).getWater());
 
-		createAudio(assetManager);
+		createAudio(state.getApplication().getAssetManager());
 	}
 
 	public static Spatial loadModel(AssetManager assetManager) {
@@ -96,8 +97,8 @@ public class Carrier extends PlayerItem {
 
 	private ShipControl createShipControl(CollisionShape collisionShape, WaterFilter water) {
 		ShipControl shipControl = super.createShipControl(collisionShape, water, LENGTH, WIDTH, HEIGHT, MASS, 3.7f);
-		shipControl.setFriction(0.5f);
-		shipControl.setDamping(0.2f, 0.3f);
+		shipControl.setFriction(0.9f);
+		shipControl.setDamping(0.2f, 0.5f);
 		return shipControl;
 	}
 
