@@ -76,7 +76,9 @@ public class CarrierCommander extends SimpleApplication {
 		}
 		settings.setSettingsDialogImage("/Interface/splash-512.png");
 		settings.setTitle("Carrier Commander");
-		settings.setIcons(loadIcons());
+		if (!isMac()) {
+			settings.setIcons(loadIcons());
+		}
 
 		app.setShowSettings(!Constants.AUTOSTART);
 		app.setSettings(settings);
@@ -93,6 +95,10 @@ public class CarrierCommander extends SimpleApplication {
 			logger.warn("Error loading globe icons", e);
 		}
 		return icons.toArray(new BufferedImage[0]);
+	}
+
+	private static boolean isMac() {
+		return System.getProperty("os.name").toLowerCase().contains("mac") ;
 	}
 
 	public CarrierCommander() {
