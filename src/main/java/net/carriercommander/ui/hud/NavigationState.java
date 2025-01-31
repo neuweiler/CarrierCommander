@@ -58,6 +58,7 @@ public abstract class NavigationState extends WindowState {
 	private void updateInfoBox() {
 		float[] angles = activeUnit.getWorldRotation().toAngles(null);
 //		Optional<Island> island = IslandMap.getInstance().getClosestIsland(activeUnit.getWorldTranslation());
+		BaseControl control = activeUnit.getControl(BaseControl.class);
 		infoBox.setText("Position: "
 				+ String.format("%.02f", activeUnit.getLocalTranslation().getX() / Constants.MAP_SCENE_FACTOR) + " "
 				+ String.format("%.02f", activeUnit.getLocalTranslation().getZ() / Constants.MAP_SCENE_FACTOR) +
@@ -67,7 +68,7 @@ public abstract class NavigationState extends WindowState {
 //				+ (island.map(value -> value.getName()
 //				+   (" + Math.round(value.getPosition().distance(activeUnit.getWorldTranslation()) / Constants.MAP_SCENE_FACTOR) + ")")
 //						.orElse("-"))
-				+ "\nStatus: " + Math.round(activeUnit.getControl(BaseControl.class).getHealth() * 100)
+				+ "\nStatus: " + Math.round(control != null ? control.getHealth() * 100 : 0)
 		);
 	}
 
