@@ -25,7 +25,3 @@ jobs:
         with:
           name: CarrierCommander
           path: desktop/build/distributions/*.zip
-      - name: Publish package
-        run: ./gradlew publish
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
