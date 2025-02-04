@@ -14,6 +14,8 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
           cache: gradle
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@af1da67850ed9a4cedd57bfd976089dd991e2582 # v4.0.0
       - name: Permissions
         run: chmod +x gradlew
       - name: Build
@@ -21,10 +23,9 @@ jobs:
       - name: Upload Desktop build artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: Distro
-          path: desktop/build/distributions
-      - name: Upload VR-Desktop build artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: Distro
-          path: vrdesktop/build/distributions
+          name: CarrierCommander
+          path: desktop/build/distributions/*.zip
+      - name: Publish package
+        run: ./gradlew publish
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
