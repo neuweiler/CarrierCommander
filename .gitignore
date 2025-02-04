@@ -4,6 +4,10 @@
 *.so
 *.zip
 
+#gradle files
+**/build/
+/.gradle
+
 # Eclipse project files
 .classpath
 .project
@@ -16,4 +20,3 @@ target
 out
 gen
 /bin/
-
