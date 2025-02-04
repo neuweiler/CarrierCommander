@@ -14,8 +14,6 @@ java {
     targetCompatibility = '17'
 }
 
-ext.jmonkeyengineVersion = '3.7.0-stable'
-
 dependencies {
     implementation project(path: ':game')
     implementation 'org.jmonkeyengine:jme3-core:' + jmonkeyengineVersion

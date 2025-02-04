@@ -9,8 +9,6 @@ java {
     targetCompatibility = '17'
 }
 
-ext.jmonkeyengineVersion = '3.7.0-stable'
-
 dependencies {
     implementation 'org.jmonkeyengine:jme3-core:' + jmonkeyengineVersion
     runtimeOnly 'org.jmonkeyengine:jme3-jogg:' + jmonkeyengineVersion

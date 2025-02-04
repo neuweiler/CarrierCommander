@@ -11,6 +11,8 @@ buildscript {
 
 }
 
+ext.jmonkeyengineVersion = '3.7.0-stable'
+
 task clean(type: Delete) {
     delete rootProject.buildDir
 }

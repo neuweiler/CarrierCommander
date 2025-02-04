@@ -7,19 +7,17 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Set up JDK 17
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v4
         with:
           java-version: '17'
           distribution: 'temurin'
-          cache: maven
+          cache: gradle
       - name: Build
-        run: mvn --batch-mode --update-snapshots package
-      - name: Prepare Release
-        run: mkdir staging && cp target/*.jar staging/carrier-commander-`date "+%Y-%m-%d"`.jar
-      - name: Upload artifact
-        uses: actions/upload-artifact@v2
+        run: ./gradlew build
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
         with:
-          name: build
-          path: staging/*.jar
+          name: Package
+          path: build/libs
