@@ -36,10 +36,7 @@ public class StatePlayer extends AbstractState {
 	public enum PlayerUnit {CARRIER, WALRUS, MANTA}
 
 	private final CameraNode camNode;
-	private WaterFilter water;
 	private InputManager inputManager;
-	private AssetManager assetManager;
-	private BulletAppState physicsState;
 
 	private boolean mouseGrabbed = false;
 	private PlayerItem activeUnit;
@@ -54,9 +51,6 @@ public class StatePlayer extends AbstractState {
 	@Override
 	protected void initialize(Application app) {
 		inputManager = app.getInputManager();
-		assetManager = app.getAssetManager();
-		water = getState(StateWater.class).getWater();
-		physicsState = getState(BulletAppState.class);
 		player = new Player((SimpleApplication) app, -1);
 
 		initPlayer();

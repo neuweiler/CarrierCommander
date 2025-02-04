@@ -1,0 +1,33 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        
+        {
+            "type": "java",
+            "name": "Launch CarrierCommander",
+            "request": "launch",
+            "mainClass": "net.carriercommander.desktopmodule.DesktopLauncher",
+            "osx": {
+                "vmArgs": "-XstartOnFirstThread -ea"
+            },
+            "vmArgs": "-ea"
+        },
+        
+        
+        {
+            "type": "java",
+            "name": "Launch CarrierCommander VR",
+            "request": "launch",
+            "mainClass": "net.carriercommander.vrmodule.VrLauncher",
+            "osx": {
+                "vmArgs": "-XstartOnFirstThread -ea"
+            },
+            "vmArgs": "-ea"
+        },
+        
+
+    ]
+}

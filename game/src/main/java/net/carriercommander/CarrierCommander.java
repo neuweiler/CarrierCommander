@@ -32,6 +32,7 @@
 package net.carriercommander;
 
 import com.jme3.app.SimpleApplication;
+import com.jme3.app.state.AppState;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.system.AppSettings;
 import com.simsilica.lemur.GuiGlobals;
@@ -55,67 +56,23 @@ import java.util.prefs.BackingStoreException;
 public class CarrierCommander extends SimpleApplication {
 	private static final Logger logger = LoggerFactory.getLogger(CarrierCommander.class);
 
-	private static final String SETTINGS_TOKEN = "net/carriercommander";
-
-	public static void main(String... args) {
-		Utils.initSerializers();
-		CarrierCommander app = new CarrierCommander();
-		AppSettings settings = new AppSettings(true);
-
-		settings.setFrameRate(60);
-		settings.setResolution(1280, 720);
-		settings.setFullscreen(false);
-		settings.setVSync(true);
-//		settings.setSamples(8);
-		settings.setGammaCorrection(true);
-
-		try {
-			settings.load(SETTINGS_TOKEN);
-		} catch (BackingStoreException e) {
-			logger.error("unable to load previous settings", e);
-		}
-		settings.setSettingsDialogImage("/Interface/splash-512.png");
-		settings.setTitle("Carrier Commander");
-		if (!isMac()) {
-			settings.setIcons(loadIcons());
-		}
-
-		app.setShowSettings(!Constants.AUTOSTART);
-		app.setSettings(settings);
-		app.start();
-	}
-
-	private static BufferedImage[] loadIcons() {
-		ArrayList<BufferedImage> icons = new ArrayList<>();
-		try {
-			icons.add(ImageIO.read(CarrierCommander.class.getResource("/Icons/icon-128.png")));
-			icons.add(ImageIO.read(CarrierCommander.class.getResource("/Icons/icon-32.png")));
-			icons.add(ImageIO.read(CarrierCommander.class.getResource("/Icons/icon-16.png")));
-		} catch (Exception e) {
-			logger.warn("Error loading globe icons", e);
-		}
-		return icons.toArray(new BufferedImage[0]);
-	}
-
-	private static boolean isMac() {
-		return System.getProperty("os.name").toLowerCase().contains("mac") ;
-	}
-
 	public CarrierCommander() {
-		super(
-				new StateMainMenu()
-				, new StateSpinningCarrier()
-				//, new OptionPanelState()
-				, new StateNetworkMenu()
-		);
+		super(new StateMainMenu());
+	}
+
+	public CarrierCommander(AppState... initialStates) {
+		super(initialStates);
+		getStateManager().attach(new StateMainMenu());
 	}
 
 	@Override
 	public void simpleInitApp() {
+		Utils.initSerializers();
 		setDisplayFps(Constants.DEBUG);
 		setDisplayStatView(Constants.DEBUG);
 		createUI();
 		activatePhysics();
+		attachStates();
 	}
 
 	private void createUI() {
@@ -139,4 +96,9 @@ public class CarrierCommander extends SimpleApplication {
 		physicsState.getPhysicsSpace().setMaxSubSteps(0); // prevent stutter and sudden stops in forward motion
 	}
 
+	private void attachStates() {
+		getStateManager().attach(new StateSpinningCarrier());
+//		getStateManager().attach(new OptionPanelState());
+		getStateManager().attach(new StateNetworkMenu());
+	}
 }

@@ -2,7 +2,16 @@ package net.carriercommander.ui.menu;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jme3.app.Application;
-import com.simsilica.lemur.*;
+import com.simsilica.lemur.ActionButton;
+import com.simsilica.lemur.Axis;
+import com.simsilica.lemur.CallMethodAction;
+import com.simsilica.lemur.Command;
+import com.simsilica.lemur.Container;
+import com.simsilica.lemur.FillMode;
+import com.simsilica.lemur.GuiGlobals;
+import com.simsilica.lemur.Label;
+import com.simsilica.lemur.ListBox;
+import com.simsilica.lemur.TextField;
 import com.simsilica.lemur.component.SpringGridLayout;
 import com.simsilica.lemur.style.ElementId;
 import net.carriercommander.Constants;
@@ -18,11 +27,15 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.file.FileSystem;
+import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class StateMainMenu extends WindowState {
 	private static final Logger logger = LoggerFactory.getLogger(StateMainMenu.class);
@@ -134,18 +147,25 @@ public class StateMainMenu extends WindowState {
 		ObjectMapper mapper = new ObjectMapper();
 		try {
 			URI uri = getClass().getResource(resourcePath).toURI();
+
+			Map<String, String> env = new HashMap<>();
+			env.put("create", "true");
+			FileSystem zipFs = FileSystems.newFileSystem(uri, env);
+
 			Path dirPath = Paths.get(uri);
 			Files.list(dirPath)
 					.forEach(path -> {
 						logger.info("loading game config '{}'", path);
 						try {
-							GameConfig config = mapper.readValue(path.toFile(), GameConfig.class);
+							GameConfig config = mapper.readValue(path.toUri().toURL(), GameConfig.class);
 							gameConfigs.add(config);
 						} catch (IOException e) {
 							e.printStackTrace();
 							throw new RuntimeException("unable to parse config file", e);
 						}
 					});
+
+			zipFs.close();
 		} catch (IOException | URISyntaxException e) {
 			logger.error("unable to load game configs", e);
 			throw new RuntimeException("invalid configs");

@@ -1,0 +1,222 @@
+plugins {
+    id 'application'
+    id "de.undercouch.download" version "5.1.0"
+    id "io.github.0ffz.github-packages" version "1.2.1" // Plugin for anonymous inclusion of artifacts hosted in github package registry
+}
+
+group 'net.carriercommander'
+version '1.0.0'
+mainClassName = 'net.carriercommander.vrmodule.VrLauncher'
+String dependenciesString = ""
+
+java {
+    sourceCompatibility = '17'
+    targetCompatibility = '17'
+}
+
+ext.jmonkeyengineVersion = '3.7.0-stable'
+
+dependencies {
+    implementation project(path: ':game')
+    implementation 'org.jmonkeyengine:jme3-core:' + jmonkeyengineVersion
+    implementation "org.jmonkeyengine:jme3-effects:" + jmonkeyengineVersion
+    implementation "org.jmonkeyengine:jme3-lwjgl3:" + jmonkeyengineVersion
+    
+    implementation 'org.jmonkeyengine:jme3-desktop:' + jmonkeyengineVersion
+    
+    implementation 'com.onemillionworlds:tamarin:2.6.1'
+}
+task copyJars(type: Copy) {
+    from (sourceSets.main.runtimeClasspath){
+        include '**/*.jar'
+    }
+    from(sourceSets.main.compileClasspath){
+        include '**/*.jar'
+    }
+    into('build/libs/dependencies')
+    includeEmptyDirs = false
+    setDuplicatesStrategy(DuplicatesStrategy.EXCLUDE)
+}
+/**
+ * Better approach described below, but the 2 of them are vial ones
+ */
+task createJar(type : Jar, dependsOn : copyJars){
+    //get the copied jars
+    final String project = rootDir.getPath()
+    final File dependencies = new File(project + "/desktop/build/libs/dependencies/")
+    if(dependencies.exists()) {
+        if (dependencies.listFiles().length > 0) {
+            final File[] files = dependencies.listFiles()
+            for (int i = 0; i < files.length; i++) {
+                final String fileName = files[i].getName()
+                if (fileName.contains(".jar")) {
+                    dependenciesString += "dependencies/" + fileName + " "
+                }
+            }
+        }
+    }
+    manifest{
+        attributes('Main-Class': mainClassName)
+        //pass the jars to the manifest
+        attributes('Class-Path' : dependenciesString)
+        attributes('Created-By' : 'Jme3-Gradle')
+    }
+    with jar
+}
+/**
+ * A Suggestion of better code by : Mikhail Bobrutskov (aka wizzardo)
+ */
+task releaseJar(type: Jar, dependsOn: copyJars) {
+    manifest {
+        attributes("Main-Class": mainClassName,
+                "Class-Path": sourceSets.main.runtimeClasspath.filter {it.isFile() }.collect { "dependencies/${it.name}" }.join(' '))
+    }
+    //tag the jar task to inject this task into it
+    with jar
+}
+
+distZip {
+    //having a degenerate folder within the dist zip complicates generating the other zips
+    eachFile { file ->
+        String path = file.relativePath
+        file.setPath(path.substring(path.indexOf("/") + 1, path.length()))
+    }
+    includeEmptyDirs(false)
+}
+
+//See https://api.adoptium.net/v3/assets/feature_releases/11/ga?image_type=jre for jre urls
+def windowsJreUrl = "https://github.com/adoptium/temurin17-binaries/releases/download/jdk-17.0.6%2B10/OpenJDK17U-jre_x64_windows_hotspot_17.0.6_10.zip"
+def linuxJreUrl = "https://github.com/adoptium/temurin17-binaries/releases/download/jdk-17.0.6%2B10/OpenJDK17U-jre_x64_linux_hotspot_17.0.6_10.tar.gz"
+def macJreUrl = "https://github.com/adoptium/temurin17-binaries/releases/download/jdk-17.0.6%2B10/OpenJDK17U-jre_x64_mac_hotspot_17.0.6_10.tar.gz"
+
+
+task downloadWindowsJre(type: Download) {
+    src windowsJreUrl
+    dest new File(buildDir, '/jres/windowsJre.zip')
+    overwrite false
+}
+
+task downloadAndUnzipWindowsJre(dependsOn: downloadWindowsJre, type: Copy) {
+    from zipTree(downloadWindowsJre.dest)
+    into "${buildDir}/jres/windowsJre/"
+    includeEmptyDirs(false)
+    filesMatching("**") {
+        it.path = it.path.replaceAll("^[a-zA-Z0-9.+-]*[/\\\\]", "jre/") //rename the top level to something standard so the rest of the script will be easier
+    }
+}
+
+task buildWindowsDistribution(dependsOn: [distZip, downloadAndUnzipWindowsJre], type: Copy)
+{
+    group 'distribution'
+    from files("${projectDir}/scripts/desktopDeployment/CarrierCommander.bat"), zipTree(distZip.archiveFile), "${buildDir}/jres/windowsJre"
+    into new File(buildDir, 'distributions/CarrierCommander-windows')
+    includeEmptyDirs false
+    exclude 'bin/**' //we are adding our own run scripts, exclude the ones coming from distZip
+}
+
+task zipWindowsDistribution( dependsOn:buildWindowsDistribution, type: Zip) {
+    group 'distribution'
+    archiveFileName = "CarrierCommander-windows.zip"
+    destinationDirectory = file("$buildDir/distributions")
+    from "$buildDir/distributions/CarrierCommander-windows"
+}
+
+
+task downloadLinuxJre(type: Download) {
+    src linuxJreUrl
+    dest new File(buildDir, '/jres/linuxJre.tar.gz')
+    overwrite false
+}
+
+task downloadAndUnzipLinuxJre(dependsOn: downloadLinuxJre, type: Copy) {
+    from tarTree(downloadLinuxJre.dest)
+    into "${buildDir}/jres/linuxJre/"
+    includeEmptyDirs(false)
+    filesMatching("**") {
+        it.path = it.path.replaceAll("^[a-zA-Z0-9.+-]*[/\\\\]", "jre/") //rename the top level to something standard so the rest of the script will be easier
+    }
+}
+
+task buildLinuxDistribution(dependsOn: [distZip, downloadAndUnzipLinuxJre], type: Copy)
+{
+    group 'distribution'
+    from files("${projectDir}/scripts/desktopDeployment/CarrierCommander.sh"){
+        fileMode 0755
+    }
+    from zipTree(distZip.archiveFile)
+    from "${buildDir}/jres/linuxJre"
+    into new File(buildDir, 'distributions/CarrierCommander-linux')
+    includeEmptyDirs false
+    exclude 'bin/**' //we are adding our own run scripts, exclude the ones coming from distZip
+}
+
+task zipLinuxDistribution( dependsOn:buildLinuxDistribution, type: Zip) {
+    group 'distribution'
+    archiveFileName = "CarrierCommander-linux.tar.gz"
+    destinationDirectory = file("$buildDir/distributions")
+    from ("$buildDir/distributions/CarrierCommander-linux"){
+      include('**.sh')
+      include('**/java')
+      fileMode 0755
+    }
+    from ("$buildDir/distributions/CarrierCommander-linux"){
+        exclude('**.sh')
+        exclude('**/java')
+    }
+}
+
+
+task downloadMacJre(type: Download) {
+    src macJreUrl
+    dest new File(buildDir, '/jres/macJre.tar.gz')
+    overwrite false
+}
+
+task downloadAndUnzipMacJre(dependsOn: downloadMacJre, type: Copy) {
+    from tarTree(downloadMacJre.dest)
+    into "${buildDir}/jres/macJre/"
+    includeEmptyDirs(false)
+    filesMatching("**") {
+        it.path = it.path.replaceAll("^[a-zA-Z0-9.+-]*[/\\\\]", "jre/") //rename the top level to something standard so the rest of the script will be easier
+    }
+}
+
+task buildMacDistribution(dependsOn: [distZip, downloadAndUnzipMacJre], type: Copy)
+{
+    group 'distribution'
+    from files("${projectDir}/scripts/desktopDeployment/CarrierCommander.command"){
+        fileMode 0755
+    }
+    from zipTree(distZip.archiveFile) 
+    from "${buildDir}/jres/macJre"
+    into new File(buildDir, 'distributions/CarrierCommander-mac')
+    includeEmptyDirs false
+    exclude 'bin/**' //we are adding our own run scripts, exclude the ones coming from distZip
+}
+
+task zipMacDistribution( dependsOn:buildMacDistribution, type: Zip) {
+    group 'distribution'
+    archiveFileName = "CarrierCommander-mac.tar.gz"
+    destinationDirectory = file("$buildDir/distributions")
+    from ("$buildDir/distributions/CarrierCommander-mac"){
+      include('**.command')
+      include('**/java')
+      fileMode 0755
+    }
+    from ("$buildDir/distributions/CarrierCommander-mac"){
+        exclude('**.command')
+        exclude('**/java')
+    }
+}
+
+task buildAllDistributions{
+    group 'distribution'
+    dependsOn 'zipWindowsDistribution'
+    dependsOn 'zipLinuxDistribution'
+    dependsOn 'zipMacDistribution'
+
+    doLast {
+        println("Distributions created in build/distributions folder")
+    }
+}
+

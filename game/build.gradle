@@ -1,0 +1,32 @@
+plugins {
+    id 'java-library'
+    id "io.github.0ffz.github-packages" version "1.2.1" // Plugin for anonymous inclusion of artifacts hosted in github package registry
+    id("io.freefair.lombok") version "8.12"
+}
+
+java {
+    sourceCompatibility = '17'
+    targetCompatibility = '17'
+}
+
+ext.jmonkeyengineVersion = '3.7.0-stable'
+
+dependencies {
+    implementation 'org.jmonkeyengine:jme3-core:' + jmonkeyengineVersion
+    runtimeOnly 'org.jmonkeyengine:jme3-jogg:' + jmonkeyengineVersion
+    runtimeOnly 'org.jmonkeyengine:jme3-plugins:' + jmonkeyengineVersion
+
+    implementation 'org.jmonkeyengine:jme3-effects:' + jmonkeyengineVersion
+    implementation 'org.jmonkeyengine:jme3-terrain:' + jmonkeyengineVersion
+    implementation 'org.jmonkeyengine:jme3-networking:' + jmonkeyengineVersion
+    implementation 'com.simsilica:lemur:1.16.0'
+    implementation 'com.simsilica:lemur-proto:1.13.0'
+    implementation 'com.github.stephengold:Minie:8.2.0'
+	
+	implementation 'org.codehaus.groovy:groovy-jsr223:3.0.22'
+	implementation 'org.slf4j:slf4j-api:2.0.12'
+	implementation 'ch.qos.logback:logback-classic:1.5.6'
+	implementation 'com.fasterxml.jackson.core:jackson-databind:2.17.0'
+	implementation 'org.projectlombok:lombok:1.18.36'
+	implementation 'com.google.guava:guava:33.2.1-jre'
+}
