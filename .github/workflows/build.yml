@@ -18,8 +18,13 @@ jobs:
         run: chmod +x gradlew
       - name: Build
         run: ./gradlew build
-      - name: Upload build artifacts
+      - name: Upload Desktop build artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: Package
-          path: build/libs
+          name: Distro
+          path: desktop/build/distributions
+      - name: Upload VR-Desktop build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: Distro
+          path: vrdesktop/build/distributions
