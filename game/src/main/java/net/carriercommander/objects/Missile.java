@@ -52,14 +52,6 @@ public class Missile extends GameItem {
 
 	private TrailMissile trail;
 
-	@Override
-	protected void finalize() throws Throwable {
-		System.out.println("*****************************************************");
-		System.out.println("*******************finalize missile *****************");
-		System.out.println("*****************************************************");
-		super.finalize();
-	}
-
 	public Missile(AbstractState state, String name, Node target) {
 		super(name);
 

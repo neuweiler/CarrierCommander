@@ -7,7 +7,6 @@ import net.carriercommander.Constants;
 import net.carriercommander.Player;
 import net.carriercommander.StatePlayer;
 import net.carriercommander.objects.Carrier;
-import net.carriercommander.objects.PlayerItem;
 import net.carriercommander.objects.resources.ResourceContainer;
 import net.carriercommander.ui.WindowState;
 import net.carriercommander.ui.hud.widgets.ImageButton;

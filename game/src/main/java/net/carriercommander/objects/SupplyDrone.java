@@ -36,7 +36,6 @@ import com.jme3.bullet.collision.shapes.BoxCollisionShape;
 import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.queue.RenderQueue.ShadowMode;
-import com.jme3.scene.CameraNode;
 import com.jme3.scene.Spatial;
 import com.jme3.water.WaterFilter;
 import net.carriercommander.StateWater;
@@ -56,7 +55,7 @@ public class SupplyDrone extends GameItem {
 	public static final float WIDTH = 10f, LENGTH = 10f, HEIGHT = 5f, MASS = 50f;
 	private final ResourceManager resourceManager = new ResourceManager();
 
-	public SupplyDrone(AbstractState state, String name, CameraNode camNode) {
+	public SupplyDrone(AbstractState state, String name) {
 		super(name);
 
 		attachChild(loadModel(state.getApplication().getAssetManager()));

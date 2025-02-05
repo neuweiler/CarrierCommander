@@ -34,7 +34,6 @@ package net.carriercommander;
 import com.jme3.app.SimpleApplication;
 import com.jme3.app.state.AppState;
 import com.jme3.bullet.BulletAppState;
-import com.jme3.system.AppSettings;
 import com.simsilica.lemur.GuiGlobals;
 import com.simsilica.lemur.style.BaseStyles;
 import net.carriercommander.network.Utils;
@@ -42,11 +41,6 @@ import net.carriercommander.ui.menu.StateMainMenu;
 import net.carriercommander.ui.menu.StateNetworkMenu;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
-import java.util.ArrayList;
-import java.util.prefs.BackingStoreException;
 
 /**
  * Carrier Commander Main Class

@@ -16,7 +16,7 @@ public class PaintedGauge extends PaintableImage {
 	 * the host image is not fully opaque - the gauge will be rendered behind the image.
 	 *
 	 * @param widthContainer The width of the container image - should match the picture width otherwise gauge will get stretched
-	 * @param heightContainer The heigth of the container image - should match the picture heigth otherwise gauge will get stretched
+	 * @param heightContainer The height of the container image - should match the picture height otherwise gauge will get stretched
 	 * @param offsetX The x offset where the start point of the gauge will appear inside the host image
 	 * @param offsetY The y offset where the start point of the gauge will appear inside the host image
 	 * @param widthGauge The desired width of the gauge bar

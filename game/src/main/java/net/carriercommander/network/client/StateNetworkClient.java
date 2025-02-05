@@ -91,7 +91,7 @@ public class StateNetworkClient extends AbstractState implements ClientStateList
 
 		if (networkClient != null && networkClient.isConnected()) {
 			List<GameItemData> updatedItems = playerData.getModifiedItems();
-			if (updatedItems.size() > 0) {
+			if (!updatedItems.isEmpty()) {
 				messagePlayerUpdate.setItemData(updatedItems);
 				networkClient.send(messagePlayerUpdate);
 				playerData.clear();

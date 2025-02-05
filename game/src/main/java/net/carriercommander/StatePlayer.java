@@ -2,28 +2,47 @@ package net.carriercommander;
 
 import com.jme3.app.Application;
 import com.jme3.app.SimpleApplication;
-import com.jme3.asset.AssetManager;
-import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.control.VehicleControl;
 import com.jme3.collision.CollisionResults;
 import com.jme3.input.InputManager;
 import com.jme3.input.KeyInput;
 import com.jme3.input.MouseInput;
-import com.jme3.input.controls.*;
+import com.jme3.input.controls.ActionListener;
+import com.jme3.input.controls.AnalogListener;
+import com.jme3.input.controls.KeyTrigger;
+import com.jme3.input.controls.MouseAxisTrigger;
+import com.jme3.input.controls.MouseButtonTrigger;
 import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Ray;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.CameraNode;
 import com.jme3.scene.Node;
-import com.jme3.water.WaterFilter;
 import net.carriercommander.control.MissileControl;
 import net.carriercommander.control.PlayerControl;
 import net.carriercommander.control.ProjectileControl;
+import net.carriercommander.objects.Carrier;
+import net.carriercommander.objects.GameItem;
 import net.carriercommander.objects.Manta;
+import net.carriercommander.objects.Missile;
+import net.carriercommander.objects.PlayerItem;
+import net.carriercommander.objects.Projectile;
+import net.carriercommander.objects.SupplyDrone;
 import net.carriercommander.objects.Walrus;
-import net.carriercommander.objects.*;
-import net.carriercommander.objects.resources.*;
+import net.carriercommander.objects.resources.AssassinMissile;
+import net.carriercommander.objects.resources.CommPod;
+import net.carriercommander.objects.resources.CommandCenter;
+import net.carriercommander.objects.resources.DecoyFlare;
+import net.carriercommander.objects.resources.DefenseDrone;
+import net.carriercommander.objects.resources.FragmenationBomb;
+import net.carriercommander.objects.resources.FuelPod;
+import net.carriercommander.objects.resources.HammerHeadMissile;
+import net.carriercommander.objects.resources.HarbingerMissile;
+import net.carriercommander.objects.resources.PulseLaser;
+import net.carriercommander.objects.resources.QuasarLaser;
+import net.carriercommander.objects.resources.ReconDrone;
+import net.carriercommander.objects.resources.ResourceContainer;
+import net.carriercommander.objects.resources.VirusBomb;
 import net.carriercommander.ui.AbstractState;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -145,7 +164,7 @@ public class StatePlayer extends AbstractState {
 	}
 
 	private void createSupplyDrone() {
-		SupplyDrone supplyDrone = new SupplyDrone(this, Constants.SUPPLY_DRONE, camNode);
+		SupplyDrone supplyDrone = new SupplyDrone(this, Constants.SUPPLY_DRONE);
 		supplyDrone.getControl().setPhysicsLocation(startPosition.add(150, 20, -150));
 		player.addItem(supplyDrone);
 	}

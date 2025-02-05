@@ -1,13 +1,19 @@
 package net.carriercommander.ui.menu;
 
 import com.jme3.app.Application;
-import com.jme3.math.Vector3f;
-import com.simsilica.lemur.*;
+import com.simsilica.lemur.ActionButton;
+import com.simsilica.lemur.Axis;
+import com.simsilica.lemur.CallMethodAction;
+import com.simsilica.lemur.Container;
+import com.simsilica.lemur.FillMode;
+import com.simsilica.lemur.Insets3f;
+import com.simsilica.lemur.Label;
+import com.simsilica.lemur.OptionPanelState;
+import com.simsilica.lemur.TextField;
 import com.simsilica.lemur.component.SpringGridLayout;
 import com.simsilica.lemur.style.ElementId;
 import net.carriercommander.Constants;
 import net.carriercommander.network.client.StateNetworkClient;
-import net.carriercommander.network.host.StateNetworkHost;
 import net.carriercommander.ui.WindowState;
 import net.carriercommander.ui.hud.widgets.Window;
 import org.slf4j.Logger;
@@ -52,14 +58,14 @@ public class StateNetworkMenu extends WindowState {
 
 	protected int validatePort(String title, String sInt ) {
 		sInt = sInt.trim();
-		if( sInt.length() == 0 ) {
+		if(sInt.isEmpty()) {
 			showError(title + " Error", "Please specify a port.\nDefault is " + Constants.DEFAULT_PORT);
 			return -1;
 		}
 		try {
 			return Integer.parseInt(sInt);
 		} catch( Exception e ) {
-			logger.error("Error parsing port:" + sInt, e);
+			logger.error("Error parsing port:{}", sInt, e);
 			showError(title + " Error", "Invalid port:" + sInt + "\n"
 					+ e.getClass().getSimpleName() + ":" + e.getMessage());
 			return -1;
@@ -89,9 +95,9 @@ public class StateNetworkMenu extends WindowState {
 	}
 
 	private void connect() {
-		logger.info("Connect... host:" + connectHost.getText() + " port:" + connectPort.getText());
+		logger.info("Connect... host:{} port:{}", connectHost.getText(), connectPort.getText());
 		String host = connectHost.getText().trim();
-		if( host.length() == 0 ) {
+		if(host.isEmpty()) {
 			showError("Connect Error", "Please specify a host.");
 			return;
 		}

@@ -1,17 +1,17 @@
 package net.carriercommander.vrmodule;
 
-import net.carriercommander.CarrierCommander;
-import com.jme3.math.Vector3f;
 import com.jme3.app.LostFocusBehavior;
+import com.jme3.math.Vector3f;
 import com.jme3.system.AppSettings;
 import com.onemillionworlds.tamarin.actions.ActionType;
-import com.onemillionworlds.tamarin.actions.OpenXrActionState;
+import com.onemillionworlds.tamarin.actions.XrActionAppState;
 import com.onemillionworlds.tamarin.actions.actionprofile.Action;
 import com.onemillionworlds.tamarin.actions.actionprofile.ActionManifest;
 import com.onemillionworlds.tamarin.actions.actionprofile.ActionSet;
 import com.onemillionworlds.tamarin.openxr.XrAppState;
 import com.onemillionworlds.tamarin.vrhands.HandSpec;
 import com.onemillionworlds.tamarin.vrhands.VRHandsAppState;
+import net.carriercommander.CarrierCommander;
 
 /**
  * Used to launch a jme application in desktop VR environment
@@ -28,7 +28,7 @@ public class VrLauncher {
         xrState.movePlayersFeetToPosition(new Vector3f(0,0,10));
         xrState.playerLookAtPosition(new Vector3f(0,0,0));
 
-        CarrierCommander app = new CarrierCommander(xrState, new OpenXrActionState(manifest(), ActionSets.MAIN), new VRHandsAppState(handSpec()));
+        CarrierCommander app = new CarrierCommander(xrState, new XrActionAppState(manifest(), ActionSets.MAIN), new VRHandsAppState(handSpec()));
         app.setLostFocusBehavior(LostFocusBehavior.Disabled);
         app.setSettings(settings);
         app.setShowSettings(false);

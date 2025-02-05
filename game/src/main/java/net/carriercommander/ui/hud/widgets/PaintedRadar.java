@@ -32,7 +32,7 @@ public class PaintedRadar extends PaintableImage {
 	 * the host image is not fully opaque - the gauge will be rendered behind the image.
 	 *
 	 * @param widthContainer The width of the container image - should match the picture width otherwise radar will get stretched
-	 * @param heightContainer The heigth of the container image - should match the picture heigth otherwise radar will get stretched
+	 * @param heightContainer The height of the container image - should match the picture height otherwise radar will get stretched
 	 * @param offsetX The x offset where the start point of the gauge will appear inside the host image
 	 * @param offsetY The y offset where the start point of the gauge will appear inside the host image
 	 * @param radius The radius of the radar to be painted

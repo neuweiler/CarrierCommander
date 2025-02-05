@@ -39,7 +39,6 @@ import com.jme3.renderer.queue.RenderQueue.ShadowMode;
 import com.jme3.scene.CameraNode;
 import com.jme3.scene.Spatial;
 import net.carriercommander.control.PlaneControl;
-import net.carriercommander.objects.resources.ResourceManager;
 import net.carriercommander.ui.AbstractState;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,7 +51,6 @@ import org.slf4j.LoggerFactory;
 public class Manta extends PlayerItem {
 	private static final Logger logger = LoggerFactory.getLogger(Manta.class);
 	public static final float WIDTH = 4.8f, LENGTH = 5.4f, HEIGHT = 2f, MASS = 5f;
-	private final ResourceManager resourceManager = new ResourceManager();
 
 	public Manta(AbstractState state, String name, CameraNode camNode) {
 		super(name, camNode);
@@ -81,9 +79,5 @@ public class Manta extends PlayerItem {
 		PlaneControl control = new 	PlaneControl(collisionShape, MASS);
 		addControl(control);
 		control.setDamping(0.1f, 0.5f);
-	}
-
-	public ResourceManager getResourceManager() {
-		return resourceManager;
 	}
 }

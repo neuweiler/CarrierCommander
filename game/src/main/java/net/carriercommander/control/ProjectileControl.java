@@ -37,8 +37,6 @@ import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import net.carriercommander.effects.ImpactProjectile;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Controller for projectiles
@@ -46,8 +44,6 @@ import org.slf4j.LoggerFactory;
  * @author Michael Neuweiler
  */
 public class ProjectileControl extends PlayerControl {
-	private static final Logger logger = LoggerFactory.getLogger(ProjectileControl.class);
-
 	private static final int INITIAL_SPEED = 100;
 	private static final float FUEL_CONSUMPTION_PER_CYCLE = 0.1f;
 

@@ -157,13 +157,11 @@ public class MissileControl extends BaseControl {
 			}
 
 			// add impulse from explosion
-			if (event.getObjectA() instanceof RigidBodyControl) {
-				RigidBodyControl rbc = (RigidBodyControl) event.getObjectA();
+			if (event.getObjectA() instanceof RigidBodyControl rbc) {
 				rbc.applyImpulse(event.getLateralFrictionDir1(null).mult(-100),
 						event.getLocalPointA(null));
 			}
-			if (event.getObjectB() instanceof RigidBodyControl) {
-				RigidBodyControl rbc = (RigidBodyControl) event.getObjectB();
+			if (event.getObjectB() instanceof RigidBodyControl rbc) {
 				rbc.applyImpulse(event.getLateralFrictionDir2(null).mult(-100),
 						event.getLocalPointB(null));
 			}

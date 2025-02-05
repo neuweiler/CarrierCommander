@@ -39,15 +39,11 @@ import com.jme3.scene.CameraNode;
 import com.jme3.scene.Node;
 import com.jme3.water.WaterFilter;
 import net.carriercommander.control.ShipControl;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * @author Michael Neuweiler
  */
 public abstract class PlayerItem extends GameItem {
-	private static final Logger logger = LoggerFactory.getLogger(PlayerItem.class);
-
 	protected CameraNode camNode;
 	private boolean rearView = false;
 	protected AudioNode audio = null;

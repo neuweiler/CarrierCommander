@@ -2,6 +2,8 @@ package net.carriercommander.ui;
 
 import com.jme3.app.Application;
 import com.jme3.app.state.AppState;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -16,6 +18,7 @@ import java.util.List;
  * should be visible.
  */
 public abstract class ControlState extends WindowState {
+	private final Logger logger = LoggerFactory.getLogger(ControlState.class);
 
 	protected List<Class<AppState>> states = new ArrayList<>();
 	private Class<AppState> lastActiveSubstate = null;
@@ -27,7 +30,7 @@ public abstract class ControlState extends WindowState {
 			try {
 				getStateManager().attach(state.getDeclaredConstructor().newInstance());
 			} catch (Exception e) {
-				e.printStackTrace();
+				logger.error("unable to initialize", e);
 			}
 		});
 		switchToState(null);
@@ -54,7 +57,7 @@ public abstract class ControlState extends WindowState {
 	/**
 	 * Enable the specified sub-state and disable all other sub-states
 	 * @param classToEnable the class of the state which is to be enabled
-	 *                         (must be properly instatiated and initialized via this class' initialize() method)
+	 *                         (must be properly instantiated and initialized via this class' initialize() method)
 	 */
 	protected void switchToState(Class classToEnable) {
 		states.forEach(state -> getState(state).setEnabled(state.equals(classToEnable)));

@@ -1,12 +1,20 @@
 package net.carriercommander.ui.menu;
 
 import com.jme3.app.Application;
-import com.jme3.bullet.BulletAppState;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.CameraNode;
 import com.jme3.scene.control.CameraControl;
-import com.simsilica.lemur.*;
-import net.carriercommander.*;
+import com.simsilica.lemur.Insets3f;
+import com.simsilica.lemur.Label;
+import com.simsilica.lemur.ProgressBar;
+import net.carriercommander.Constants;
+import net.carriercommander.StateLights;
+import net.carriercommander.StatePlayer;
+import net.carriercommander.StateSky;
+import net.carriercommander.StateSpinningCarrier;
+import net.carriercommander.StateTerrain;
+import net.carriercommander.StateViewFilter;
+import net.carriercommander.StateWater;
 import net.carriercommander.network.model.config.Island;
 import net.carriercommander.ui.WindowState;
 import net.carriercommander.ui.hud.StateMainControls;

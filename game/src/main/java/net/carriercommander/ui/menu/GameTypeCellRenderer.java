@@ -4,7 +4,6 @@ import com.simsilica.lemur.Button;
 import com.simsilica.lemur.Panel;
 import com.simsilica.lemur.ValueRenderer;
 import com.simsilica.lemur.style.ElementId;
-import net.carriercommander.network.model.config.GameConfig;
 import net.carriercommander.network.model.config.GameType;
 
 public class GameTypeCellRenderer implements ValueRenderer {

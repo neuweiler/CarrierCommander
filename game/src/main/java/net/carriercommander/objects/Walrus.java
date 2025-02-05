@@ -48,7 +48,6 @@ import com.jme3.water.WaterFilter;
 import net.carriercommander.StateWater;
 import net.carriercommander.control.AmphibiousControl;
 import net.carriercommander.control.ShipControl;
-import net.carriercommander.objects.resources.ResourceManager;
 import net.carriercommander.ui.AbstractState;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -61,7 +60,6 @@ import org.slf4j.LoggerFactory;
 public class Walrus extends PlayerItem {
 	private static final Logger logger = LoggerFactory.getLogger(Walrus.class);
 	public static final float WIDTH = 3.8f, LENGTH = 8.5f, HEIGHT = 2.2f, MASS = 5f;
-	private final ResourceManager resourceManager = new ResourceManager();
 
 	public Walrus(AbstractState state, String name, CameraNode camNode) {
 		super(name, camNode);
@@ -164,8 +162,7 @@ public class Walrus extends PlayerItem {
 	}
 
 	private Geometry findGeom(Spatial spatial, String name) {
-		if (spatial instanceof Node) {
-			Node node = (Node) spatial;
+		if (spatial instanceof Node node) {
 			for (int i = 0; i < node.getQuantity(); i++) {
 				Spatial child = node.getChild(i);
 				Geometry result = findGeom(child, name);
@@ -184,9 +181,5 @@ public class Walrus extends PlayerItem {
 	@Override
 	public PhysicsRigidBody getControl() {
 		return (getControl(ShipControl.class).isEnabled() ? getControl(ShipControl.class) : getControl(VehicleControl.class));
-	}
-
-	public ResourceManager getResourceManager() {
-		return resourceManager;
 	}
 }

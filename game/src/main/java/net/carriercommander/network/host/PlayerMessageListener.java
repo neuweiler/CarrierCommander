@@ -17,8 +17,7 @@ public class PlayerMessageListener implements MessageListener<HostedConnection> 
 
 	@Override
 	public void messageReceived(HostedConnection hostedConnection, Message message) {
-		if (message instanceof MessagePlayerUpdate) {
-			MessagePlayerUpdate messagePlayerUpdate = (MessagePlayerUpdate) message;
+		if (message instanceof MessagePlayerUpdate messagePlayerUpdate) {
 			playerManager.updatePlayer(hostedConnection.getId(), messagePlayerUpdate);
 			if (logger.isTraceEnabled()) {
 				logger.trace("playerData received from {}: {}", messagePlayerUpdate.getPlayerId(), messagePlayerUpdate.getItemData());

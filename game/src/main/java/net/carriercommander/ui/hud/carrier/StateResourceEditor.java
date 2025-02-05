@@ -22,9 +22,9 @@ public class StateResourceEditor extends WindowState {
 	private ResourceContainer container;
 	private ResourceItem item;
 	private Class itemClass;
-	private Player player;
-	private Carrier carrier;
-	private SupplyDrone supplyDrone;
+	private final Player player;
+	private final Carrier carrier;
+	private final SupplyDrone supplyDrone;
 
 	private Label bluePrint;
 	private Label name, description;

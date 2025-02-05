@@ -16,16 +16,13 @@ import net.carriercommander.Constants;
 import net.carriercommander.control.BaseControl;
 import net.carriercommander.control.PlayerControl;
 import net.carriercommander.objects.PlayerItem;
-import net.carriercommander.terrain.Island;
 import net.carriercommander.ui.WindowState;
 import net.carriercommander.ui.hud.widgets.PaintedGauge;
 import net.carriercommander.ui.hud.widgets.PaintedRadar;
 
-import java.util.Optional;
-
 /**
  * A super class for all states which are involved in navigation of ships/planes.
- * Provides funcionality to add a radar screen and/or fuel and throttle gauges.
+ * Provides functionality to add a radar screen and/or fuel and throttle gauges.
  */
 public abstract class NavigationState extends WindowState {
 	private PaintedRadar radar;
@@ -81,7 +78,7 @@ public abstract class NavigationState extends WindowState {
 	}
 
 	/**
-	 * Updates the gauges created via this class. Note that if more gauges are added in a sub-class,
+	 * Updates the gauges created via this class. Note that if more gauges are added in a subclass,
 	 * the responsible class for updating the gauges should overwrite this method and call
 	 * super.updateGauges() . The update() implementation of this class will call updateGauges()
 	 */
@@ -182,7 +179,7 @@ public abstract class NavigationState extends WindowState {
 		mat1.setColor("Color", new ColorRGBA(.3f, .8f, .8f, .6f));
 		crossHairs.setMaterial(mat1);
 		crossHairs.setCullHint(Spatial.CullHint.Never);
-		crossHairs.setLocalTranslation(getApplication().getCamera().getWidth() / 2, getApplication().getCamera().getHeight() / 2, 0);
+		crossHairs.setLocalTranslation((float) getApplication().getCamera().getWidth() / 2, (float) getApplication().getCamera().getHeight() / 2, 0);
 
 		((SimpleApplication)getApplication()).getGuiNode().attachChild(crossHairs);
 	}
@@ -225,14 +222,14 @@ public abstract class NavigationState extends WindowState {
 	}
 
 	/**
-	 * Toggle the auto pilot of the currently active PlayerUnit
+	 * Toggle the autopilot of the currently active PlayerUnit
 	 */
 	protected void autoPilot() {
 		//TODO enable autopilot
 	}
 
 	/**
-	 * Toggle between fron and read view of the currently active PlayerUnit
+	 * Toggle between front and read view of the currently active PlayerUnit
 	 */
 	protected void rearView() {
 		activeUnit.toggleRearView();

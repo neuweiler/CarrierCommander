@@ -8,14 +8,8 @@ public class ToggleGroup extends Container {
 	public <T extends Node> T addChild(T child, Object... constraints ) {
 		super.addChild(child, constraints);
 
-		if (child instanceof ToggleButton) {
-			ToggleButton toggleButton = (ToggleButton) child;
-			toggleButton.addCommands(Button.ButtonAction.Down, new Command<Button>() {
-				@Override
-				public void execute(Button source) {
-					toggle(source);
-				}
-			});
+		if (child instanceof ToggleButton toggleButton) {
+			toggleButton.addCommands(Button.ButtonAction.Down, this::toggle);
 		}
 
 		return child;
@@ -23,8 +17,7 @@ public class ToggleGroup extends Container {
 
 	public void toggle(Button source) {
 		this.children.forEach(child -> {
-			if (child != source && child instanceof ToggleButton) {
-				ToggleButton toggleButton = (ToggleButton) child;
+			if (child != source && child instanceof ToggleButton toggleButton) {
 				if (toggleButton.isSelected()) {
 					toggleButton.setSelected(false);
 				}

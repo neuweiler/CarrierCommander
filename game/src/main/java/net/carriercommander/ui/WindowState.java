@@ -1,6 +1,5 @@
 package net.carriercommander.ui;
 
-import com.jme3.app.Application;
 import com.jme3.app.SimpleApplication;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
@@ -37,13 +36,13 @@ public abstract class WindowState extends AbstractState {
 	 * @param magnification the magnification factor to use (1 = scale according to resolution)
 	 */
 	protected void scaleAndPosition(Camera camera, float xPercent, float yPercent, float magnification) {
-		Vector3f prefferedSize = window.getPreferredSize().clone();
+		Vector3f preferredSize = window.getPreferredSize().clone();
 		float standardScale = getStandardScale();
-		prefferedSize.multLocal(standardScale * magnification);
+		preferredSize.multLocal(standardScale * magnification);
 
-		float x = Math.max(camera.getWidth() * xPercent - prefferedSize.x * 0.5f, 0);
-		x = Math.min(x, camera.getWidth() - prefferedSize.x);
-		float y = Math.max(camera.getHeight() * yPercent + prefferedSize.y * 0.5f, prefferedSize.y);
+		float x = Math.max(camera.getWidth() * xPercent - preferredSize.x * 0.5f, 0);
+		x = Math.min(x, camera.getWidth() - preferredSize.x);
+		float y = Math.max(camera.getHeight() * yPercent + preferredSize.y * 0.5f, preferredSize.y);
 		y = Math.min(y, camera.getHeight());
 
 		window.setLocalTranslation(x, y, 0);

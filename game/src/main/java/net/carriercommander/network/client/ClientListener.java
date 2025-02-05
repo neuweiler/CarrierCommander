@@ -21,8 +21,7 @@ public class ClientListener implements MessageListener<Client> {
 
 	@Override
 	public void messageReceived(Client source, Message message) {
-		if (message instanceof MessagePlayerUpdate) {
-			MessagePlayerUpdate messagePlayerUpdate = (MessagePlayerUpdate) message;
+		if (message instanceof MessagePlayerUpdate messagePlayerUpdate) {
 			sceneManager.updatePlayer(messagePlayerUpdate.getPlayerId(), messagePlayerUpdate.getItemData());
 			return;
 		}
@@ -37,8 +36,7 @@ public class ClientListener implements MessageListener<Client> {
 			sceneManager.removePlayer(((MessagePlayerRemoved) message).getId());
 		}
 
-		if (message instanceof MessageInitPlayer) {
-			MessageInitPlayer messageInitPlayer = (MessageInitPlayer) message;
+		if (message instanceof MessageInitPlayer messageInitPlayer) {
 			sceneManager.init(messageInitPlayer.getStartPosition(), messageInitPlayer.getIslands(), messageInitPlayer.getConnections());
 		}
 	}

@@ -4,7 +4,7 @@ import com.jme3.math.Vector3f;
 import net.carriercommander.Constants;
 
 public class Island {
-	enum IslandType { free, factory, resource, defense };
+	enum IslandType { free, factory, resource, defense }
 
 	private final String name;
 	private final Vector3f position;

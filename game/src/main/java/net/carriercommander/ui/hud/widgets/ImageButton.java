@@ -1,6 +1,5 @@
 package net.carriercommander.ui.hud.widgets;
 
-import com.simsilica.lemur.Action;
 import com.simsilica.lemur.ActionButton;
 import com.simsilica.lemur.CallMethodAction;
 import com.simsilica.lemur.component.IconComponent;

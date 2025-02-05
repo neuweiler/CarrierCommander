@@ -65,13 +65,10 @@ public class StateMainMenu extends WindowState {
 		listGameConfigs.setCellRenderer(new GameConfigCellRenderer());
 		gameConfigs.forEach(config -> listGameConfigs.getModel().add(config));
 		listGameConfigs.getSelectionModel().setSelection(0);
-		listGameConfigs.addCommands(ListBox.ListAction.Click, new Command<ListBox>() {
-			@Override
-			public void execute(ListBox source) {
-				listGameTypes.getModel().clear();
-				((GameConfig)source.getSelectedItem()).getGameTypes().forEach(gameType -> listGameTypes.getModel().add(gameType));
-				listGameTypes.getSelectionModel().setSelection(0);
-			}
+		listGameConfigs.addCommands(ListBox.ListAction.Click, (Command<ListBox>) source -> {
+			listGameTypes.getModel().clear();
+			((GameConfig)source.getSelectedItem()).getGameTypes().forEach(gameType -> listGameTypes.getModel().add(gameType));
+			listGameTypes.getSelectionModel().setSelection(0);
 		});
 
 		Container gamePanel = gameSelectionPanel.addChild(new Container());
@@ -160,7 +157,6 @@ public class StateMainMenu extends WindowState {
 							GameConfig config = mapper.readValue(path.toUri().toURL(), GameConfig.class);
 							gameConfigs.add(config);
 						} catch (IOException e) {
-							e.printStackTrace();
 							throw new RuntimeException("unable to parse config file", e);
 						}
 					});
