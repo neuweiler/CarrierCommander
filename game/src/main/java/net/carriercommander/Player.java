@@ -52,8 +52,8 @@ public class Player {
 		app.enqueue(() -> {
 			BulletAppState bulletAppState = app.getStateManager().getState(BulletAppState.class);
 			bulletAppState.getPhysicsSpace().removeAll(gameItem);
-			gameItem.destroy();
 			gameItem.removeFromParent();
+			gameItem.destroy();
 		});
 
 		//TODO check if network game and if local GameItem , then flag GameData for removal

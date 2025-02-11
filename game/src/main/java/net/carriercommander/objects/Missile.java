@@ -81,8 +81,10 @@ public class Missile extends GameItem {
 
 	@Override
 	public void destroy() {
-		trail.stop();
-		trail = null;
+		if (trail != null) {
+			trail.stop();
+			trail = null;
+		}
 		super.destroy();
 	}
 }

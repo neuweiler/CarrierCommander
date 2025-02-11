@@ -180,6 +180,9 @@ public class Walrus extends PlayerItem {
 
 	@Override
 	public PhysicsRigidBody getControl() {
-		return (getControl(ShipControl.class).isEnabled() ? getControl(ShipControl.class) : getControl(VehicleControl.class));
-	}
+		ShipControl shipControl = getControl(ShipControl.class);
+		if (shipControl != null && shipControl.isEnabled())
+			return shipControl;
+        return getControl(VehicleControl.class);
+    }
 }
