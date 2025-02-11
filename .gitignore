@@ -16,7 +16,9 @@ target
 
 # IntelliJ project files
 .idea
+!/.idea/runConfigurations/
 *.iml
 out
 gen
 /bin/
+local.properties
