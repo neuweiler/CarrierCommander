@@ -31,7 +31,7 @@ public class DesktopLauncher {
         settings.setFullscreen(false);
         settings.setVSync(true);
 //		settings.setSamples(8);
-        settings.setGammaCorrection(false);
+        settings.setGammaCorrection(true);
 
         try {
             settings.load(SETTINGS_TOKEN);
