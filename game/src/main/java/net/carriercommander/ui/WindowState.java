@@ -4,7 +4,7 @@ import com.jme3.app.SimpleApplication;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
 import com.jme3.scene.Node;
-import com.simsilica.lemur.Container;
+import net.carriercommander.ui.controls.widgets.Window;
 
 /**
  * A state class for windows which attach/detach automatically from the GUI node when enabled/disabled.
@@ -12,7 +12,7 @@ import com.simsilica.lemur.Container;
  */
 public abstract class WindowState extends AbstractState {
 
-	protected Container window;
+	protected Window window;
 
 	/**
 	 * Scale content of window and position relatively on screen according to scale and

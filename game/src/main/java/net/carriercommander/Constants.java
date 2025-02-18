@@ -44,7 +44,7 @@ public interface Constants {
 	boolean AUTOSTART = false;
 
 	// network settings
-	int DEFAULT_PORT = 54321;
+	int DEFAULT_PORT = 5432;
 	String DEFAULT_HOST = "localhost";
 	String GAME_NAME = "CarrierCommand";
 	int GAME_VERSION = 1;

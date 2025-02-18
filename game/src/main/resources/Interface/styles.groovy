@@ -4,7 +4,7 @@ import com.jme3.math.Vector3f
 import com.simsilica.lemur.*;
 import com.simsilica.lemur.Button.ButtonAction;
 import com.simsilica.lemur.component.*
-import net.carriercommander.ui.hud.widgets.ToggleButton;
+import net.carriercommander.ui.controls.widgets.ToggleButton;
 
 def gradient = TbtQuadBackgroundComponent.create(
         texture(name: "/com/simsilica/lemur/icons/bordered-gradient.png", generateMips: false),

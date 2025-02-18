@@ -17,7 +17,7 @@ import net.carriercommander.network.messages.MessageInitPlayer;
 import net.carriercommander.network.model.config.GameConfig;
 import net.carriercommander.network.model.config.GameType;
 import net.carriercommander.ui.WindowState;
-import net.carriercommander.ui.hud.widgets.Window;
+import net.carriercommander.ui.controls.widgets.Window;
 import net.carriercommander.ui.menu.StateNetworkMenu;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

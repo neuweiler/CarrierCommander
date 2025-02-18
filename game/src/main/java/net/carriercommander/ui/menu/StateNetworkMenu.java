@@ -15,7 +15,7 @@ import com.simsilica.lemur.style.ElementId;
 import net.carriercommander.Constants;
 import net.carriercommander.network.client.StateNetworkClient;
 import net.carriercommander.ui.WindowState;
-import net.carriercommander.ui.hud.widgets.Window;
+import net.carriercommander.ui.controls.widgets.Window;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

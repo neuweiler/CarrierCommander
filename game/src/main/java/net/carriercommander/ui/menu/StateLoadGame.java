@@ -17,8 +17,8 @@ import net.carriercommander.StateViewFilter;
 import net.carriercommander.StateWater;
 import net.carriercommander.network.model.config.Island;
 import net.carriercommander.ui.WindowState;
-import net.carriercommander.ui.hud.StateMainControls;
-import net.carriercommander.ui.hud.widgets.Window;
+import net.carriercommander.ui.controls.StateMainControls;
+import net.carriercommander.ui.controls.widgets.Window;
 
 import java.util.List;
 
