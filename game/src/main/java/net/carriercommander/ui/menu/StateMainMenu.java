@@ -21,6 +21,7 @@ import net.carriercommander.network.model.config.GameConfig;
 import net.carriercommander.network.model.config.GameType;
 import net.carriercommander.ui.WindowState;
 import net.carriercommander.ui.controls.widgets.Window;
+import net.carriercommander.ui.config.StateConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -100,6 +101,7 @@ public class StateMainMenu extends WindowState {
 		bottomRow.addChild(new ActionButton(new CallMethodAction("Start Game", this, "start")), 0);
 		bottomRow.addChild(new ActionButton(new CallMethodAction("Exit", app, "stop")), 2);
 		bottomRow.addChild(new ActionButton(new CallMethodAction("Connect to Host", this, "connect")), 1);
+		bottomRow.addChild(new ActionButton(new CallMethodAction("Preferences", this, "preferences")), 3);
 
 		scaleAndPosition(app.getCamera(), .2f, .6f, Constants.MENU_MAGNIFICATION);
 	}
@@ -129,6 +131,11 @@ public class StateMainMenu extends WindowState {
 	protected void connect() {
 		getStateManager().getState(StateNetworkMenu.class).setEnabled(true);
 		setEnabled(false);
+	}
+
+	protected void preferences() {
+		getStateManager().getState(StateConfig.class).setEnabled(true);
+//		setEnabled(false);
 	}
 
 	public void startGame(GameConfig gameConfig, GameType gameType) {

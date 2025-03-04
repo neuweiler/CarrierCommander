@@ -8,6 +8,8 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.prefs.BackingStoreException;
+
+import net.carriercommander.ui.config.StateConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,22 +21,12 @@ public class DesktopLauncher {
 
     private static final Logger logger = LoggerFactory.getLogger(CarrierCommander.class);
 
-    private static final String SETTINGS_TOKEN = "net/carriercommander";
-
     public static void main(String[] args) {
         final CarrierCommander game = new CarrierCommander();
 
         final AppSettings settings = new AppSettings(true);
-
-        settings.setFrameRate(60);
-        settings.setResolution(1280, 720);
-        settings.setFullscreen(false);
-        settings.setVSync(true);
-//		settings.setSamples(8);
-        settings.setGammaCorrection(true);
-
         try {
-            settings.load(SETTINGS_TOKEN);
+            settings.load(StateConfig.SETTINGS_TOKEN);
         } catch (BackingStoreException e) {
             logger.error("unable to load previous settings", e);
         }

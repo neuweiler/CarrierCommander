@@ -39,6 +39,7 @@ import com.simsilica.lemur.style.BaseStyles;
 import net.carriercommander.network.Utils;
 import net.carriercommander.ui.menu.StateMainMenu;
 import net.carriercommander.ui.menu.StateNetworkMenu;
+import net.carriercommander.ui.config.StateConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -51,12 +52,13 @@ public class CarrierCommander extends SimpleApplication {
 	private static final Logger logger = LoggerFactory.getLogger(CarrierCommander.class);
 
 	public CarrierCommander() {
-		super(new StateMainMenu());
+		super(new StateMainMenu(), new StateConfig());
 	}
 
 	public CarrierCommander(AppState... initialStates) {
 		super(initialStates);
 		getStateManager().attach(new StateMainMenu());
+		getStateManager().attach(new StateConfig());
 	}
 
 	@Override
