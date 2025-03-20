@@ -185,4 +185,10 @@ public class Walrus extends PlayerItem {
 			return shipControl;
         return getControl(VehicleControl.class);
     }
+
+	@Override
+	public Type getType() {
+		return Type.WALRUS;
+	}
+
 }

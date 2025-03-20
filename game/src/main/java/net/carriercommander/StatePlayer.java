@@ -3,46 +3,26 @@ package net.carriercommander;
 import com.jme3.app.Application;
 import com.jme3.app.SimpleApplication;
 import com.jme3.bullet.control.VehicleControl;
+import com.jme3.collision.CollisionResult;
 import com.jme3.collision.CollisionResults;
 import com.jme3.input.InputManager;
 import com.jme3.input.KeyInput;
 import com.jme3.input.MouseInput;
-import com.jme3.input.controls.ActionListener;
-import com.jme3.input.controls.AnalogListener;
-import com.jme3.input.controls.KeyTrigger;
-import com.jme3.input.controls.MouseAxisTrigger;
-import com.jme3.input.controls.MouseButtonTrigger;
+import com.jme3.input.controls.*;
 import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Ray;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.CameraNode;
+import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import net.carriercommander.control.MissileControl;
 import net.carriercommander.control.PlayerControl;
 import net.carriercommander.control.ProjectileControl;
-import net.carriercommander.objects.Carrier;
-import net.carriercommander.objects.GameItem;
 import net.carriercommander.objects.Manta;
-import net.carriercommander.objects.Missile;
-import net.carriercommander.objects.PlayerItem;
-import net.carriercommander.objects.Projectile;
-import net.carriercommander.objects.SupplyDrone;
 import net.carriercommander.objects.Walrus;
-import net.carriercommander.objects.resources.AssassinMissile;
-import net.carriercommander.objects.resources.CommPod;
-import net.carriercommander.objects.resources.CommandCenter;
-import net.carriercommander.objects.resources.DecoyFlare;
-import net.carriercommander.objects.resources.DefenseDrone;
-import net.carriercommander.objects.resources.FragmenationBomb;
-import net.carriercommander.objects.resources.FuelPod;
-import net.carriercommander.objects.resources.HammerHeadMissile;
-import net.carriercommander.objects.resources.HarbingerMissile;
-import net.carriercommander.objects.resources.PulseLaser;
-import net.carriercommander.objects.resources.QuasarLaser;
-import net.carriercommander.objects.resources.ReconDrone;
-import net.carriercommander.objects.resources.ResourceContainer;
-import net.carriercommander.objects.resources.VirusBomb;
+import net.carriercommander.objects.*;
+import net.carriercommander.objects.resources.*;
 import net.carriercommander.ui.AbstractState;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,8 +31,6 @@ import java.util.Arrays;
 
 public class StatePlayer extends AbstractState {
 	Logger logger = LoggerFactory.getLogger(StatePlayer.class);
-
-	public enum PlayerUnit {CARRIER, WALRUS, MANTA}
 
 	private final CameraNode camNode;
 	private InputManager inputManager;
@@ -270,12 +248,12 @@ public class StatePlayer extends AbstractState {
 		});*/
 	}
 
-	public PlayerItem setActiveUnit(PlayerUnit unit, int id) {
+	public PlayerItem setActiveUnit(PlayerItem.Type type, int id) {
 		if (id < 1 || id > 4) {
 			logger.error("id invalid: {}", id);
 			return activeUnit;
 		}
-		switch (unit) {
+		switch (type) {
 			case CARRIER:
 				activeUnit = (PlayerItem) player.getItem(Constants.CARRIER);
 				break;
@@ -315,43 +293,101 @@ public class StatePlayer extends AbstractState {
 		}
 	}
 
+	private Vector3f canonOffsetManta = new Vector3f(0, 1.1f, 7f);
+	private Vector3f canonOffsetWalrus = new Vector3f(0, 1.1f, 7f);
+
 	private void fireCanon() {
-		Quaternion rotation = getActiveUnitControl().getPhysicsRotation();
+		Quaternion rotation = calculateOffsetRotation(getActiveUnitControl(), 0f);
+		Vector3f position = calculateOffsetPosition(getActiveUnitControl(), canonOffsetManta);
+
 		Projectile projectile = new Projectile(this, "projectile" + System.currentTimeMillis(), rotation);
 		ProjectileControl control = projectile.getControl(ProjectileControl.class);
-		control.setPhysicsLocation(getActiveUnitControl().getPhysicsLocation().add(rotation.mult(Vector3f.UNIT_Z).mult(15)));
+		control.setPhysicsLocation(position);
 		control.setPhysicsRotation(rotation);
+
 		player.addItem(projectile);
 	}
 
+	private Vector3f missileOffsetManta = new Vector3f(0, -1.3f, 7);
+	private Vector3f missileOffsetWalrus = new Vector3f(0, -1.3f, 7);
+
 	private void fireMissile() {
-		GameItem target = findTarget(camNode.getWorldTranslation(), camNode.getWorldRotation(), getRootNode());
+		GameItem target = findTarget(camNode);
 		if (target != null) {
 			logger.info("fire missile at {}", target.getName());
+
+			Quaternion rotation = calculateOffsetRotation(getActiveUnitControl(), 180f);
+			Vector3f position = calculateOffsetPosition(getActiveUnitControl(), missileOffsetManta);
+
 			Missile missile = new Missile(this, Constants.MISSILE + System.currentTimeMillis(), target);
-			MissileControl missileControl = missile.getControl(MissileControl.class);
-			Vector3f location = getActiveUnitControl().getPhysicsLocation();
-			location.y -= 5; // TODO respect the attitude and angle
-			missileControl.setPhysicsLocation(location);
-			missileControl.setPhysicsRotation(getActiveUnitControl().getPhysicsRotation().mult(new Quaternion().fromAngles(0, FastMath.PI, 0)));
+			MissileControl control = missile.getControl(MissileControl.class);
+			control.setPhysicsLocation(position);
+			control.setPhysicsRotation(rotation);
+
 			player.addItem(missile);
 		}
 	}
 
-	private GameItem findTarget(Vector3f translation, Quaternion rotation, Node rootNode) {
+	/**
+	 * Try to find if there is a GameItem under the cross-hairs.
+	 *
+	 * @param node giving the position and rotation from where we're aiming (usually the current camera node)
+	 * @return the GameItem currently in the cross-hairs or null
+	 */
+	private GameItem findTarget(Node node) {
 		CollisionResults results = new CollisionResults();
-		Ray ray = new Ray(translation, rotation.getRotationColumn(2, null));
-		rootNode.collideWith(ray, results);
 
-		if (results.size() > 0 && results.getClosestCollision().getGeometry() != null) {
-			Node node = results.getClosestCollision().getGeometry().getParent();
-			while (node != null) {
-				if (node instanceof GameItem) {
-					return (GameItem) node;
+		Ray ray = new Ray(node.getWorldTranslation(), camNode.getWorldRotation().getRotationColumn(2, null));
+		getRootNode().collideWith(ray, results);
+
+		CollisionResult closestCollision = results.getClosestCollision();
+		if (closestCollision != null) {
+			Geometry geometry = closestCollision.getGeometry();
+			if (geometry != null) {
+				Node parent = geometry.getParent();
+				while (parent != null) {
+					if (parent instanceof GameItem) {
+						return (GameItem) parent;
+					}
+					parent = parent.getParent();
 				}
-				node = node.getParent();
 			}
 		}
 		return null;
+	}
+
+	/**
+	 * Calculate the offset position for an object relative to the given control's position and rotation in the world.
+	 *
+	 * @param control used to get the start position and rotation
+	 * @param offset  to add to the start position in relation to the control's current rotation
+	 *                (axis: x=left/right, y=up/down, z=forward/backward)
+	 * @return the translated position
+	 */
+	private Vector3f calculateOffsetPosition(PlayerControl control, Vector3f offset) {
+		Vector3f playerPosition = control.getPhysicsLocation();
+		Quaternion playerRotation = control.getPhysicsRotation();
+
+		// Rotate the offset vector according to the player's rotation
+		Vector3f rotatedOffset = playerRotation.mult(offset);
+
+		// Combine the distances directly into one calculation
+		return playerPosition.add(rotatedOffset);
+	}
+
+	/**
+	 * Calculate the offset angle for an object relative to the given control's rotation.
+	 *
+	 * @param control    use to get the start rotation
+	 * @param anglePitch the angle offset for the pitch
+	 * @return the translated rotation
+	 */
+	private Quaternion calculateOffsetRotation(PlayerControl control, float anglePitch) {
+		Quaternion rotation = control.getPhysicsRotation();
+		if (anglePitch != 0) {
+			Quaternion correction = new Quaternion().fromAngleAxis(FastMath.DEG_TO_RAD * anglePitch, Vector3f.UNIT_X);
+			rotation.multLocal(correction);
+		}
+		return rotation;
 	}
 }

@@ -4,6 +4,7 @@ import com.jme3.app.Application;
 import com.simsilica.lemur.Container;
 import net.carriercommander.StatePlayer;
 import net.carriercommander.control.PlayerControl;
+import net.carriercommander.objects.PlayerItem;
 import net.carriercommander.ui.controls.NavigationState;
 import net.carriercommander.ui.controls.widgets.ImageButton;
 import net.carriercommander.ui.controls.widgets.ToggleGroup;
@@ -70,7 +71,7 @@ public class StateNavigation extends NavigationState {
 	}
 
 	private void selectWalrus(int id) {
-		setActiveUnit(getState(StatePlayer.class).setActiveUnit(StatePlayer.PlayerUnit.WALRUS, id));
+		setActiveUnit(getState(StatePlayer.class).setActiveUnit(PlayerItem.Type.WALRUS, id));
 		lastSelectedWalrus = id;
 
 		PlayerControl.WeaponType selectedWeapon = getPlayerControl().getWeaponType();

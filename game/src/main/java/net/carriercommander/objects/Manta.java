@@ -80,4 +80,10 @@ public class Manta extends PlayerItem {
 		addControl(control);
 		control.setDamping(0.1f, 0.5f);
 	}
+
+	@Override
+	public Type getType() {
+		return Type.MANTA;
+	}
+
 }

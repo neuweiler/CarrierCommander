@@ -163,4 +163,9 @@ public class Carrier extends PlayerItem {
 	public ResourceManager getResourceManager() {
 		return resourceManager;
 	}
+
+	@Override
+	public Type getType() {
+		return Type.CARRIER;
+	}
 }

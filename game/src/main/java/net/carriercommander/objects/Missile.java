@@ -48,7 +48,7 @@ import net.carriercommander.ui.AbstractState;
  * @author Michael Neuweiler
  */
 public class Missile extends GameItem {
-	public static final float WIDTH = .2f, LENGTH = 1.1f, HEIGHT = .2f, MASS = .1f;
+	public static final float WIDTH = .2f, LENGTH = 1.1f, HEIGHT = .2f, MASS = .15f;
 
 	private TrailMissile trail;
 

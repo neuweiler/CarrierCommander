@@ -7,6 +7,7 @@ import com.simsilica.lemur.component.IconComponent;
 import com.simsilica.lemur.component.QuadBackgroundComponent;
 import net.carriercommander.StatePlayer;
 import net.carriercommander.control.PlayerControl;
+import net.carriercommander.objects.PlayerItem;
 import net.carriercommander.ui.controls.NavigationState;
 import net.carriercommander.ui.controls.widgets.*;
 
@@ -90,7 +91,7 @@ public class StateNavigation extends NavigationState {
 	}
 
 	private void selectManta(int id) {
-		setActiveUnit(getState(StatePlayer.class).setActiveUnit(StatePlayer.PlayerUnit.MANTA, id));
+		setActiveUnit(getState(StatePlayer.class).setActiveUnit(PlayerItem.Type.MANTA, id));
 		lastSelectedManta = id;
 
 		PlayerControl.WeaponType selectedWeapon = getPlayerControl().getWeaponType();

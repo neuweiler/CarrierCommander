@@ -8,6 +8,7 @@ import com.simsilica.lemur.component.QuadBackgroundComponent;
 import com.simsilica.lemur.style.ElementId;
 import net.carriercommander.StatePlayer;
 import net.carriercommander.control.PlayerControl;
+import net.carriercommander.objects.PlayerItem;
 import net.carriercommander.ui.controls.NavigationState;
 import net.carriercommander.ui.controls.widgets.ImageButton;
 import net.carriercommander.ui.controls.widgets.PaintedGauge;
@@ -63,7 +64,7 @@ public class StateNavigation extends NavigationState {
 	@Override
 	protected void onEnable() {
 		super.onEnable();
-		setActiveUnit(getState(StatePlayer.class).setActiveUnit(StatePlayer.PlayerUnit.CARRIER, 1));
+		setActiveUnit(getState(StatePlayer.class).setActiveUnit(PlayerItem.Type.CARRIER, 1));
 	}
 
 	@Override

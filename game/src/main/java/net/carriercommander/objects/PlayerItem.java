@@ -50,6 +50,8 @@ public abstract class PlayerItem extends GameItem {
 	protected Node camHookFront = null;
 	protected Node camHookRear = null;
 
+	public enum Type {CARRIER, WALRUS, MANTA}
+
 	PlayerItem(String name, CameraNode camNode) {
 		super(name);
 		this.camNode = camNode;
@@ -81,6 +83,7 @@ public abstract class PlayerItem extends GameItem {
 		if (camNode.getParent() != null)
 			camNode.getParent().detachChild(camNode);
 		node.attachChild(camNode);
+node.rotate(0,25 * FastMath.DEG_TO_RAD,0);
 	}
 
 	public void toggleRearView() {
@@ -104,4 +107,6 @@ public abstract class PlayerItem extends GameItem {
 		setCameraNode(camHookRear);
 		rearView = true;
 	}
+
+	public abstract Type getType();
 }
